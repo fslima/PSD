@@ -13,23 +13,23 @@
 <form action="" method="POST"> 
 {% for campos in form %}
 {% ifnotequal campos.value form.curso.value %} 
-{% if campos.name = "empresa" %}
+{% if campos.name = "unidadeMaterial" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto_para_deletar.empresa}}</th>
+			<th scope="row">{{objeto_para_deletar.unidadeMaterial}}</th>
 		</tr>
-{% else %}{% if campos.name = "oportunidade" %}
+{% else %}{% if campos.name = "grupoMercadoria" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto_para_deletar.oportunidade}}</th>
+			<th scope="row">{{objeto_para_deletar.grupoMercadoria}}</th>
 		</tr>
 		<tr>
-			<td scope="row"><b>Tipo da Oportunidade</b></td>
-			<th scope="row">{{objeto_para_deletar.oportunidade.tpoportunidade}}</th>
+			<td scope="row"><b>Valor da Última Compra</b></td>
+			<th scope="row">{{objeto_para_deletar.vlUltimaCompra}}</th>
 		</tr>
 		<tr>
-			<td scope="row"><b>Empresa</b></td>
-			<th scope="row">{{objeto_para_deletar.oportunidade.empresa}}</th>
+			<td scope="row"><b>Data da Última Compra</b></td>
+			<th scope="row">{{objeto_para_deletar.dtUltimaCompra}}</th>
 		</tr>
 {% else %}{% if campos.name = "aluno" %}
 		<tr>

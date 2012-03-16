@@ -13,23 +13,23 @@
 <caption><a href="" class="section">Informações Gerais</a></caption>
 {% for campos in form %}
 {% ifnotequal campos.value form.curso.value %} 
-{% if campos.name = "empresa" %}
+{% if campos.name = "unidadeMaterial" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.empresa}}</th>
+			<th scope="row">{{objeto.unidadeMaterial}}</th>
 		</tr>
-{% else %}{% if campos.name = "oportunidade" %}
+{% else %}{% if campos.name = "grupoMercadoria" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.oportunidade}}</th>
+			<th scope="row">{{objeto.grupoMercadoria}}</th>
 		</tr>
 		<tr>
-			<td scope="row"><b>Tipo da Oportunidade</b></td>
-			<th scope="row">{{objeto.oportunidade.tpoportunidade}}</th>
+			<td scope="row"><b>Valor da Última Compra</b></td>
+			<th scope="row">{{objeto.vlUltimaCompra}}</th>
 		</tr>
 		<tr>
-			<td scope="row"><b>Empresa</b></td>
-			<th scope="row">{{objeto.oportunidade.empresa}}</th>
+			<td scope="row"><b>Data da Última Compra</b></td>
+			<th scope="row">{{objeto.dtUltimaCompra}}</th>
 		</tr>
 {% else %}{% if campos.name = "aluno" %}
 		<tr>
