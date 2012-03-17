@@ -45,13 +45,17 @@
 {% endifnotequal %}
 {% endfor %}
 </table>
-{% if membros %}
+{% if itens %}
 <table>
 <caption><a href="" class="section">{{titulo_membros}}</a></caption>
-{%for membro in membros %}
+<tr>	
+			<th scope="row">Item Requisitado</th>
+			<td>Quantidade</td>
+		</tr>
+{%for item in itens %}
 		<tr>	
-			<th scope="row">{{membro}}</th>
-			<td></td>
+			<th scope="row">{{item}}</th>
+			<td>{{item.qtd}}</td>
 		</tr>
 {% empty %}
 <tr>

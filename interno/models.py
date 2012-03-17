@@ -10,7 +10,7 @@ class GrupoMercadoria(models.Model):
 
 	nome = models.CharField(max_length = 50)
 	
-	def validaAtrib(self):
+	def adiciona(self, request, id_objeto):
 		return 'validos'
 
 	class Meta:
@@ -22,7 +22,7 @@ class UnidadeMaterial(models.Model):
 
 	nome = models.CharField(max_length = 50)
 	
-	def validaAtrib(self):
+	def adiciona(self, request, id_objeto):
 		return 'validos'
 
 	class Meta:
@@ -41,7 +41,8 @@ class Material(models.Model):
 	dtUltimaCompra = models.DateField(null = True)
 	usuario = models.ForeignKey(User)
 
-	def validaAtrib(self):
+	def adiciona(self, request, id_objeto):
+		self.usuario = request.user
 		self.vlUltimaCompra = '0.00'
 		self.dtUltimaCompra = datetime.now()
 		return 'validos'
@@ -71,7 +72,7 @@ class Fornecedor(models.Model):
 	cep = models.BigIntegerField(max_length = 8)
 	usuario = models.ForeignKey(User)
 
-	def validaAtrib(self):
+	def adiciona(self, request, id_objeto):
 		return 'validos'
 	
 	class Meta:
@@ -84,7 +85,7 @@ class CentroCusto(models.Model):
 	nome = models.CharField(max_length = 50)
 	gerente = models.ForeignKey(User)	
 
-	def validaAtrib(self):
+	def adiciona(self, request, id_objeto):
 		return 'validos'
 
 	class Meta:
@@ -92,17 +93,20 @@ class CentroCusto(models.Model):
 
 class Requisicao(models.Model):
 	def __unicode__(self):
-		return self.nome
+		return str(self.id)
 
 	dtRequisicao = models.DateField()
 	centroCusto = models.ForeignKey(CentroCusto, related_name = 'cc_requisicao')
 	solicitante = models.ForeignKey(User)
-	status = models.CharField(max_length = 10)
-	dtDeferimento = models.DateField()
+	status = models.CharField(max_length = 50)
+	dtDeferimento = models.DateField(null = True)
 	diasParaCotacao = models.PositiveSmallIntegerField()
 		
 
-	def validaAtrib(self):
+	def adiciona(self, request, id_objeto):
+		self.dtRequisicao = datetime.now()
+		self.status = 'Aguardando Aprovação'
+		self.solicitante = request.user
 		return 'validos'
 
 	class Meta:
@@ -110,13 +114,14 @@ class Requisicao(models.Model):
 
 class ItemRequisicao(models.Model):
 	def __unicode__(self):
-		return self.nome
+		return self.material.nome
 
 	requisicao = models.ForeignKey(Requisicao, related_name = 'requisicao_do_item')
 	material = models.ForeignKey(Material, related_name = 'material_do_item')
 	qtd = models.PositiveSmallIntegerField()
 
-	def validaAtrib(self):
+	def adiciona(self, request, id_objeto):
+		self.requisicao = Requisicao.objects.get(pk = id_objeto)
 		return 'validos'
 
 	class Meta:
@@ -131,7 +136,7 @@ class Cotacao(models.Model):
 	vlCotacao = models.DecimalField(max_digits = 20, decimal_places = 2)
 	obs = models.TextField(max_length = 100)
 
-	def validaAtrib(self):
+	def adiciona(self, request, id_objeto):
 		return 'validos'
 
 	class Meta:
@@ -145,7 +150,7 @@ class MapaComparativo(models.Model):
 	cotacaoVencedora = models.ForeignKey(Cotacao, related_name = 'cotacao_vencedora')
 	obs = models.TextField(max_length = 100)
 
-	def validaAtrib(self):
+	def adiciona(self, request):
 		return 'validos'
 
 	class Meta:

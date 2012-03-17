@@ -17,7 +17,7 @@ def inicio(request):
 	return render_to_response('inicio.html', locals())
 
 @login_required
-def adiciona(request, objeto):
+def adiciona(request, objeto, id_objeto):
 	if str(objeto) == 'grupomercadoria':
 		titulo = 'Grupo de Mercadoria'
 		formpost = FormGrupoMercadoria(request.POST, request.FILES)
@@ -38,15 +38,26 @@ def adiciona(request, objeto):
 		titulo = 'Fornecedor'
 		formpost = FormFornecedor(request.POST, request.FILES, )
 		formget = FormFornecedor()
+	if str(objeto) == 'requisicao':
+		titulo = 'Requisicao'
+		formpost = FormRequisicao(request.POST, request.FILES, )
+		formget = FormRequisicao()
+	if str(objeto) == 'itemrequisicao':
+		titulo = 'Itens da Requisicao'
+		formpost = FormItemRequisicao(request.POST, request.FILES, )
+		formget = FormItemRequisicao()
 	if request.method == 'POST': 
 		form = formpost
 		if form.is_valid():
 			objeto_form = form.save(commit = False)
-			objeto_form.usuario = request.user
-			if objeto_form.validaAtrib() != 'validos':
-				erro =  objeto_form.validaAtrib()
+			if objeto_form.adiciona(request, id_objeto) != 'validos':
+				erro =  objeto_form.adiciona(request, id_objeto)
 				return render_to_response("adiciona.html", locals(), context_instance = RequestContext(request))
 			objeto_form.save()
+			if str(objeto) == 'requisicao':
+				return HttpResponseRedirect("/adiciona/itemrequisicao/"+str(objeto_form.id))
+			if str(objeto) == 'itemrequisicao':
+				return HttpResponseRedirect("/lista/requisicao")
 			return HttpResponseRedirect("/lista/"+str(objeto))
 		else:
 			return render_to_response("adiciona.html", locals(), context_instance = RequestContext(request))
@@ -76,6 +87,10 @@ def lista(request, objeto):
 		titulo = 'Lista de Fornecedores'
 		lista_vazia = 'Nenhum Fornecedor Cadastrado'
 		lista = Fornecedor.objects.all().order_by('fantasia')
+	if str(objeto) == 'requisicao':
+		titulo = 'Lista de Requisicoes'
+		lista_vazia = 'Nenhuma Requisicao Cadastrada'
+		lista = Requisicao.objects.all().order_by('id').reverse()
 	return render_to_response('lista.html', locals())
 
 def exibe(request, objeto, id_objeto):
@@ -99,6 +114,12 @@ def exibe(request, objeto, id_objeto):
 		titulo = 'Fornecedor'
 		objeto = get_object_or_404(Fornecedor, pk = id_objeto)
 		form = FormFornecedor(instance = objeto)
+	if str(objeto) == 'requisicao':
+		titulo = 'Requisicao'
+		titulo_membros = 'Itens da Requisicao'
+		objeto = get_object_or_404(Requisicao, pk = id_objeto)
+		itens = ItemRequisicao.objects.filter(requisicao = objeto)
+		form = FormRequisicao(instance = objeto)
 	return render_to_response('exibe.html', locals())
 
 @login_required
@@ -128,6 +149,11 @@ def edita(request, objeto, id_objeto):
 		fornecedor_para_editar = get_object_or_404(Fornecedor, pk = id_objeto)
 		formpost = FormFornecedor(request.POST, request.FILES, instance = fornecedor_para_editar)
 		formget = FormFornecedor(instance = fornecedor_para_editar)
+	if str(objeto) == 'requisicao':
+		titulo = 'Requisicao'
+		requisicao_para_editar = get_object_or_404(Requisicao, pk = id_objeto)
+		formpost = FormRequisicao(request.POST, request.FILES, instance = Requisicao_para_editar)
+		formget = FormRequisicao(instance = requisicao_para_editar)
 	if request.method == 'POST':
 		form = formpost
 		if form.is_valid():
@@ -156,6 +182,9 @@ def deleta(request, objeto, id_objeto):
 	if str(objeto) == 'fornecedor':
 		objeto_para_deletar = get_object_or_404(Fornecedor, pk = id_objeto)
 		form = FormFornecedor(instance = objeto_para_deletar)
+	if str(objeto) == 'requisicao':
+		objeto_para_deletar = get_object_or_404(Requisicao, pk = id_objeto)
+		form = FormRequisicao(instance = objeto_para_deletar)
 	if request.method == 'POST':
 		objeto_para_deletar.delete()
 		return HttpResponseRedirect("/lista/"+str(objeto))

@@ -19,7 +19,7 @@ class FormCentroCusto(forms.ModelForm):
 	
 	class Meta:
 		model = CentroCusto
-		fields = ('nome',)
+		fields = ('nome', 'gerente')
 
 class FormMaterial(forms.ModelForm):
 	
@@ -52,6 +52,18 @@ class FormFornecedor(forms.ModelForm):
 	class Meta:
 		model = Fornecedor
 		fields = ('razao', 'fantasia', 'cnpj', 'contato', 'tel1', 'tel2', 'email', 'site', 'logradouro', 'nrimovel', 'complemento', 'bairro', 'cidade', 'uf', 'cep')
+
+class FormRequisicao(forms.ModelForm):
+	
+	class Meta:
+		model = Requisicao
+		fields = ('centroCusto', 'diasParaCotacao')
+
+class FormItemRequisicao(forms.ModelForm):
+	
+	class Meta:
+		model = ItemRequisicao
+		fields = ('material', 'qtd')
 
 
 

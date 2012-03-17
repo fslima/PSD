@@ -20,7 +20,7 @@ urlpatterns = patterns('',
 	(r'^inicio$', inicio),
 	
 	(r'^lista/(?P<objeto>\w+)$', lista),
-	(r'^adiciona/(?P<objeto>\w+)$', adiciona),
+	(r'^adiciona/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', adiciona),
 #	(r'^filtra/(?P<objeto>\w+)', filtra),
 	(r'^exibe/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', exibe),
 	(r'^edita/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', edita),
