@@ -53,7 +53,6 @@ def adiciona(request, objeto, id_objeto):
 			if objeto_form.adiciona(request, id_objeto) != 'validos':
 				erro =  objeto_form.adiciona(request, id_objeto)
 				return render_to_response("adiciona.html", locals(), context_instance = RequestContext(request))
-			objeto_form.save()
 			if str(objeto) == 'requisicao':
 				return HttpResponseRedirect("/adiciona/itemrequisicao/"+str(objeto_form.id))
 			if str(objeto) == 'itemrequisicao':
@@ -91,6 +90,10 @@ def lista(request, objeto):
 		titulo = 'Lista de Requisicoes'
 		lista_vazia = 'Nenhuma Requisicao Cadastrada'
 		lista = Requisicao.objects.all().order_by('id').reverse()
+	if str(objeto) == 'mapa':
+		titulo = 'Lista de Mapas Comparativos'
+		lista_vazia = 'Nenhum Mapa Cadastrado'
+		lista = MapaComparativo.objects.all().order_by('id').reverse()
 	return render_to_response('lista.html', locals())
 
 def exibe(request, objeto, id_objeto):
@@ -120,6 +123,12 @@ def exibe(request, objeto, id_objeto):
 		objeto = get_object_or_404(Requisicao, pk = id_objeto)
 		itens = ItemRequisicao.objects.filter(requisicao = objeto)
 		form = FormRequisicao(instance = objeto)
+	if str(objeto) == 'mapa':
+		titulo = 'Mapa Comparativo'
+		titulo_cotacoes = 'Cotacoes'
+		objeto = get_object_or_404(MapaComparativo, pk = id_objeto)
+		cotacoes = Cotacao.objects.filter(cotacoes_do_mapa = objeto)
+		form = FormMapaComparativo(instance = objeto)
 	return render_to_response('exibe.html', locals())
 
 @login_required
@@ -152,8 +161,13 @@ def edita(request, objeto, id_objeto):
 	if str(objeto) == 'requisicao':
 		titulo = 'Requisicao'
 		requisicao_para_editar = get_object_or_404(Requisicao, pk = id_objeto)
-		formpost = FormRequisicao(request.POST, request.FILES, instance = Requisicao_para_editar)
+		formpost = FormRequisicao(request.POST, request.FILES, instance = requisicao_para_editar)
 		formget = FormRequisicao(instance = requisicao_para_editar)
+	if str(objeto) == 'mapa':
+		titulo = 'Mapa Comparativo'
+		mapa_para_editar = get_object_or_404(MapaComparativo, pk = id_objeto)
+		formpost = FormMapaComparativo(request.POST, request.FILES, instance = mapa_para_editar)
+		formget = FormMapaComparativo(instance = mapa_para_editar)
 	if request.method == 'POST':
 		form = formpost
 		if form.is_valid():

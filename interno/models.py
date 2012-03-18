@@ -11,6 +11,7 @@ class GrupoMercadoria(models.Model):
 	nome = models.CharField(max_length = 50)
 	
 	def adiciona(self, request, id_objeto):
+		self.save()
 		return 'validos'
 
 	class Meta:
@@ -23,6 +24,7 @@ class UnidadeMaterial(models.Model):
 	nome = models.CharField(max_length = 50)
 	
 	def adiciona(self, request, id_objeto):
+		self.save()
 		return 'validos'
 
 	class Meta:
@@ -45,6 +47,7 @@ class Material(models.Model):
 		self.usuario = request.user
 		self.vlUltimaCompra = '0.00'
 		self.dtUltimaCompra = datetime.now()
+		self.save()
 		return 'validos'
 	
 	class Meta:
@@ -62,7 +65,7 @@ class Fornecedor(models.Model):
 	tel1 = models.BigIntegerField(max_length = 10)
 	tel2 = models.BigIntegerField(max_length = 10, null = True, blank = True)
 	email = models.EmailField(max_length = 50)
-	site = models.URLField()
+	site = models.URLField(null = True)
 	logradouro = models.CharField(max_length = 50)
 	nrimovel = models.IntegerField()
 	complemento = models.CharField(max_length = 50)
@@ -73,6 +76,8 @@ class Fornecedor(models.Model):
 	usuario = models.ForeignKey(User)
 
 	def adiciona(self, request, id_objeto):
+		self.usuario = request.user
+		self.save()
 		return 'validos'
 	
 	class Meta:
@@ -86,6 +91,7 @@ class CentroCusto(models.Model):
 	gerente = models.ForeignKey(User)	
 
 	def adiciona(self, request, id_objeto):
+		self.save()
 		return 'validos'
 
 	class Meta:
@@ -107,6 +113,7 @@ class Requisicao(models.Model):
 		self.dtRequisicao = datetime.now()
 		self.status = 'Aguardando Aprovação'
 		self.solicitante = request.user
+		self.save()
 		return 'validos'
 
 	class Meta:
@@ -122,6 +129,8 @@ class ItemRequisicao(models.Model):
 
 	def adiciona(self, request, id_objeto):
 		self.requisicao = Requisicao.objects.get(pk = id_objeto)
+		self.save()
+		Cotacao().adiciona(self)
 		return 'validos'
 
 	class Meta:
@@ -129,29 +138,37 @@ class ItemRequisicao(models.Model):
 
 class Cotacao(models.Model):
 	def __unicode__(self):
-		return self.nome
+		return self.fornecedor.fantasia
 
 	itemRequisicao = models.ForeignKey(ItemRequisicao, related_name = 'item_proposta')
 	fornecedor = models.ForeignKey(Fornecedor, related_name = 'fornecedor_proposta')
-	vlCotacao = models.DecimalField(max_digits = 20, decimal_places = 2)
-	obs = models.TextField(max_length = 100)
+	vlCotacao = models.DecimalField(max_digits = 20, decimal_places = 2, null = True)
+	obs = models.TextField(max_length = 100, null = True)
 
-	def adiciona(self, request, id_objeto):
-		return 'validos'
+	def adiciona(self, item):
+		fornecedores = Fornecedor.objects.filter(grupoMercadoria = item.material.grupoMercadoria)
+		for fornecedor in fornecedores:
+			self.itemRequisicao = item
+			self.fornecedor = fornecedor
+			self.save()
+		MapaComparativo().adiciona(item)
 
 	class Meta:
 		db_table = 'cotacao'
 
 class MapaComparativo(models.Model):
 	def __unicode__(self):
-		return self.nome
+		return str(self.id)
 
-	cotacao = models.ManyToManyField(Cotacao, related_name = 'cotacoes_do_mapa')
-	cotacaoVencedora = models.ForeignKey(Cotacao, related_name = 'cotacao_vencedora')
-	obs = models.TextField(max_length = 100)
+	cotacao = models.ManyToManyField(Cotacao, related_name = 'cotacoes_do_mapa', null = True)
+	cotacaoVencedora = models.ForeignKey(Cotacao, related_name = 'cotacao_vencedora', null = True)
+	obs = models.TextField(max_length = 100, null = True)
 
-	def adiciona(self, request):
-		return 'validos'
+	def adiciona(self, item):
+		self.save()
+		cotacoes = Cotacao.objects.filter(itemRequisicao = item)
+		for cotacao in cotacoes:
+			self.cotacao.add(cotacao)
 
 	class Meta:
 		db_table = 'mapa_comparativo'

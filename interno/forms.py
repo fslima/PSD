@@ -51,7 +51,7 @@ class FormFornecedor(forms.ModelForm):
 
 	class Meta:
 		model = Fornecedor
-		fields = ('razao', 'fantasia', 'cnpj', 'contato', 'tel1', 'tel2', 'email', 'site', 'logradouro', 'nrimovel', 'complemento', 'bairro', 'cidade', 'uf', 'cep')
+		fields = ('razao', 'fantasia', 'grupoMercadoria', 'cnpj', 'contato', 'tel1', 'tel2', 'email', 'site', 'logradouro', 'nrimovel', 'complemento', 'bairro', 'cidade', 'uf', 'cep')
 
 class FormRequisicao(forms.ModelForm):
 	
@@ -64,6 +64,12 @@ class FormItemRequisicao(forms.ModelForm):
 	class Meta:
 		model = ItemRequisicao
 		fields = ('material', 'qtd')
+
+class FormMapaComparativo(forms.ModelForm):
+	
+	class Meta:
+		model = MapaComparativo
+		fields = ('cotacaoVencedora', 'obs')
 
 
 

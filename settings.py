@@ -29,7 +29,7 @@ LANGUAGE_CODE = 'pt-br'
 
 SITE_ID = 1
 
-DATE_FORMAT = 'd/m/Y'
+DATE_FORMAT = 'd / m / Y'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -37,7 +37,7 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/opt/PSD/media/'
+MEDIA_ROOT = 'media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -68,7 +68,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'PSD.urls'
 
 TEMPLATE_DIRS = (
-	'/opt/PSD/templates/',
+	'templates/',
 )
 
 INSTALLED_APPS = (

@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 
 {# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
-{% block titulo %}Visualizar {{objeto}}{% endblock %}
+{% block titulo %}Visualizar {{titulo}}{% endblock %}
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
@@ -31,10 +31,22 @@
 			<td scope="row"><b>Data da Última Compra</b></td>
 			<th scope="row">{{objeto.dtUltimaCompra}}</th>
 		</tr>
-{% else %}{% if campos.name = "aluno" %}
+{% else %}{% if campos.name = "centroCusto" %}
 		<tr>
-			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.aluno}}</th>
+			<td scope="row"><b>Data de Criação</b></td>
+			<th scope="row">{{objeto.dtRequisicao}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Solicitante</b></td>
+			<th scope="row">{{objeto.solicitante}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Centro de Custo</b></td>
+			<th scope="row">{{objeto.centroCusto}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Status da Requisição</b></td>
+			<th scope="row">{{objeto.status}}</th>
 		</tr>
 {% else %}
 		<tr>
