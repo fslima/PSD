@@ -1,0 +1,90 @@
+{# inclui o template base.html #}
+{% extends "base.html" %}
+
+{# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
+{% block titulo %}Visualizar {{titulo}}{% endblock %}
+
+{# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
+{% block conteudo %}
+{% if objeto.nome %}<h1>{{objeto.nome}}</h1>{% endif %}{% if objeto.vaga %}<h1>{{objeto.vaga}}</h1>{% endif %}
+{% if objeto.oportunidade and objeto.aluno  %}<h1>{{objeto.aluno}} >>> {{objeto.oportunidade.empresa}}</h1>{% endif %}
+<div class="module">
+<table>
+<caption><a href="" class="section">Informações Gerais</a></caption>
+<form action="" method="POST"> 
+{% for campos in form %}
+{% ifnotequal campos.value form.curso.value %} 
+{% if campos.name = "unidadeMaterial" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.unidadeMaterial}}</th>
+		</tr>
+{% else %}{% if campos.name = "grupoMercadoria" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.grupoMercadoria}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Valor da Última Compra</b></td>
+			<th scope="row">{{objeto.vlUltimaCompra}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Data da Última Compra</b></td>
+			<th scope="row">{{objeto.dtUltimaCompra}}</th>
+		</tr>
+{% else %}{% if campos.name = "centroCusto" %}
+		<tr>
+			<td scope="row"><b>Data de Criação</b></td>
+			<th scope="row">{{objeto.dtRequisicao}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Solicitante</b></td>
+			<th scope="row">{{objeto.solicitante}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Centro de Custo</b></td>
+			<th scope="row">{{objeto.centroCusto}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Status da Requisição</b></td>
+			<th scope="row">{{objeto.status}}</th>
+		</tr>
+{% else %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{campos.value}}</th>
+		</tr>
+{% endif %}{% endif %}{% endif %}
+{% endifnotequal %}
+{% endfor %}
+</table>
+{% if itens %}
+<table>
+<caption><a href="" class="section">{{titulo_membros}}</a></caption>
+<tr>	
+			<th scope="row">Item Requisitado</th>
+			<td>Quantidade</td>
+		</tr>
+{%for item in itens %}
+		<tr>	
+			<th scope="row">{{item}}</th>
+			<td>{{item.qtd}}</td>
+		</tr>
+{% empty %}
+<tr>
+	<td><a href=""></td>
+	<td></td>
+	<th scope="row">Nenhum Evento Cadastrado</th>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+</div>
+<table>
+		<tr>
+			<td><button class="button"type="submit">Aprovar</td>
+			<td><a href="/lista/requisicao"><button class="button" type="reset">Voltar</button></a></td>
+		</tr>
+</table>
+</form>
+{% endblock %}

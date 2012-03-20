@@ -25,6 +25,7 @@ urlpatterns = patterns('',
 	(r'^exibe/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', exibe),
 	(r'^edita/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', edita),
 	(r'^deleta/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', deleta),
+	(r'^aprova/(?P<id_objeto>\d+)/$', aprova),
 
 #	(r'^servico/oportunidades/abertas$', servico__oportunidades_abertas),
 #	(r'^servico/exibir/(?P<objeto>\w+)', servico_exibir),

@@ -66,7 +66,7 @@ class FormItemRequisicao(forms.ModelForm):
 		fields = ('material', 'qtd')
 
 class FormMapaComparativo(forms.ModelForm):
-	
+
 	class Meta:
 		model = MapaComparativo
 		fields = ('cotacaoVencedora', 'obs')

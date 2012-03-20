@@ -199,11 +199,28 @@ def deleta(request, objeto, id_objeto):
 	if str(objeto) == 'requisicao':
 		objeto_para_deletar = get_object_or_404(Requisicao, pk = id_objeto)
 		form = FormRequisicao(instance = objeto_para_deletar)
+	if str(objeto) == 'mapa':
+		objeto_para_deletar = get_object_or_404(MapaComparativo, pk = id_objeto)
+		form = FormMapaComparativo(instance = objeto_para_deletar)
 	if request.method == 'POST':
 		objeto_para_deletar.delete()
 		return HttpResponseRedirect("/lista/"+str(objeto))
 	else:
 		return render_to_response('deleta.html', locals(), context_instance = RequestContext(request))
+
+	
+@login_required
+def aprova(request, id_objeto):
+	titulo = 'Requisicao'
+	titulo_membros = 'Itens da Requisicao'
+	objeto = get_object_or_404(Requisicao, pk = id_objeto)
+	itens = ItemRequisicao.objects.filter(requisicao = objeto)
+	form = FormRequisicao(instance = objeto)
+	if request.method == 'POST':
+		objeto.aprova()
+		return HttpResponseRedirect("/lista/requisicao")
+	else:
+		return render_to_response('aprova.html', locals())
 
 
 
