@@ -1,0 +1,82 @@
+{# inclui o template base.html #}
+{% extends "basep.html" %}
+
+{# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
+{% block titulo %}{{titulo}}{% endblock %}
+
+{# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
+{% block conteudo %}
+<h1>{{titulo}}</h1>
+  <div id="content-main">  
+    <div class="module filtered" id="changelist">
+<div id="toolbar">
+<div><!-- DIV needed for valid HTML -->
+<form action="" method="POST"> 
+<table>
+		{{ form.as_table }}
+		<tr>
+			<td><input type="submit" value="Pesquisar" /></td>
+		</tr>
+	</table>
+</div>
+</form></div>
+<script type="text/javascript">document.getElementById("searchbar").focus();</script>       
+          <div id="changelist-filter">
+            <h2>Filtro</h2>           
+<h3>Filtros Utilizados: </h3>
+<br>
+<ul>
+{% for parametro in parametros %}
+ <li>*{{parametro}}</li>
+{% endfor %}
+</ul>
+          </div>
+
+   <form id="changelist-form" action="" method="post"><div style='display:none'><input type='hidden' name='csrfmiddlewaretoken' value='6ea2c6f2ce339230bdc83a8ad6a28b4c' /></div>
+      
+
+
+
+<div class="actions">
+    <label>Ação: <select name="action">
+
+<option value="" selected="selected">---------</option>
+<option value="delete_selected">Remover usuários selecionados</option>
+</select></label><input type="hidden" class="select-across" value="0" name="select_across" />
+    <button type="submit" class="button" title="Executar ação selecionada" name="index" value="0">Ir</button>
+    
+        <script type="text/javascript">var _actions_icnt="2";</script>
+        <span class="action-counter">0 de 2 selecionados</span>
+        
+    
+</div>
+
+<div class="results">
+<table cellspacing="0" id="result_list">
+<thead><tr>
+<th scope="col" class="action-checkbox-column"><input type="checkbox" id="action-toggle" /></th>
+<th>Empresa</th>
+<th>Item</th>
+<th>Valor Cotado</th>
+<th>Obs do Fornecedor</th>
+</tr>
+</thead>
+<tbody>
+{%for registro in query %}
+<tr class="row1"><td class="action-checkbox"><input type="checkbox" class="action-select" value="{{registro.id}}" name="_selected_action" /></td>
+<th><a href="/exibe/material/{{registro.id}}">{{registro}}</a></th>
+<td>{{registro.itemRequisicao.material}}</td><td>{{registro.vlCotado}}</td><td>{{registro.obs}}</td> </tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<p class="paginator">
+{{total}} {{objeto}}
+</p>
+      </form>
+    </div>
+  </div>     
+        <br class="clear" />
+
+{% endblock %}
+

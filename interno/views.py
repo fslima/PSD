@@ -245,6 +245,68 @@ def aprova(request, id_objeto):
 	else:
 		return render_to_response('aprova.html', locals())
 
+@login_required
+def filtra(request, objeto):
+	if str(objeto) == 'material':
+		titulo = 'Pesquisar Material'
+		objetototal = 'Materiais'
+		formpost = FormFiltraMaterial(request.POST, request.FILES)
+		formget = FormFiltraMaterial()
+		nome = {'nome': 'Nome do Material'}
+		fabricante = {'fabricante': 'Fabricante'}
+		grupoMercadoria = {'grupoMercadoria': 'Grupo de Mercadoria'}
+		unidadeMaterial = {'unidadeMaterial': 'Unidade de Medida'}
+		tpMaterial = {'tpMaterial': 'Tipo de Material'}
+		campos = [nome, fabricante, grupoMercadoria, unidadeMaterial, tpMaterial]
+		colunas = [fabricante.keys()[0], grupoMercadoria.keys()[0], unidadeMaterial.keys()[0], tpMaterial.keys()[0]]
+		if request.method == 'POST':
+			form = formpost
+			if form.is_valid():
+				parametros = []	
+				valor_campo = []		
+				for campo in campos:
+					valor_campo.append(form.cleaned_data[campo.keys()[0]])
+					if valor_campo[-1] != '':
+						parametros.append(campo[campo.keys()[0]])
+					if valor_campo[-1] == None:
+						parametros.pop(-1)
+				nome = valor_campo[0]
+				fabricante = valor_campo[1]
+				grupoMercadoria = valor_campo[2]
+				unidadeMaterial = valor_campo[3]
+				tpMaterial = valor_campo[4]
+				query = Material.objects.filter(fabricante__icontains = fabricante).filter(nome__icontains = nome).filter(tpMaterial__icontains = tpMaterial)
+				if unidadeMaterial != None:
+					query = query.filter(unidadeMaterial = unidadeMaterial)
+				if grupoMercadoria != None:
+					query = query.filter(grupoMercadoria = grupoMercadoria)
+				total = query.count()
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+			else:
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))	
+		else:
+			form = FormFiltraMaterial()
+		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+
+@login_required
+def finaliza(request, objeto, id_objeto):
+	if str(objeto) == 'mapa':
+		titulo = 'Mapa Comparativo'
+		objetototal = 'Cotações'
+		formpost = FormMapaComparativo(request.POST, request.FILES)
+		formget = FormMapaComparativo()
+		mapa = get_object_or_404(MapaComparativo, pk = id_objeto)
+		query = mapa.cotacao.all()
+		if request.method == 'POST':
+			form = formpost
+			if form.is_valid():		
+				return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))
+			else:
+				return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))	
+		else:
+			form = FormMapaComparativo()
+		return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))
+
 
 
 

@@ -69,14 +69,19 @@ class FormMapaComparativo(forms.ModelForm):
 
 	class Meta:
 		model = MapaComparativo
-		fields = ('cotacaoVencedora', 'obs')
+		fields = ('obs',)
 
 
+class FormFiltraMaterial(forms.Form):
+	
+	nome = forms.CharField(required = False)
+	fabricante = forms.CharField(required = False)
+	grupoMercadoria = forms.ModelChoiceField(queryset=GrupoMercadoria.objects.all(), required = False, label = 'Grupo de Mercadoria')
+	unidadeMaterial = forms.ModelChoiceField(queryset=UnidadeMaterial.objects.all(), required = False, label = 'Unidade de Medida')
+	tpMaterial = forms.ChoiceField([('Mercadoria','Mercadoria'), ('Servico', 'Servico')], 
+				     initial = ('Mercadoria','Mercadoria'), required = False, label = 'Tipo de Material')
 
-
-
-
-
+	fields = ('nome', 'fabricante', 'grupoMercadoria', 'unidadeMaterial', 'tpMaterial')
 
 
 

@@ -1,0 +1,64 @@
+{# inclui o template base.html #}
+{% extends "basep.html" %}
+
+{# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
+{% block titulo %}{{titulo}}{% endblock %}
+
+{# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
+{% block conteudo %}
+<h1>{{titulo}}</h1>
+  <div id="content-main">  
+    <div class="module filtered" id="changelist">
+<div id="toolbar">
+<div><!-- DIV needed for valid HTML -->
+<form action="" method="POST"> 
+<table>
+		{{ form.as_table }}
+		<tr>
+			<td><input type="submit" value="Pesquisar" /></td>
+		</tr>
+	</table>
+</div>
+</form></div>
+<script type="text/javascript">document.getElementById("searchbar").focus();</script>       
+          <div id="changelist-filter">
+            <h2>Filtro</h2>           
+<h3>Filtros Utilizados: </h3>
+<br>
+<ul>
+{% for parametro in parametros %}
+ <li>*{{parametro}}</li>
+{% endfor %}
+</ul>
+          </div>
+
+<div class="results">
+<table cellspacing="0" id="result_list">
+<thead>
+<tr>
+{% for campos in form %}
+<th>
+{{ campos.label_tag }}
+</th>
+{% endfor %}
+</tr>
+</thead>
+<tbody>
+{%for registro in query %}
+<tr class="row1">
+<th><a href="/exibe/material/{{registro.id}}">{{registro}}</a></th>
+<td>{{registro.fabricante}}</td><td>{{registro.grupoMercadoria}}</td><td>{{registro.unidadeMaterial}}</td><td>{{registro.tpMaterial}}</td> </tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+<p class="paginator">
+{{total}} {{objeto}}
+</p>
+      </form>
+    </div>
+  </div>     
+        <br class="clear" />
+
+{% endblock %}
+
