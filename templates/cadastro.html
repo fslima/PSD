@@ -1,0 +1,36 @@
+{# inclui o template base.html #}
+{% extends "base.html" %}
+
+{# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
+{% block conteudo %}
+{% csrf_token %}
+<h1>Cadastro</h1>
+<div class="module">
+<table>
+<caption><a href="/lista/{{ objeto }}" class="section">Cadastro</a></caption>
+<tr>
+	<td></td>
+	<th scope="row"><a href="/lista/material">Cadastro de Material</a></th>
+</tr>
+<tr>
+	<td></td>
+	<th scope="row"><a href="/lista/fornecedor">Cadastro de Fornecedor</a></th>
+</tr>
+<tr>
+	<td></td>
+	<th scope="row"><a href="/lista/unidadematerial">Cadastro de Unidades de Medida para Material</a></th>
+</tr>
+<tr>
+	<td></td>
+	<th scope="row"><a href="/lista/grupomercadoria">Grupo de Mercadoria</a></th>
+</tr>
+<tr>
+	<td></td>
+	<th scope="row"><a href="/lista/centrocusto">Centro de Custo</a></th>
+</tr>
+</table>
+</div>
+{% endblock %}

@@ -135,9 +135,11 @@ class ItemRequisicao(models.Model):
 	requisicao = models.ForeignKey(Requisicao, related_name = 'requisicao_do_item')
 	material = models.ForeignKey(Material, related_name = 'material_do_item')
 	qtd = models.PositiveSmallIntegerField()
+	status = models.CharField(max_length = 50)
 
 	def adiciona(self, request, id_objeto):
 		self.requisicao = Requisicao.objects.get(pk = id_objeto)
+		self.status = 'Aguardando Cotações'
 		self.save()
 		return 'validos'
 

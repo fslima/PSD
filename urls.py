@@ -16,9 +16,9 @@ urlpatterns = patterns('',
 	
 	(r'^login', login, { 'template_name': 'login.html' }),
 	(r'^sair$', sair),
-#	(r'^logout$', logout_then_login, { 'login_url': '/login/' }),
 	(r'^inicio$', inicio),
 	
+	(r'^cadastro$', cadastro),
 	(r'^lista/(?P<objeto>\w+)$', lista),
 	(r'^adiciona/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', adiciona),
 #	(r'^filtra/(?P<objeto>\w+)', filtra),

@@ -1,0 +1,10 @@
+{# inclui o template base.html #}
+{% extends "base.html" %}
+
+{# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
+{% block titulo %}Visualizar {{titulo}}{% endblock %}
+
+{# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
+{% block conteudo %}
+<h1> Você não possui Acesso para essa função </h1>
+{% endblock %}

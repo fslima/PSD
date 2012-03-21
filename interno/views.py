@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 from datetime import datetime, date, timedelta
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
@@ -15,6 +17,10 @@ def sair(request):
 def inicio(request):
 	data = datetime.now()
 	return render_to_response('inicio.html', locals())
+
+@login_required
+def cadastro(request):
+	return render_to_response('cadastro.html', locals())
 
 @login_required
 def adiciona(request, objeto, id_objeto):
@@ -67,29 +73,46 @@ def adiciona(request, objeto, id_objeto):
 @login_required
 def lista(request, objeto):
 	if str(objeto) == 'grupomercadoria':
-		titulo = 'Lista de Grupos de Mercadoria'
+		titulo = 'Cadastro de Grupos de Mercadoria'
 		lista_vazia = 'Nenhum Grupo de Mercadoria Cadastrado'
 		lista = GrupoMercadoria.objects.all().order_by('nome')
 	if str(objeto) == 'unidadematerial':
-		titulo = 'Lista de Unidades de Medida do Material'
+		titulo = 'Cadastro de Unidades de Medida do Material'
 		lista_vazia = 'Nenhuma Unidade de Medida Cadastrada'
 		lista = UnidadeMaterial.objects.all().order_by('nome')
 	if str(objeto) == 'centrocusto':
-		titulo = 'Lista de Centros de Custo'
+		titulo = 'Cadastro de Centros de Custo'
 		lista_vazia = 'Nenhum Centro de Custo Cadastrado'
 		lista = CentroCusto.objects.all().order_by('nome')
 	if str(objeto) == 'material':
-		titulo = 'Lista de Materiais'
+		titulo = 'Cadastro de Materiais'
 		lista_vazia = 'Nenhum Material Cadastrado'
 		lista = Material.objects.all().order_by('nome')
 	if str(objeto) == 'fornecedor':
-		titulo = 'Lista de Fornecedores'
+		titulo = 'Cadastro de Fornecedores'
 		lista_vazia = 'Nenhum Fornecedor Cadastrado'
 		lista = Fornecedor.objects.all().order_by('fantasia')
 	if str(objeto) == 'requisicao':
-		titulo = 'Lista de Requisicoes'
-		lista_vazia = 'Nenhuma Requisicao Cadastrada'
-		lista = Requisicao.objects.all().order_by('id').reverse()
+		titulo = 'Requisições Em Aberto'
+		lista_vazia = 'Nenhuma Requisição sua está em Aberto'
+		lista = Requisicao.objects.filter(solicitante = request.user).order_by('id').reverse()
+		lista1 = []
+		remover = []
+		manter = []
+		for requisicao in lista:
+			lista1.append(requisicao)
+			itens = ItemRequisicao.objects.filter(requisicao = requisicao)
+			for item in itens:
+				if item.status == u'Mapa Finalizado':
+					if requisicao not in remover:
+						remover.append(requisicao)
+				else:
+					if requisicao not in manter:
+						manter.append(requisicao)
+		for requisicao in remover:
+			if requisicao not in manter:
+				lista1.remove(requisicao)
+		lista = lista1
 	if str(objeto) == 'mapa':
 		titulo = 'Lista de Mapas Comparativos'
 		lista_vazia = 'Nenhum Mapa Cadastrado'
@@ -150,7 +173,7 @@ def edita(request, objeto, id_objeto):
 		formget = FormCentroCusto(instance = centroCusto_para_editar)	
 	if str(objeto) == 'material':
 		titulo = 'Material'
-		material_para_editar = get_object_or_404(Material, pk = id_objeto)
+		material_para_editar = get_object_or_404(Material, pk = id_objeto, usuario = request.user)
 		formpost = FormMaterial(request.POST, request.FILES, instance = material_para_editar)
 		formget = FormMaterial(instance = material_para_editar)
 	if str(objeto) == 'fornecedor':
@@ -160,7 +183,7 @@ def edita(request, objeto, id_objeto):
 		formget = FormFornecedor(instance = fornecedor_para_editar)
 	if str(objeto) == 'requisicao':
 		titulo = 'Requisicao'
-		requisicao_para_editar = get_object_or_404(Requisicao, pk = id_objeto)
+		requisicao_para_editar = get_object_or_404(Requisicao, pk = id_objeto, solicitante = request.user)
 		formpost = FormRequisicao(request.POST, request.FILES, instance = requisicao_para_editar)
 		formget = FormRequisicao(instance = requisicao_para_editar)
 	if str(objeto) == 'mapa':

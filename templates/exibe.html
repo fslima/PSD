@@ -63,22 +63,18 @@
 <tr>	
 			<th scope="row">Item Requisitado</th>
 			<td>Quantidade</td>
+			<td>          </td>
+			<td>Status do Item</td>
 		</tr>
 {%for item in itens %}
 		<tr>	
 			<th scope="row">{{item}}</th>
 			<td>{{item.qtd}}</td>
+			<td>          </td>
+			<td>{{item.status}}</td>
 		</tr>
-{% empty %}
-<tr>
-	<td><a href=""></td>
-	<td></td>
-	<th scope="row">Nenhum Evento Cadastrado</th>
-</tr>
 {% endfor %}
 </table>
 {% endif %}
 </div>
-
-
 {% endblock %}
