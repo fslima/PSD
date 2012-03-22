@@ -24,6 +24,9 @@ def cadastro(request):
 
 @login_required
 def adiciona(request, objeto, id_objeto):
+	if not request.user.has_perm('interno.add_'+str(objeto)):
+			erro = 'Você não possui acesso para cadastrar '+str(objeto)
+			return render_to_response("500.html", locals())
 	if str(objeto) == 'grupomercadoria':
 		titulo = 'Grupo de Mercadoria'
 		formpost = FormGrupoMercadoria(request.POST, request.FILES)
@@ -156,6 +159,9 @@ def exibe(request, objeto, id_objeto):
 
 @login_required
 def edita(request, objeto, id_objeto):
+	if not request.user.has_perm('interno.change_'+str(objeto)):
+			erro = 'Você não possui acesso para modificar '+str(objeto)
+			return render_to_response("500.html", locals())
 	if str(objeto) == 'grupomercadoria':
 		grupoMercadoria_para_editar = get_object_or_404(GrupoMercadoria, pk = id_objeto)
 		formpost = FormGrupoMercadoria(request.POST, request.FILES, instance = grupoMercadoria_para_editar)
@@ -173,7 +179,7 @@ def edita(request, objeto, id_objeto):
 		formget = FormCentroCusto(instance = centroCusto_para_editar)	
 	if str(objeto) == 'material':
 		titulo = 'Material'
-		material_para_editar = get_object_or_404(Material, pk = id_objeto, usuario = request.user)
+		material_para_editar = get_object_or_404(Material, pk = id_objeto)
 		formpost = FormMaterial(request.POST, request.FILES, instance = material_para_editar)
 		formget = FormMaterial(instance = material_para_editar)
 	if str(objeto) == 'fornecedor':
@@ -204,6 +210,9 @@ def edita(request, objeto, id_objeto):
 
 @login_required
 def deleta(request, objeto, id_objeto):
+	if not request.user.has_perm('interno.delete_'+str(objeto)):
+			erro = 'Você não possui acesso para excluir '+str(objeto)
+			return render_to_response("500.html", locals())
 	if str(objeto) == 'grupomercadoria':
 		objeto_para_deletar = get_object_or_404(GrupoMercadoria, pk = id_objeto)
 		form = FormGrupoMercadoria(instance = objeto_para_deletar)
@@ -299,7 +308,11 @@ def finaliza(request, objeto, id_objeto):
 		query = mapa.cotacao.all()
 		if request.method == 'POST':
 			form = formpost
-			if form.is_valid():		
+			if form.is_valid():	
+				mapa.obs = form.cleaned_data['obs']
+				id_cotacao = int(request.POST['cotacao'])
+				mapa.cotacaoVencedora = Cotacao.objects.get(pk = id_cotacao)
+				mapa.finaliza()	
 				return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))
 			else:
 				return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))	

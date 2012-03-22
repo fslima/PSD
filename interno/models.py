@@ -143,6 +143,10 @@ class ItemRequisicao(models.Model):
 		self.save()
 		return 'validos'
 
+	def alteraStatus(self, status):
+		self.status = status
+		self.save()
+
 	class Meta:
 		db_table = 'item_requisicao'
 
@@ -178,6 +182,9 @@ class MapaComparativo(models.Model):
 		cotacoes = Cotacao.objects.filter(itemRequisicao = item)
 		for cotacao in cotacoes:
 			self.cotacao.add(cotacao)
+	def finaliza(self):
+		self.cotacaoVencedora.itemRequisicao.alteraStatus('Mapa Finalizado')
+		self.save()
 
 	class Meta:
 		db_table = 'mapa_comparativo'
