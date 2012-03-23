@@ -16,17 +16,17 @@ def sair(request):
 @login_required
 def inicio(request):
 	data = datetime.now()
-	return render_to_response('inicio.html', locals())
+	return render_to_response('inicio.html', locals(), context_instance = RequestContext(request))
 
 @login_required
 def cadastro(request):
-	return render_to_response('cadastro.html', locals())
+	return render_to_response('cadastro.html', locals(), context_instance = RequestContext(request))
 
 @login_required
 def adiciona(request, objeto, id_objeto):
 	if not request.user.has_perm('interno.add_'+str(objeto)):
 			erro = 'Você não possui acesso para cadastrar '+str(objeto)
-			return render_to_response("500.html", locals())
+			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
 	if str(objeto) == 'grupomercadoria':
 		titulo = 'Grupo de Mercadoria'
 		formpost = FormGrupoMercadoria(request.POST, request.FILES)
@@ -120,7 +120,7 @@ def lista(request, objeto):
 		titulo = 'Lista de Mapas Comparativos'
 		lista_vazia = 'Nenhum Mapa Cadastrado'
 		lista = MapaComparativo.objects.all().order_by('id').reverse()
-	return render_to_response('lista.html', locals())
+	return render_to_response('lista.html', locals(), context_instance = RequestContext(request))
 
 def exibe(request, objeto, id_objeto):
 	if str(objeto) == 'grupomercadoria':
@@ -155,7 +155,7 @@ def exibe(request, objeto, id_objeto):
 		objeto = get_object_or_404(MapaComparativo, pk = id_objeto)
 		cotacoes = Cotacao.objects.filter(cotacoes_do_mapa = objeto)
 		form = FormMapaComparativo(instance = objeto)
-	return render_to_response('exibe.html', locals())
+	return render_to_response('exibe.html', locals(), context_instance = RequestContext(request))
 
 @login_required
 def edita(request, objeto, id_objeto):
@@ -212,7 +212,7 @@ def edita(request, objeto, id_objeto):
 def deleta(request, objeto, id_objeto):
 	if not request.user.has_perm('interno.delete_'+str(objeto)):
 			erro = 'Você não possui acesso para excluir '+str(objeto)
-			return render_to_response("500.html", locals())
+			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
 	if str(objeto) == 'grupomercadoria':
 		objeto_para_deletar = get_object_or_404(GrupoMercadoria, pk = id_objeto)
 		form = FormGrupoMercadoria(instance = objeto_para_deletar)
@@ -252,7 +252,7 @@ def aprova(request, id_objeto):
 		objeto.aprova()
 		return HttpResponseRedirect("/lista/requisicao")
 	else:
-		return render_to_response('aprova.html', locals())
+		return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
 
 @login_required
 def filtra(request, objeto):
@@ -299,6 +299,9 @@ def filtra(request, objeto):
 
 @login_required
 def finaliza(request, objeto, id_objeto):
+	if not request.user.has_perm('interno.change_mapacomparativo'):
+			erro = 'Você não possui acesso para finalizar mapa'
+			return render_to_response("500.html", locals())
 	if str(objeto) == 'mapa':
 		titulo = 'Mapa Comparativo'
 		objetototal = 'Cotações'
@@ -310,8 +313,9 @@ def finaliza(request, objeto, id_objeto):
 			form = formpost
 			if form.is_valid():	
 				mapa.obs = form.cleaned_data['obs']
-				id_cotacao = int(request.POST['cotacao'])
-				mapa.cotacaoVencedora = Cotacao.objects.get(pk = id_cotacao)
+				if request.POST['cotacao'] == 0:
+					id_cotacao = int(request.POST['cotacao'])
+					mapa.cotacaoVencedora = Cotacao.objects.get(pk = id_cotacao)
 				mapa.finaliza()	
 				return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))
 			else:

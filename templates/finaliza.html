@@ -18,15 +18,7 @@
 </div>
 </div>
 <script type="text/javascript">document.getElementById("searchbar").focus();</script>       
-          <div id="changelist-filter">
-            <h2>Filtro</h2>           
-<h3>Filtros Utilizados: </h3>
-<br>
-<ul>
- <li>*{{cotacao}}</li>
- <li>*{{teste}}</li>
-</ul>
-          </div> 
+         
 
 <div class="results">
 <table cellspacing="0" id="result_list">
@@ -39,6 +31,9 @@
 </tr>
 </thead>
 <tbody>
+<tr class="row1"><td class="action-checkbox"><input type="radio" value="0" checked name="cotacao" /></td>
+<th><a href=""> Nenhuma Cotação Vencedora</a></th>
+<td></td><td></td><td></td> </tr>
 {%for registro in query %}
 <tr class="row1"><td class="action-checkbox"><input type="radio" value="{{registro.id}}" name="cotacao" /></td>
 <th><a href="/exibe/material/{{registro.id}}">{{registro}}</a></th>

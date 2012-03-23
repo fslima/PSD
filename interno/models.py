@@ -183,7 +183,7 @@ class MapaComparativo(models.Model):
 		for cotacao in cotacoes:
 			self.cotacao.add(cotacao)
 	def finaliza(self):
-		self.cotacaoVencedora.itemRequisicao.alteraStatus('Mapa Finalizado')
+		self.cotacao.all()[0].itemRequisicao.alteraStatus('Mapa Finalizado')
 		self.save()
 
 	class Meta:

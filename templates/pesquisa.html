@@ -3,6 +3,7 @@
 
 {# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
 {% block titulo %}{{titulo}}{% endblock %}
+{% block menu %}<a href="/cadastro/">Cadastro    |</a>{% endblock %}
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
@@ -25,8 +26,8 @@
             <h2>Filtro</h2>           
 <h3>Filtros Utilizados: </h3>
 <br>
-<ul>
-<li>*{{perms.interno}}</li>
+{{ perms.interno }}
+<ul>		
 {% for parametro in parametros %}
  <li>*{{parametro}}</li>
 {% endfor %}
