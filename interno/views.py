@@ -249,7 +249,9 @@ def aprova(request, id_objeto):
 	itens = ItemRequisicao.objects.filter(requisicao = objeto)
 	form = FormRequisicao(instance = objeto)
 	if request.method == 'POST':
-		objeto.aprova()
+		if objeto.aprova() != 'Validos':
+				erro =  objeto.aprova()
+				return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
 		return HttpResponseRedirect("/lista/requisicao")
 	else:
 		return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
@@ -308,7 +310,7 @@ def finaliza(request, objeto, id_objeto):
 		formpost = FormMapaComparativo(request.POST, request.FILES)
 		formget = FormMapaComparativo()
 		mapa = get_object_or_404(MapaComparativo, pk = id_objeto)
-		query = mapa.cotacao.all()
+		query = mapa.cotacao.all().order_by('vlCotacao')
 		if request.method == 'POST':
 			form = formpost
 			if form.is_valid():	

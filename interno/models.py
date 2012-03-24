@@ -118,12 +118,15 @@ class Requisicao(models.Model):
 
 	def aprova(self):
 		if self.status == u'Aguardando Aprovação':
+			itens = ItemRequisicao.objects.filter(requisicao = self)
+			for item in itens:
+				if Cotacao().adiciona(item) != 'Validos':
+					return Cotacao().adiciona(item)
 			self.status = 'Aprovada'
 			self.dtDeferimento = datetime.now()
 			self.save()
-			itens = ItemRequisicao.objects.filter(requisicao = self)
-			for item in itens:
-				Cotacao().adiciona(item)
+			return 'Validos'
+		return 'Requisição já está aprovada'
 
 	class Meta:
 		db_table = 'requisicao'
@@ -161,10 +164,13 @@ class Cotacao(models.Model):
 
 	def adiciona(self, item):
 		fornecedores = Fornecedor.objects.filter(grupoMercadoria = item.material.grupoMercadoria)
+		if len(fornecedores) == 0:
+			return 'Não há fornecedores para o item: '+str(item)
 		for fornecedor in fornecedores:
 			cotacao = Cotacao(itemRequisicao = item, fornecedor = fornecedor)
 			cotacao.save()
 		MapaComparativo().adiciona(item)
+		return 'Validos'
 
 	class Meta:
 		db_table = 'cotacao'
