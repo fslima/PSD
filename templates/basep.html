@@ -40,9 +40,18 @@
  <div id="header">
         <div id="branding">
            <h1>
+		{% if perms.interno.add_material or perms.interno.add_fornecedor %}
 		<a href="/cadastro">Cadastro    |</a>
-		<a href="/lista/requisicao">Requisicao    |</a>
-		<a href="/lista/mapa">Mapa Comparativo</a>
+		{% endif %}
+		{% if perms.interno.add_requisicao %}
+		<a href="/lista/requisicao">Requisição    |</a>
+		{% endif %}
+		{% if perms.interno.change_mapacomparativo %}
+		<a href="/lista/mapa">Mapa Comparativo    |</a>
+		{% endif %}
+		{% if perms.interno.change_cotacao %}
+		<a href="/lista/cotacao">Cotação    </a>
+		{% endif %}
 	   </h1>
         </div>
 

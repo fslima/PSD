@@ -7,7 +7,7 @@
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
-{% if objeto.nome %}<h1>{{objeto.nome}}</h1>{% endif %}{% if objeto.vaga %}<h1>{{objeto.vaga}}</h1>{% endif %}
+{% if objeto.nomeMaterial %}<h1>{{objeto.nomeMaterial}}</h1>{% endif %}{% if objeto.vaga %}<h1>{{objeto.vaga}}</h1>{% endif %}
 {% if objeto.oportunidade and objeto.aluno  %}<h1>{{objeto.aluno}} >>> {{objeto.oportunidade.empresa}}</h1>{% endif %}
 <div class="module">
 <table>

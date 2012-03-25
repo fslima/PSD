@@ -1,14 +1,14 @@
 # -*- coding:utf-8 -*-
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 
 class GrupoMercadoria(models.Model):
 	def __unicode__(self):
-		return self.nome
+		return self.nomeGrupoMercadoria
 
-	nome = models.CharField(max_length = 50)
+	nomeGrupoMercadoria = models.CharField(max_length = 50)
 	
 	def adiciona(self, request, id_objeto):
 		self.save()
@@ -19,9 +19,9 @@ class GrupoMercadoria(models.Model):
 
 class UnidadeMaterial(models.Model):
 	def __unicode__(self):
-		return self.nome
+		return self.nomeUnidadeMaterial
 
-	nome = models.CharField(max_length = 50)
+	nomeUnidadeMaterial = models.CharField(max_length = 50)
 	
 	def adiciona(self, request, id_objeto):
 		self.save()
@@ -30,11 +30,38 @@ class UnidadeMaterial(models.Model):
 	class Meta:
 		db_table = 'unidade_material'
 
+class CentroCusto(models.Model):
+	def __unicode__(self):
+		return self.nomeCentroCusto
+
+	nomeCentroCusto = models.CharField(max_length = 50)
+	gerente = models.ForeignKey(User)	
+
+	def adiciona(self, request, id_objeto):
+		self.save()
+		return 'validos'
+
+	class Meta:
+		db_table = 'centro_custo'
+
+class Fabricante(models.Model):
+	def __unicode__(self):
+		return self.nomeFabricante
+
+	nomeFabricante = models.CharField(max_length = 50)
+
+	def adiciona(self, request, id_objeto):
+		self.save()
+		return 'validos'
+
+	class Meta:
+		db_table = 'fabricante'
+
 class Material(models.Model):
 	def __unicode__(self):
-		return self.nome
+		return self.nomeMaterial
 	
-	nome = models.CharField(max_length = 50)
+	nomeMaterial = models.CharField(max_length = 50)
 	fabricante = models.CharField(max_length = 50)
 	grupoMercadoria = models.ForeignKey(GrupoMercadoria, related_name = 'gm_material')
 	unidadeMaterial = models.ForeignKey(UnidadeMaterial, related_name = 'un_material')
@@ -61,7 +88,7 @@ class Fornecedor(models.Model):
 	fantasia = models.CharField(max_length = 50)
 	cnpj = models.CharField(max_length = 14)
 	grupoMercadoria = models.ManyToManyField(GrupoMercadoria, related_name = 'gm_fornecedor')
-	contato = models.CharField(max_length = 50)
+	usuario = models.ForeignKey(User)
 	tel1 = models.BigIntegerField(max_length = 10)
 	tel2 = models.BigIntegerField(max_length = 10, null = True, blank = True)
 	email = models.EmailField(max_length = 50)
@@ -73,29 +100,13 @@ class Fornecedor(models.Model):
 	cidade = models.CharField(max_length = 50)
 	uf = models.CharField(max_length = 2)
 	cep = models.BigIntegerField(max_length = 8)
-	usuario = models.ForeignKey(User)
 
 	def adiciona(self, request, id_objeto):
-		self.usuario = request.user
 		self.save()
 		return 'validos'
 	
 	class Meta:
 		db_table = 'fornecedor'
-
-class CentroCusto(models.Model):
-	def __unicode__(self):
-		return self.nome
-
-	nome = models.CharField(max_length = 50)
-	gerente = models.ForeignKey(User)	
-
-	def adiciona(self, request, id_objeto):
-		self.save()
-		return 'validos'
-
-	class Meta:
-		db_table = 'centro_custo'
 
 class Requisicao(models.Model):
 	def __unicode__(self):
@@ -133,7 +144,7 @@ class Requisicao(models.Model):
 
 class ItemRequisicao(models.Model):
 	def __unicode__(self):
-		return self.material.nome
+		return self.material.nomeMaterial
 
 	requisicao = models.ForeignKey(Requisicao, related_name = 'requisicao_do_item')
 	material = models.ForeignKey(Material, related_name = 'material_do_item')
@@ -155,7 +166,7 @@ class ItemRequisicao(models.Model):
 
 class Cotacao(models.Model):
 	def __unicode__(self):
-		return self.fornecedor.fantasia
+		return self.itemRequisicao.material.nomeMaterial
 
 	itemRequisicao = models.ForeignKey(ItemRequisicao, related_name = 'item_proposta')
 	fornecedor = models.ForeignKey(Fornecedor, related_name = 'fornecedor_proposta')

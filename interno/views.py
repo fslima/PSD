@@ -39,6 +39,10 @@ def adiciona(request, objeto, id_objeto):
 		titulo = 'Centro de Custo'
 		formpost = FormCentroCusto(request.POST, request.FILES, )
 		formget = FormCentroCusto()
+	if str(objeto) == 'fabricante':
+		titulo = 'Fabricante'
+		formpost = FormFabricante(request.POST, request.FILES, )
+		formget = FormFabricante()
 	if str(objeto) == 'material':
 		titulo = 'Material'
 		formpost = FormMaterial(request.POST, request.FILES, )
@@ -66,6 +70,8 @@ def adiciona(request, objeto, id_objeto):
 				return HttpResponseRedirect("/adiciona/itemrequisicao/"+str(objeto_form.id))
 			if str(objeto) == 'itemrequisicao':
 				return HttpResponseRedirect("/lista/requisicao")
+			if str(objeto) == 'fornecedor':
+				return HttpResponseRedirect("/edita/gruposfornecedor/"+str(objeto_form.id))
 			return HttpResponseRedirect("/lista/"+str(objeto))
 		else:
 			return render_to_response("adiciona.html", locals(), context_instance = RequestContext(request))
@@ -78,19 +84,23 @@ def lista(request, objeto):
 	if str(objeto) == 'grupomercadoria':
 		titulo = 'Cadastro de Grupos de Mercadoria'
 		lista_vazia = 'Nenhum Grupo de Mercadoria Cadastrado'
-		lista = GrupoMercadoria.objects.all().order_by('nome')
+		lista = GrupoMercadoria.objects.all().order_by('nomeGrupoMercadoria')
 	if str(objeto) == 'unidadematerial':
 		titulo = 'Cadastro de Unidades de Medida do Material'
 		lista_vazia = 'Nenhuma Unidade de Medida Cadastrada'
-		lista = UnidadeMaterial.objects.all().order_by('nome')
+		lista = UnidadeMaterial.objects.all().order_by('nomeUnidadeMaterial')
 	if str(objeto) == 'centrocusto':
 		titulo = 'Cadastro de Centros de Custo'
 		lista_vazia = 'Nenhum Centro de Custo Cadastrado'
-		lista = CentroCusto.objects.all().order_by('nome')
+		lista = CentroCusto.objects.all().order_by('nomeCentroCusto')
+	if str(objeto) == 'fabricante':
+		titulo = 'Cadastro de Fabricante'
+		lista_vazia = 'Nenhum Fabricante Cadastrado'
+		lista = Fabricante.objects.all().order_by('nomeFabricante')
 	if str(objeto) == 'material':
 		titulo = 'Cadastro de Materiais'
 		lista_vazia = 'Nenhum Material Cadastrado'
-		lista = Material.objects.all().order_by('nome')
+		lista = Material.objects.all().order_by('nomeMaterial')
 	if str(objeto) == 'fornecedor':
 		titulo = 'Cadastro de Fornecedores'
 		lista_vazia = 'Nenhum Fornecedor Cadastrado'
@@ -120,6 +130,11 @@ def lista(request, objeto):
 		titulo = 'Lista de Mapas Comparativos'
 		lista_vazia = 'Nenhum Mapa Cadastrado'
 		lista = MapaComparativo.objects.all().order_by('id').reverse()
+	if str(objeto) == 'cotacao':
+		titulo = 'Itens para Cotação'
+		lista_vazia = 'Nenhum item para cotação'
+		fornecedor = get_object_or_404(Fornecedor, usuario = request.user)
+		lista = Cotacao.objects.filter(fornecedor = fornecedor).order_by('id').reverse()
 	return render_to_response('lista.html', locals(), context_instance = RequestContext(request))
 
 def exibe(request, objeto, id_objeto):
@@ -135,6 +150,10 @@ def exibe(request, objeto, id_objeto):
 		titulo = 'Centro de Custo'
 		objeto = get_object_or_404(CentroCusto, pk = id_objeto)
 		form = FormCentroCusto(instance = objeto)
+	if str(objeto) == 'fabricante':
+		titulo = 'Fabricante'
+		objeto = get_object_or_404(Fabricante, pk = id_objeto)
+		form = FormFabricante(instance = objeto)
 	if str(objeto) == 'material':
 		titulo = 'Material'
 		objeto = get_object_or_404(Material, pk = id_objeto)
@@ -155,6 +174,10 @@ def exibe(request, objeto, id_objeto):
 		objeto = get_object_or_404(MapaComparativo, pk = id_objeto)
 		cotacoes = Cotacao.objects.filter(cotacoes_do_mapa = objeto)
 		form = FormMapaComparativo(instance = objeto)
+	if str(objeto) == 'cotacao':
+		titulo = 'Cotação'
+		objeto = get_object_or_404(Cotacao, pk = id_objeto)
+		form = FormCotacao(instance = objeto)
 	return render_to_response('exibe.html', locals(), context_instance = RequestContext(request))
 
 @login_required
@@ -177,6 +200,11 @@ def edita(request, objeto, id_objeto):
 		centroCusto_para_editar = get_object_or_404(CentroCusto, pk = id_objeto)
 		formpost = FormCentroCusto(request.POST, request.FILES, instance = centroCusto_para_editar)
 		formget = FormCentroCusto(instance = centroCusto_para_editar)	
+	if str(objeto) == 'fabricante':
+		titulo = 'Fabricante'
+		fabricante_para_editar = get_object_or_404(Fabricante, pk = id_objeto)
+		formpost = FormFabricante(request.POST, request.FILES, instance = fabricante_para_editar)
+		formget = FormFabricante(instance = fabricante_para_editar)
 	if str(objeto) == 'material':
 		titulo = 'Material'
 		material_para_editar = get_object_or_404(Material, pk = id_objeto)
@@ -187,6 +215,11 @@ def edita(request, objeto, id_objeto):
 		fornecedor_para_editar = get_object_or_404(Fornecedor, pk = id_objeto)
 		formpost = FormFornecedor(request.POST, request.FILES, instance = fornecedor_para_editar)
 		formget = FormFornecedor(instance = fornecedor_para_editar)
+	if str(objeto) == 'gruposfornecedor':
+		titulo = 'Grupos de Mercadoria'
+		fornecedor_para_editar = get_object_or_404(Fornecedor, pk = id_objeto)
+		formpost = FormGruposFornecedor(request.POST, request.FILES, instance = fornecedor_para_editar)
+		formget = FormGruposFornecedor(instance = fornecedor_para_editar)
 	if str(objeto) == 'requisicao':
 		titulo = 'Requisicao'
 		requisicao_para_editar = get_object_or_404(Requisicao, pk = id_objeto, solicitante = request.user)
@@ -197,10 +230,17 @@ def edita(request, objeto, id_objeto):
 		mapa_para_editar = get_object_or_404(MapaComparativo, pk = id_objeto)
 		formpost = FormMapaComparativo(request.POST, request.FILES, instance = mapa_para_editar)
 		formget = FormMapaComparativo(instance = mapa_para_editar)
+	if str(objeto) == 'cotacao':
+		titulo = 'Cotação'
+		cotacao_para_editar = get_object_or_404(Cotacao, pk = id_objeto)
+		formpost = FormCotacao(request.POST, request.FILES, instance = cotacao_para_editar)
+		formget = FormCotacao(instance = cotacao_para_editar)
 	if request.method == 'POST':
 		form = formpost
 		if form.is_valid():
 			form.save()
+			if str(objeto) == 'gruposfornecedor':
+				return HttpResponseRedirect("/lista/fornecedor")
 			return HttpResponseRedirect("/lista/"+str(objeto))
 		else:
 			return render_to_response('edita.html', locals(), context_instance = RequestContext(request))	
@@ -222,6 +262,9 @@ def deleta(request, objeto, id_objeto):
 	if str(objeto) == 'unidadematerial':
 		objeto_para_deletar = get_object_or_404(UnidadeMaterial, pk = id_objeto)
 		form = FormUnidadeMaterial(instance = objeto_para_deletar)
+	if str(objeto) == 'fabricante':
+		objeto_para_deletar = get_object_or_404(Fabricante, pk = id_objeto)
+		form = FormFabricante(instance = objeto_para_deletar)
 	if str(objeto) == 'material':
 		objeto_para_deletar = get_object_or_404(Material, pk = id_objeto)
 		form = FormMaterial(instance = objeto_para_deletar)
@@ -263,12 +306,12 @@ def filtra(request, objeto):
 		objetototal = 'Materiais'
 		formpost = FormFiltraMaterial(request.POST, request.FILES)
 		formget = FormFiltraMaterial()
-		nome = {'nome': 'Nome do Material'}
+		nomeMaterial = {'nomeMaterial': 'Nome do Material'}
 		fabricante = {'fabricante': 'Fabricante'}
 		grupoMercadoria = {'grupoMercadoria': 'Grupo de Mercadoria'}
 		unidadeMaterial = {'unidadeMaterial': 'Unidade de Medida'}
 		tpMaterial = {'tpMaterial': 'Tipo de Material'}
-		campos = [nome, fabricante, grupoMercadoria, unidadeMaterial, tpMaterial]
+		campos = [nomeMaterial, fabricante, grupoMercadoria, unidadeMaterial, tpMaterial]
 		colunas = [fabricante.keys()[0], grupoMercadoria.keys()[0], unidadeMaterial.keys()[0], tpMaterial.keys()[0]]
 		if request.method == 'POST':
 			form = formpost
@@ -281,12 +324,14 @@ def filtra(request, objeto):
 						parametros.append(campo[campo.keys()[0]])
 					if valor_campo[-1] == None:
 						parametros.pop(-1)
-				nome = valor_campo[0]
+				nomeMaterial = valor_campo[0]
 				fabricante = valor_campo[1]
 				grupoMercadoria = valor_campo[2]
 				unidadeMaterial = valor_campo[3]
 				tpMaterial = valor_campo[4]
-				query = Material.objects.filter(fabricante__icontains = fabricante).filter(nome__icontains = nome).filter(tpMaterial__icontains = tpMaterial)
+				query = Material.objects.filter(nomeMaterial__icontains = nomeMaterial).filter(tpMaterial__icontains = tpMaterial)
+				if fabricante != None:
+					query = query.filter(fabricante = fabricante)
 				if unidadeMaterial != None:
 					query = query.filter(unidadeMaterial = unidadeMaterial)
 				if grupoMercadoria != None:

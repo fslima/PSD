@@ -49,7 +49,10 @@
 		<a href="/lista/requisicao">Requisição    |</a>
 		{% endif %}
 		{% if perms.interno.change_mapacomparativo %}
-		<a href="/lista/mapa">Mapa Comparativo    </a>
+		<a href="/lista/mapa">Mapa Comparativo    |</a>
+		{% endif %}
+		{% if perms.interno.change_cotacao %}
+		<a href="/lista/cotacao">Cotação    </a>
 		{% endif %}
 	   </h1>
         </div>
