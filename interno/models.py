@@ -131,8 +131,8 @@ class Requisicao(models.Model):
 		if self.status == u'Aguardando Aprovação':
 			itens = ItemRequisicao.objects.filter(requisicao = self)
 			for item in itens:
-				if Cotacao().adiciona(item) != 'Validos':
-					return Cotacao().adiciona(item)
+				if Cotacao().adiciona(item, self.diasParaCotacao) != 'Validos':
+					return Cotacao().adiciona(item, self.diasParaCotacao)
 			self.status = 'Aprovada'
 			self.dtDeferimento = datetime.now()
 			self.save()
@@ -171,16 +171,18 @@ class Cotacao(models.Model):
 	itemRequisicao = models.ForeignKey(ItemRequisicao, related_name = 'item_proposta')
 	fornecedor = models.ForeignKey(Fornecedor, related_name = 'fornecedor_proposta')
 	vlCotacao = models.DecimalField(max_digits = 20, decimal_places = 2, null = True)
+	dtLimite = models.DateField()
 	obs = models.TextField(max_length = 100, null = True)
 
-	def adiciona(self, item):
+	def adiciona(self, item, diasParaCotacao):
 		fornecedores = Fornecedor.objects.filter(grupoMercadoria = item.material.grupoMercadoria)
 		if len(fornecedores) == 0:
 			return 'Não há fornecedores para o item: '+str(item)
 		for fornecedor in fornecedores:
 			cotacao = Cotacao(itemRequisicao = item, fornecedor = fornecedor)
+			cotacao.dtLimite = datetime.now() + timedelta(diasParaCotacao)
 			cotacao.save()
-		MapaComparativo().adiciona(item)
+		MapaComparativo().adiciona(item, diasParaCotacao)
 		return 'Validos'
 
 	class Meta:
@@ -192,9 +194,11 @@ class MapaComparativo(models.Model):
 
 	cotacao = models.ManyToManyField(Cotacao, related_name = 'cotacoes_do_mapa', null = True)
 	cotacaoVencedora = models.ForeignKey(Cotacao, related_name = 'cotacao_vencedora', null = True)
+	dtLiberacao = models.DateField()
 	obs = models.TextField(max_length = 100, null = True)
 
-	def adiciona(self, item):
+	def adiciona(self, item, diasParaCotacao):
+		self.dtLiberacao = datetime.now() + timedelta(diasParaCotacao)
 		self.save()
 		cotacoes = Cotacao.objects.filter(itemRequisicao = item)
 		for cotacao in cotacoes:

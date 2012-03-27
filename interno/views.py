@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
@@ -129,12 +129,27 @@ def lista(request, objeto):
 	if str(objeto) == 'mapa':
 		titulo = 'Lista de Mapas Comparativos'
 		lista_vazia = 'Nenhum Mapa Cadastrado'
-		lista = MapaComparativo.objects.all().order_by('id').reverse()
+		lista = MapaComparativo.objects.filter(dtLiberacao__lt = datetime.now()).order_by('id').reverse()
+		lista1 = []
+		remover = []
+		manter = []
+		for mapa in lista:
+			lista1.append(mapa)
+			if mapa.cotacao.all()[0].itemRequisicao.status == u'Mapa Finalizado':
+					if mapa not in remover:
+						remover.append(mapa)
+					else:
+						if mapa not in manter:
+							manter.append(mapa)
+		for mapa in remover:
+			if mapa not in manter:
+				lista1.remove(mapa)
+		lista = lista1
 	if str(objeto) == 'cotacao':
 		titulo = 'Itens para Cotação'
 		lista_vazia = 'Nenhum item para cotação'
 		fornecedor = get_object_or_404(Fornecedor, usuario = request.user)
-		lista = Cotacao.objects.filter(fornecedor = fornecedor).order_by('id').reverse()
+		lista = Cotacao.objects.filter(fornecedor = fornecedor).exclude(dtLimite__lte = datetime.now() - timedelta(1)).order_by('id').reverse()
 	return render_to_response('lista.html', locals(), context_instance = RequestContext(request))
 
 def exibe(request, objeto, id_objeto):
@@ -157,6 +172,7 @@ def exibe(request, objeto, id_objeto):
 	if str(objeto) == 'material':
 		titulo = 'Material'
 		objeto = get_object_or_404(Material, pk = id_objeto)
+		v = vars(objeto)
 		form = FormMaterial(instance = objeto)
 	if str(objeto) == 'fornecedor':
 		titulo = 'Fornecedor'
@@ -364,7 +380,7 @@ def finaliza(request, objeto, id_objeto):
 					id_cotacao = int(request.POST['cotacao'])
 					mapa.cotacaoVencedora = Cotacao.objects.get(pk = id_cotacao)
 				mapa.finaliza()	
-				return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))
+				return HttpResponseRedirect("/lista/mapa")
 			else:
 				return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))	
 		else:
