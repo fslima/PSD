@@ -26,7 +26,6 @@
             <h2>Filtro</h2>           
 <h3>Filtros Utilizados: </h3>
 <br>
-{{ perms.interno }}
 <ul>		
 {% for parametro in parametros %}
  <li>*{{parametro}}</li>
@@ -46,11 +45,20 @@
 </tr>
 </thead>
 <tbody>
+{% if objeto == 'material' %}
 {%for registro in query %}
 <tr class="row1">
 <th><a href="/exibe/material/{{registro.id}}">{{registro}}</a></th>
 <td>{{registro.fabricante}}</td><td>{{registro.grupoMercadoria}}</td><td>{{registro.unidadeMaterial}}</td><td>{{registro.tpMaterial}}</td> </tr>
 {% endfor %}
+{% endif %}
+{% if objeto == 'fornecedor' %}
+{%for registro in query %}
+<tr class="row1">
+<td>{{registro.razao}}</td>
+<th><a href="/exibe/fornecedor/{{registro.id}}">{{registro.fantasia}}</a></th><td>{{registro.cnpj}}</td><td>{{registro.usuario}}</td><td>{{registro.bairro}}</td><td>{{registro.cidade}}</td><td>{{registro.uf}}</td> </tr>
+{% endfor %}
+{% endif %}
 </tbody>
 </table>
 </div>

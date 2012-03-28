@@ -6,5 +6,10 @@
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
-<h1> {{ erro }} </h1>
+<h1> 
+{{ erro }} {{ data }} 
+{% if not erro %}
+Você não possui acesso a essa função
+{% endif %}
+</h1>
 {% endblock %}

@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
@@ -11,7 +11,7 @@ from forms import *
 
 def sair(request):
 	logout(request)
-	return HttpResponseRedirect("/login")
+	return HttpResponseRedirect("/")
 
 @login_required
 def inicio(request):
@@ -189,7 +189,7 @@ def exibe(request, objeto, id_objeto):
 		titulo_cotacoes = 'Cotacoes'
 		objeto = get_object_or_404(MapaComparativo, pk = id_objeto)
 		cotacoes = Cotacao.objects.filter(cotacoes_do_mapa = objeto)
-		form = FormMapaComparativo(instance = objeto)
+		form = FormExibeMapaComparativo(instance = objeto)
 	if str(objeto) == 'cotacao':
 		titulo = 'Cotação'
 		objeto = get_object_or_404(Cotacao, pk = id_objeto)
@@ -242,10 +242,7 @@ def edita(request, objeto, id_objeto):
 		formpost = FormRequisicao(request.POST, request.FILES, instance = requisicao_para_editar)
 		formget = FormRequisicao(instance = requisicao_para_editar)
 	if str(objeto) == 'mapa':
-		titulo = 'Mapa Comparativo'
-		mapa_para_editar = get_object_or_404(MapaComparativo, pk = id_objeto)
-		formpost = FormMapaComparativo(request.POST, request.FILES, instance = mapa_para_editar)
-		formget = FormMapaComparativo(instance = mapa_para_editar)
+		return HttpResponseRedirect("/finaliza/mapa/"+str(id_objeto))
 	if str(objeto) == 'cotacao':
 		titulo = 'Cotação'
 		cotacao_para_editar = get_object_or_404(Cotacao, pk = id_objeto)
@@ -301,19 +298,20 @@ def deleta(request, objeto, id_objeto):
 
 	
 @login_required
-def aprova(request, id_objeto):
-	titulo = 'Requisicao'
-	titulo_membros = 'Itens da Requisicao'
-	objeto = get_object_or_404(Requisicao, pk = id_objeto)
-	itens = ItemRequisicao.objects.filter(requisicao = objeto)
-	form = FormRequisicao(instance = objeto)
-	if request.method == 'POST':
-		if objeto.aprova() != 'Validos':
-				erro =  objeto.aprova()
-				return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
-		return HttpResponseRedirect("/lista/requisicao")
-	else:
-		return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
+def aprova(request, objeto, id_objeto):
+	if str(objeto) == 'requisicao':
+		titulo = 'Requisicao'
+		titulo_membros = 'Itens da Requisicao'
+		objeto = get_object_or_404(Requisicao, pk = id_objeto)
+		itens = ItemRequisicao.objects.filter(requisicao = objeto)
+		form = FormRequisicao(instance = objeto)
+		if request.method == 'POST':
+			if objeto.aprova() != 'Validos':
+					erro =  objeto.aprova()
+					return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
+			return HttpResponseRedirect("/lista/requisicao")
+		else:
+			return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
 
 @login_required
 def filtra(request, objeto):
@@ -360,6 +358,50 @@ def filtra(request, objeto):
 			form = FormFiltraMaterial()
 		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
 
+	if str(objeto) == 'fornecedor':
+		titulo = 'Pesquisar Fornecedor'
+		objetototal = 'Fornecedores'
+		formpost = FormFiltraFornecedor(request.POST, request.FILES)
+		formget = FormFiltraFornecedor()
+		razao = {'razao': 'Razão Social'}
+		fantasia = {'fantasia': 'Nome Fantasia'}
+		cnpj = {'cnpj': 'CNPJ'}
+		usuario = {'usuario': 'Usuário'}
+		bairro = {'bairro': 'Bairro'}
+		cidade = {'cidade': 'Cidade'}
+		uf = {'uf': 'UF'}
+		campos = [razao, fantasia, cnpj, usuario, bairro, cidade, uf]
+		colunas = [razao.keys()[0], fantasia.keys()[0], cnpj.keys()[0], usuario.keys()[0], bairro.keys()[0], cidade.keys()[0], uf.keys()[0]]
+		if request.method == 'POST':
+			form = formpost
+			if form.is_valid():
+				parametros = []	
+				valor_campo = []		
+				for campo in campos:
+					valor_campo.append(form.cleaned_data[campo.keys()[0]])
+					if valor_campo[-1] != '':
+						parametros.append(campo[campo.keys()[0]])
+					if valor_campo[-1] == None:
+						parametros.pop(-1)
+				razao = valor_campo[0]
+				fantasia = valor_campo[1]
+				cnpj = valor_campo[2]
+				usuario = valor_campo[3]
+				bairro = valor_campo[4]
+				cidade = valor_campo[5]
+				uf = valor_campo[6]
+				query = Fornecedor.objects.filter(razao__icontains = razao).filter(fantasia__icontains = fantasia).filter(cnpj__icontains = cnpj).filter(bairro__icontains = bairro).filter(cidade__icontains = cidade).filter(uf__icontains = uf)
+				if usuario != None:
+					query = query.filter(usuario = usuario)
+				total = query.count()
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+			else:
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))	
+		else:
+			form = FormFiltraFornecedor()
+		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+
+
 @login_required
 def finaliza(request, objeto, id_objeto):
 	if not request.user.has_perm('interno.change_mapacomparativo'):
@@ -371,12 +413,17 @@ def finaliza(request, objeto, id_objeto):
 		formpost = FormMapaComparativo(request.POST, request.FILES)
 		formget = FormMapaComparativo()
 		mapa = get_object_or_404(MapaComparativo, pk = id_objeto)
+		erro = 'Mapa '+str(mapa.id)+' Não existe'
+		if mapa.dtLiberacao >= date.today():
+			erro = 'Mapa só estará liberado dia: '
+			data = mapa.dtLiberacao + timedelta(1)
+			return render_to_response('500.html', locals(), context_instance = RequestContext(request))
 		query = mapa.cotacao.all().order_by('vlCotacao')
 		if request.method == 'POST':
 			form = formpost
 			if form.is_valid():	
 				mapa.obs = form.cleaned_data['obs']
-				if request.POST['cotacao'] == 0:
+				if request.POST['cotacao'] != 0:
 					id_cotacao = int(request.POST['cotacao'])
 					mapa.cotacaoVencedora = Cotacao.objects.get(pk = id_cotacao)
 				mapa.finaliza()	
@@ -386,9 +433,6 @@ def finaliza(request, objeto, id_objeto):
 		else:
 			form = FormMapaComparativo()
 		return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))
-
-
-
 
 
 

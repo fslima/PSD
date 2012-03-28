@@ -13,7 +13,6 @@
 <table>
 <caption><a href="" class="section">Informações Gerais</a></caption>
 {% for campos in form %}
-{% ifnotequal campos.value form.curso.value %} 
 {% if campos.name = "unidadeMaterial" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
@@ -31,6 +30,24 @@
 		<tr>
 			<td scope="row"><b>Data da Última Compra</b></td>
 			<th scope="row">{{objeto.dtUltimaCompra}}</th>
+		</tr>
+{% else %}{% if campos.name = "usuario" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.usuario}}</th>
+		</tr>
+{% else %}{% if campos.name = "cotacaoVencedora" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.cotacaoVencedora.fornecedor}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Item Cotado</b></td>
+			<th scope="row">{{objeto.cotacaoVencedora}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Valor da Cotação</b></td>
+			<th scope="row">{{objeto.cotacaoVencedora.vlCotacao}}</th>
 		</tr>
 {% else %}{% if campos.name = "centroCusto" %}
 		<tr>
@@ -54,8 +71,7 @@
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{campos.value}}</th>
 		</tr>
-{% endif %}{% endif %}{% endif %}
-{% endifnotequal %}
+{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
 {% endfor %}
 </table>
 {% if itens %}

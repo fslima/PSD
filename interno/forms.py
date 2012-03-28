@@ -91,18 +91,47 @@ class FormMapaComparativo(forms.ModelForm):
 		model = MapaComparativo
 		fields = ('obs',)
 
+class FormExibeMapaComparativo(forms.ModelForm):
+	dtLiberacao = forms.CharField(label = 'Liberação do Mapa')
+	cotacaoVencedora = forms.CharField(label = 'Cotação Vencedora')
+
+
+	class Meta:
+		model = MapaComparativo
+		fields = ('dtLiberacao', 'cotacaoVencedora', 'obs')
+
+
 
 class FormFiltraMaterial(forms.Form):
 	
-	nome = forms.CharField(required = False)
+	nomeMaterial = forms.CharField(required = False)
 	fabricante = forms.ModelChoiceField(queryset=Fabricante.objects.all(), required = False, label = 'Fabricante')
 	grupoMercadoria = forms.ModelChoiceField(queryset=GrupoMercadoria.objects.all(), required = False, label = 'Grupo de Mercadoria')
 	unidadeMaterial = forms.ModelChoiceField(queryset=UnidadeMaterial.objects.all(), required = False, label = 'Unidade de Medida')
 	tpMaterial = forms.ChoiceField([('Mercadoria','Mercadoria'), ('Servico', 'Servico')], 
 				     initial = ('Mercadoria','Mercadoria'), required = False, label = 'Tipo de Material')
 
-	fields = ('nome', 'fabricante', 'grupoMercadoria', 'unidadeMaterial', 'tpMaterial')
+	fields = ('nomeMaterial', 'fabricante', 'grupoMercadoria', 'unidadeMaterial', 'tpMaterial')
 
+class FormFiltraFornecedor(forms.Form):
+	razao = forms.CharField(label = 'Razão Social', required = False)
+	fantasia = forms.CharField(label = 'Nome Fantasia', required = False)
+	cnpj = forms.CharField(min_length = 14, max_length = 14, label = 'CNPJ', required = False)
+	grupoFornecedor = Group.objects.filter(name = 'fornecedor')
+	usuario =  forms.ModelChoiceField(queryset = User.objects.filter(groups__in = grupoFornecedor), required = False, label = 'Login no Sistema')
+	bairro = forms.CharField(label = 'Bairro', required = False)
+	cidade = forms.CharField(label = 'Cidade', required = False)
+	uf = forms.ChoiceField([('',''), ('AC','AC'), ('AL','AL'), ('AM','AM'),
+				('AP','AP'),('BA','BA'), ('CE','CE'), ('DF','DF'),
+				('ES','ES'),('GO','GO'), ('MA','MA'), ('MG','MG'),
+				('MS','MS'),('MT','MT'), ('PA','PA'), ('PB','PB'),
+				('PI','PI'),('PI','PI'), ('PR','PR'), ('RJ','RJ'),
+				('RN','RN'),('RO','RO'), ('RR','RR'), ('RS','RS'),
+				('SC','SC'),('SE','SE'),('SP','SP'), ('TO','TO')], 
+				initial = ('',''),
+				label = 'Estado', required = False)
+
+	fields = ('razao', 'fantasia', 'cnpj', 'usuario', 'bairro', 'cidade', 'uf')
 
 
 

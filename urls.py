@@ -14,7 +14,7 @@ urlpatterns = patterns('',
 #	(r'^data/plus/\d{1,2}/$', horas_depois),
 	(r'^admin/', include(admin.site.urls)),
 	
-	(r'^login', login, { 'template_name': 'login.html' }),
+	(r'^$', login, { 'template_name': 'login.html' }),
 	(r'^sair$', sair),
 	(r'^inicio$', inicio),
 	
@@ -26,7 +26,7 @@ urlpatterns = patterns('',
 	(r'^edita/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', edita),
 	(r'^deleta/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', deleta),
 	(r'^finaliza/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', finaliza),
-	(r'^aprova/(?P<id_objeto>\d+)/$', aprova),
+	(r'^aprova/(?P<objeto>\w+)/(?P<id_objeto>\d+)/$', aprova),
 
 #	(r'^servico/oportunidades/abertas$', servico__oportunidades_abertas),
 #	(r'^servico/exibir/(?P<objeto>\w+)', servico_exibir),
