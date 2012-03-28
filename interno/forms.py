@@ -55,11 +55,14 @@ class FormFornecedor(forms.ModelForm):
 				('SC','SC'),('SE','SE'),('SP','SP'), ('TO','TO')], 
 				initial = ('',''),
 				label = 'Estado')
+	status = forms.ChoiceField([('',''), ('Ativo','A'), ('Suspenso','S'), ('Excluido','E'),], 
+				initial = ('',''),
+				label = 'Situação')
 	cep = forms.CharField(min_length = 8, max_length = 8)
 
 	class Meta:
 		model = Fornecedor
-		fields = ('razao', 'fantasia', 'cnpj', 'usuario', 'tel1', 'tel2', 'email', 'site', 'logradouro', 'nrimovel', 'complemento', 'bairro', 'cidade', 'uf', 'cep')
+		fields = ('razao', 'fantasia', 'cnpj', 'usuario', 'tel1', 'tel2', 'email', 'site', 'status', 'logradouro', 'nrimovel', 'complemento', 'bairro', 'cidade', 'uf', 'cep')
 
 class FormGruposFornecedor(forms.ModelForm):
 
@@ -86,7 +89,7 @@ class FormCotacao(forms.ModelForm):
 		fields = ('vlCotacao', 'obs')
 
 class FormMapaComparativo(forms.ModelForm):
-
+	
 	class Meta:
 		model = MapaComparativo
 		fields = ('obs',)
@@ -132,6 +135,57 @@ class FormFiltraFornecedor(forms.Form):
 				label = 'Estado', required = False)
 
 	fields = ('razao', 'fantasia', 'cnpj', 'usuario', 'bairro', 'cidade', 'uf')
+
+class FormFiltraMapaComparativo(forms.Form):
+	dtLiberacaoP = forms.DateField(
+				label = 'Liberacao a partir de',
+				widget = forms.DateInput(format = '%d/%m/%Y'),
+				input_formats = ['%d/%m/%Y'],
+				required = False
+			)
+	dtLiberacaoA = forms.DateField(
+				label = 'Liberacao até',
+				widget = forms.DateInput(format = '%d/%m/%Y'),
+				input_formats = ['%d/%m/%Y'],
+				required = False
+			)
+	fornecedorVencedor = forms.ModelChoiceField(queryset=Fornecedor.objects.all(), required = False, label = 'Forncedor Vencedor')
+	
+	
+	fields = ('dtLiberacaoP', 'dtLiberacaoA', 'fornecedorVencedor')
+
+class FormFiltraRequisicao(forms.Form):
+	dtRequisicaoP = forms.DateField(
+				label = 'Criação a partir de',
+				widget = forms.DateInput(format = '%d/%m/%Y'),
+				input_formats = ['%d/%m/%Y'],
+				required = False
+			)
+	dtRequisicaoA = forms.DateField(
+				label = 'Criação até',
+				widget = forms.DateInput(format = '%d/%m/%Y'),
+				input_formats = ['%d/%m/%Y'],
+				required = False
+			)
+	dtDeferimentoP = forms.DateField(
+				label = 'Deferimento a partir de',
+				widget = forms.DateInput(format = '%d/%m/%Y'),
+				input_formats = ['%d/%m/%Y'],
+				required = False
+			)
+	dtDeferimentoA = forms.DateField(
+				label = 'Deferimento até',
+				widget = forms.DateInput(format = '%d/%m/%Y'),
+				input_formats = ['%d/%m/%Y'],
+				required = False
+			)
+	itemRequisicao = forms.ModelChoiceField(queryset=Material.objects.all(), required = False, label = 'Item da Requisição')
+	status = forms.ChoiceField([('',''), ('Aprovada','Aprovada'), ('Aguardando Aprovação','Aguardando Aprovação'), ('Reprovada','Reprovada')], 
+				initial = ('',''),
+				label = 'Situação', required = False)
+	
+	
+	fields = ('dtRequisicaoP', 'dtRequisicaoA', 'itemRequisicao', 'dtDeferimentoP', 'dtDeferimentoA')
 
 
 

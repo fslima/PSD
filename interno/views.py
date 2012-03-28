@@ -401,6 +401,99 @@ def filtra(request, objeto):
 			form = FormFiltraFornecedor()
 		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
 
+	if str(objeto) == 'mapa':
+		titulo = 'Pesquisar Mapa Comparativo'
+		objetototal = 'Mapas'
+		formpost = FormFiltraMapaComparativo(request.POST, request.FILES)
+		formget = FormFiltraMapaComparativo()
+		dtLiberacaoP = {'dtLiberacaoP': 'Data de Liberação'}
+		dtLiberacaoA = {'dtLiberacaoA': 'Data de Liberação'}
+		fornecedor = {'fornecedorVencedor': 'Fornecedor'}
+		campos = [dtLiberacaoP, dtLiberacaoA, fornecedor]
+		colunas = ['Nº do Mapa', 'Data de Liberação', 'Fornecedor Vencedor', 'Item Cotado', 'Valor Cotado']
+		if request.method == 'POST':
+			form = formpost
+			if form.is_valid():
+				parametros = []	
+				valor_campo = []		
+				for campo in campos:
+					valor_campo.append(form.cleaned_data[campo.keys()[0]])
+					if valor_campo[-1] != '':
+						parametros.append(campo[campo.keys()[0]])
+					if valor_campo[-1] == None:
+						parametros.pop(-1)
+				dtLiberacaoP = valor_campo[0]
+				dtLiberacaoA = valor_campo[1]
+				fornecedor = valor_campo[2]
+				query = MapaComparativo.objects.all().order_by('id').reverse()
+				if dtLiberacaoP != None:
+					query = query.filter(dtLiberacao__gte = dtLiberacaoP)
+				if dtLiberacaoA != None:
+					query = query.filter(dtLiberacao__lte = dtLiberacaoA)
+				if fornecedor != None:
+					cotacoes = Cotacao.objects.filter(fornecedor = fornecedor)
+					query = query.filter(cotacaoVencedora__in = cotacoes)
+				total = query.count()
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+			else:
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))	
+		else:
+			form = FormFiltraMapaComparativo()
+		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+
+	if str(objeto) == 'requisicao':
+		titulo = 'Pesquisar Requisição'
+		objetototal = 'Requisições'
+		formpost = FormFiltraRequisicao(request.POST, request.FILES)
+		formget = FormFiltraRequisicao()
+		dtRequisicaoP = {'dtRequisicaoP': 'Data da Requisição'}
+		dtRequisicaoA = {'dtRequisicaoA': 'Data de Requisição'}
+		itemRequisicao = {'itemRequisicao': 'Item'}
+		dtDeferimentoP = {'dtDeferimentoP': 'Data do Deferimento'}
+		dtDeferimentoA = {'dtDeferimentoA': 'Data do Deferimento'}
+		status = {'status': 'Situação'}
+		campos = [dtRequisicaoP, dtRequisicaoA, itemRequisicao, dtDeferimentoP, dtDeferimentoA, status]
+		colunas = ['Nº Requisição', 'Data da Requisição', 'Solicitante', 'Data do Deferimento', 'Status']
+		if request.method == 'POST':
+			form = formpost
+			if form.is_valid():
+				parametros = []	
+				valor_campo = []		
+				for campo in campos:
+					valor_campo.append(form.cleaned_data[campo.keys()[0]])
+					if valor_campo[-1] != '':
+						parametros.append(campo[campo.keys()[0]])
+					if valor_campo[-1] == None:
+						parametros.pop(-1)
+				dtRequisicaoP = valor_campo[0]
+				dtRequisicaoA = valor_campo[1]
+				itemRequisicao = valor_campo[2]
+				dtDeferimentoP = valor_campo[3]
+				dtDeferimentoA = valor_campo[4]
+				status = valor_campo[5]
+				query = Requisicao.objects.filter(status__icontains = status, solicitante = request.user).order_by('id').reverse()
+				if dtRequisicaoP != None:
+					query = query.filter(dtRequisicao__gte = dtRequisicaoP)
+				if dtRequisicaoA != None:
+					query = query.filter(dtRequisicao__lte = dtRequisicaoA)
+				if dtDeferimentoP != None:
+					query = query.filter(dtDeferimento__gte = dtDeferimentoP)
+				if dtDeferimentoA != None:
+					query = query.filter(dtDeferimento__lte = dtDeferimentoA)
+				if itemRequisicao != None:
+					itens = ItemRequisicao.objects.filter(requisicao__in = query, material = itemRequisicao)
+					listaIdRequisicao = []
+					for idRequisicao in itens:
+						listaIdRequisicao.append(idRequisicao.requisicao.id)
+					query = query.filter(pk__in = listaIdRequisicao)
+				total = query.count()
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+			else:
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))	
+		else:
+			form = FormFiltraRequisicao()
+		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+
 
 @login_required
 def finaliza(request, objeto, id_objeto):

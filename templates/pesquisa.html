@@ -37,9 +37,9 @@
 <table cellspacing="0" id="result_list">
 <thead>
 <tr>
-{% for campos in form %}
+{% for coluna in colunas %}
 <th>
-{{ campos.label_tag }}
+{{ coluna }}
 </th>
 {% endfor %}
 </tr>
@@ -59,11 +59,25 @@
 <th><a href="/exibe/fornecedor/{{registro.id}}">{{registro.fantasia}}</a></th><td>{{registro.cnpj}}</td><td>{{registro.usuario}}</td><td>{{registro.bairro}}</td><td>{{registro.cidade}}</td><td>{{registro.uf}}</td> </tr>
 {% endfor %}
 {% endif %}
+{% if objeto == 'requisicao' %}
+{%for registro in query %}
+<tr class="row1">
+<th><a href="/exibe/requisicao/{{registro.id}}">{{registro}}</a></th>
+<td>{{registro.dtRequisicao}}</td><td>{{registro.solicitante}}</td> <td>{{registro.dtDeferimento}}</td><td>{{registro.status}}</td> </tr>
+{% endfor %}
+{% endif %}
+{% if objeto == 'mapa' %}
+{%for registro in query %}
+<tr class="row1">
+<th><a href="/exibe/mapa/{{registro.id}}">{{registro}}</a></th>
+<td>{{registro.dtLiberacao}}</td><td>{{registro.cotacaoVencedora.fornecedor}}</td> <td>{{registro.cotacaoVencedora}}</td><td>{{registro.cotacaoVencedora.vlCotacao}}</td> </tr>
+{% endfor %}
+{% endif %}
 </tbody>
 </table>
 </div>
 <p class="paginator">
-{{total}} {{objeto}}
+{{total}} {{objetototal}}
 </p>
       </form>
     </div>

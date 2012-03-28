@@ -62,7 +62,7 @@ class Material(models.Model):
 		return self.nomeMaterial
 	
 	nomeMaterial = models.CharField(max_length = 50)
-	fabricante = models.CharField(max_length = 50)
+	fabricante = models.ForeignKey(Fabricante, related_name = 'fabricante_material')
 	grupoMercadoria = models.ForeignKey(GrupoMercadoria, related_name = 'gm_material')
 	unidadeMaterial = models.ForeignKey(UnidadeMaterial, related_name = 'un_material')
 	tpMaterial = models.CharField(max_length = 50)	
@@ -100,8 +100,13 @@ class Fornecedor(models.Model):
 	cidade = models.CharField(max_length = 50)
 	uf = models.CharField(max_length = 2)
 	cep = models.BigIntegerField(max_length = 8)
+#	dtInclusao = models.DateField(null = True)
+#	dtAlteracao = models.DateField()
+#	dtExclusao = models.DateField()
+#	status = models.CharField(max_length = 1)
 
 	def adiciona(self, request, id_objeto):
+#		self.dtIclusao = datetime.now()l
 		self.save()
 		return 'validos'
 	
