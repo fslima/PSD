@@ -23,7 +23,7 @@ def cadastro(request):
 	return render_to_response('cadastro.html', locals(), context_instance = RequestContext(request))
 
 @login_required
-def adiciona(request, objeto, id_objeto):
+def adiciona(request, objeto, idObjeto):
 	if not request.user.has_perm('interno.add_'+str(objeto)):
 			erro = 'Você não possui acesso para cadastrar '+str(objeto)
 			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
@@ -63,8 +63,8 @@ def adiciona(request, objeto, id_objeto):
 		form = formpost
 		if form.is_valid():
 			objeto_form = form.save(commit = False)
-			if objeto_form.adiciona(request, id_objeto) != 'validos':
-				erro =  objeto_form.adiciona(request, id_objeto)
+			if objeto_form.adicionar(request, idObjeto) != 'validos':
+				erro =  objeto_form.adicionar(request, idObjeto)
 				return render_to_response("adiciona.html", locals(), context_instance = RequestContext(request))
 			if str(objeto) == 'requisicao':
 				return HttpResponseRedirect("/adiciona/itemrequisicao/"+str(objeto_form.id))
@@ -152,100 +152,100 @@ def lista(request, objeto):
 		lista = Cotacao.objects.filter(fornecedor = fornecedor).exclude(dtLimite__lte = datetime.now() - timedelta(1)).order_by('id').reverse()
 	return render_to_response('lista.html', locals(), context_instance = RequestContext(request))
 
-def exibe(request, objeto, id_objeto):
+def exibe(request, objeto, idObjeto):
 	if str(objeto) == 'grupomercadoria':
 		titulo = 'Grupo de Mercadoria'
-		objeto = get_object_or_404(GrupoMercadoria, pk = id_objeto)
+		objeto = get_object_or_404(GrupoMercadoria, pk = idObjeto)
 		form = FormGrupoMercadoria(instance = objeto)
 	if str(objeto) == 'unidadematerial':
 		titulo = 'Unidade de Medida'
-		objeto = get_object_or_404(UnidadeMaterial, pk = id_objeto)
+		objeto = get_object_or_404(UnidadeMaterial, pk = idObjeto)
 		form = FormUnidadeMaterial(instance = objeto)
 	if str(objeto) == 'centrocusto':
 		titulo = 'Centro de Custo'
-		objeto = get_object_or_404(CentroCusto, pk = id_objeto)
+		objeto = get_object_or_404(CentroCusto, pk = idObjeto)
 		form = FormCentroCusto(instance = objeto)
 	if str(objeto) == 'fabricante':
 		titulo = 'Fabricante'
-		objeto = get_object_or_404(Fabricante, pk = id_objeto)
+		objeto = get_object_or_404(Fabricante, pk = idObjeto)
 		form = FormFabricante(instance = objeto)
 	if str(objeto) == 'material':
 		titulo = 'Material'
-		objeto = get_object_or_404(Material, pk = id_objeto)
+		objeto = get_object_or_404(Material, pk = idObjeto)
 		v = vars(objeto)
 		form = FormMaterial(instance = objeto)
 	if str(objeto) == 'fornecedor':
 		titulo = 'Fornecedor'
-		objeto = get_object_or_404(Fornecedor, pk = id_objeto)
+		objeto = get_object_or_404(Fornecedor, pk = idObjeto)
 		form = FormFornecedor(instance = objeto)
 	if str(objeto) == 'requisicao':
 		titulo = 'Requisicao'
 		titulo_membros = 'Itens da Requisicao'
-		objeto = get_object_or_404(Requisicao, pk = id_objeto)
+		objeto = get_object_or_404(Requisicao, pk = idObjeto)
 		itens = ItemRequisicao.objects.filter(requisicao = objeto)
 		form = FormRequisicao(instance = objeto)
 	if str(objeto) == 'mapa':
 		titulo = 'Mapa Comparativo'
 		titulo_cotacoes = 'Cotacoes'
-		objeto = get_object_or_404(MapaComparativo, pk = id_objeto)
+		objeto = get_object_or_404(MapaComparativo, pk = idObjeto)
 		cotacoes = Cotacao.objects.filter(cotacoes_do_mapa = objeto)
 		form = FormExibeMapaComparativo(instance = objeto)
 	if str(objeto) == 'cotacao':
 		titulo = 'Cotação'
-		objeto = get_object_or_404(Cotacao, pk = id_objeto)
+		objeto = get_object_or_404(Cotacao, pk = idObjeto)
 		form = FormCotacao(instance = objeto)
 	return render_to_response('exibe.html', locals(), context_instance = RequestContext(request))
 
 @login_required
-def edita(request, objeto, id_objeto):
+def edita(request, objeto, idObjeto):
 	if not request.user.has_perm('interno.change_'+str(objeto)):
 			erro = 'Você não possui acesso para modificar '+str(objeto)
 			return render_to_response("500.html", locals())
 	if str(objeto) == 'grupomercadoria':
-		grupoMercadoria_para_editar = get_object_or_404(GrupoMercadoria, pk = id_objeto)
+		grupoMercadoria_para_editar = get_object_or_404(GrupoMercadoria, pk = idObjeto)
 		formpost = FormGrupoMercadoria(request.POST, request.FILES, instance = grupoMercadoria_para_editar)
 		formget = FormGrupoMercadoria(instance = grupoMercadoria_para_editar)
 		titulo = 'Grupo de Mercadoria'		
 	if str(objeto) == 'unidadematerial':
 		titulo = 'Unidade de Medida'
-		unidadeMaterial_para_editar = get_object_or_404(UnidadeMaterial, pk = id_objeto)
+		unidadeMaterial_para_editar = get_object_or_404(UnidadeMaterial, pk = idObjeto)
 		formpost = FormUnidadeMaterial(request.POST, request.FILES, instance = unidadeMaterial_para_editar)
 		formget = FormUnidadeMaterial(instance = unidadeMaterial_para_editar)	
 	if str(objeto) == 'centrocusto':
 		titulo = 'Centro de Custo'
-		centroCusto_para_editar = get_object_or_404(CentroCusto, pk = id_objeto)
+		centroCusto_para_editar = get_object_or_404(CentroCusto, pk = idObjeto)
 		formpost = FormCentroCusto(request.POST, request.FILES, instance = centroCusto_para_editar)
 		formget = FormCentroCusto(instance = centroCusto_para_editar)	
 	if str(objeto) == 'fabricante':
 		titulo = 'Fabricante'
-		fabricante_para_editar = get_object_or_404(Fabricante, pk = id_objeto)
+		fabricante_para_editar = get_object_or_404(Fabricante, pk = idObjeto)
 		formpost = FormFabricante(request.POST, request.FILES, instance = fabricante_para_editar)
 		formget = FormFabricante(instance = fabricante_para_editar)
 	if str(objeto) == 'material':
 		titulo = 'Material'
-		material_para_editar = get_object_or_404(Material, pk = id_objeto)
+		material_para_editar = get_object_or_404(Material, pk = idObjeto)
 		formpost = FormMaterial(request.POST, request.FILES, instance = material_para_editar)
 		formget = FormMaterial(instance = material_para_editar)
 	if str(objeto) == 'fornecedor':
 		titulo = 'Fornecedor'
-		fornecedor_para_editar = get_object_or_404(Fornecedor, pk = id_objeto)
+		fornecedor_para_editar = get_object_or_404(Fornecedor, pk = idObjeto)
 		formpost = FormFornecedor(request.POST, request.FILES, instance = fornecedor_para_editar)
 		formget = FormFornecedor(instance = fornecedor_para_editar)
 	if str(objeto) == 'gruposfornecedor':
 		titulo = 'Grupos de Mercadoria'
-		fornecedor_para_editar = get_object_or_404(Fornecedor, pk = id_objeto)
+		fornecedor_para_editar = get_object_or_404(Fornecedor, pk = idObjeto)
 		formpost = FormGruposFornecedor(request.POST, request.FILES, instance = fornecedor_para_editar)
 		formget = FormGruposFornecedor(instance = fornecedor_para_editar)
 	if str(objeto) == 'requisicao':
 		titulo = 'Requisicao'
-		requisicao_para_editar = get_object_or_404(Requisicao, pk = id_objeto, solicitante = request.user)
+		requisicao_para_editar = get_object_or_404(Requisicao, pk = idObjeto, solicitante = request.user)
 		formpost = FormRequisicao(request.POST, request.FILES, instance = requisicao_para_editar)
 		formget = FormRequisicao(instance = requisicao_para_editar)
 	if str(objeto) == 'mapa':
-		return HttpResponseRedirect("/finaliza/mapa/"+str(id_objeto))
+		return HttpResponseRedirect("/finaliza/mapa/"+str(idObjeto))
 	if str(objeto) == 'cotacao':
 		titulo = 'Cotação'
-		cotacao_para_editar = get_object_or_404(Cotacao, pk = id_objeto)
+		cotacao_para_editar = get_object_or_404(Cotacao, pk = idObjeto)
 		formpost = FormCotacao(request.POST, request.FILES, instance = cotacao_para_editar)
 		formget = FormCotacao(instance = cotacao_para_editar)
 	if request.method == 'POST':
@@ -262,33 +262,33 @@ def edita(request, objeto, id_objeto):
 	return render_to_response('edita.html', locals(), context_instance = RequestContext(request))
 
 @login_required
-def deleta(request, objeto, id_objeto):
+def deleta(request, objeto, idObjeto):
 	if not request.user.has_perm('interno.delete_'+str(objeto)):
 			erro = 'Você não possui acesso para excluir '+str(objeto)
 			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
 	if str(objeto) == 'grupomercadoria':
-		objeto_para_deletar = get_object_or_404(GrupoMercadoria, pk = id_objeto)
+		objeto_para_deletar = get_object_or_404(GrupoMercadoria, pk = idObjeto)
 		form = FormGrupoMercadoria(instance = objeto_para_deletar)
 	if str(objeto) == 'centrocusto':
-		objeto_para_deletar = get_object_or_404(CentroCusto, pk = id_objeto)
+		objeto_para_deletar = get_object_or_404(CentroCusto, pk = idObjeto)
 		form = FormCentroCusto(instance = objeto_para_deletar)
 	if str(objeto) == 'unidadematerial':
-		objeto_para_deletar = get_object_or_404(UnidadeMaterial, pk = id_objeto)
+		objeto_para_deletar = get_object_or_404(UnidadeMaterial, pk = idObjeto)
 		form = FormUnidadeMaterial(instance = objeto_para_deletar)
 	if str(objeto) == 'fabricante':
-		objeto_para_deletar = get_object_or_404(Fabricante, pk = id_objeto)
+		objeto_para_deletar = get_object_or_404(Fabricante, pk = idObjeto)
 		form = FormFabricante(instance = objeto_para_deletar)
 	if str(objeto) == 'material':
-		objeto_para_deletar = get_object_or_404(Material, pk = id_objeto)
+		objeto_para_deletar = get_object_or_404(Material, pk = idObjeto)
 		form = FormMaterial(instance = objeto_para_deletar)
 	if str(objeto) == 'fornecedor':
-		objeto_para_deletar = get_object_or_404(Fornecedor, pk = id_objeto)
+		objeto_para_deletar = get_object_or_404(Fornecedor, pk = idObjeto)
 		form = FormFornecedor(instance = objeto_para_deletar)
 	if str(objeto) == 'requisicao':
-		objeto_para_deletar = get_object_or_404(Requisicao, pk = id_objeto)
+		objeto_para_deletar = get_object_or_404(Requisicao, pk = idObjeto)
 		form = FormRequisicao(instance = objeto_para_deletar)
 	if str(objeto) == 'mapa':
-		objeto_para_deletar = get_object_or_404(MapaComparativo, pk = id_objeto)
+		objeto_para_deletar = get_object_or_404(MapaComparativo, pk = idObjeto)
 		form = FormMapaComparativo(instance = objeto_para_deletar)
 	if request.method == 'POST':
 		objeto_para_deletar.delete()
@@ -298,11 +298,11 @@ def deleta(request, objeto, id_objeto):
 
 	
 @login_required
-def aprova(request, objeto, id_objeto):
+def aprova(request, objeto, idObjeto):
 	if str(objeto) == 'requisicao':
 		titulo = 'Requisicao'
 		titulo_membros = 'Itens da Requisicao'
-		objeto = get_object_or_404(Requisicao, pk = id_objeto)
+		objeto = get_object_or_404(Requisicao, pk = idObjeto)
 		itens = ItemRequisicao.objects.filter(requisicao = objeto)
 		form = FormRequisicao(instance = objeto)
 		if request.method == 'POST':
@@ -496,7 +496,7 @@ def filtra(request, objeto):
 
 
 @login_required
-def finaliza(request, objeto, id_objeto):
+def finaliza(request, objeto, idObjeto):
 	if not request.user.has_perm('interno.change_mapacomparativo'):
 			erro = 'Você não possui acesso para finalizar mapa'
 			return render_to_response("500.html", locals())
@@ -505,7 +505,7 @@ def finaliza(request, objeto, id_objeto):
 		objetototal = 'Cotações'
 		formpost = FormMapaComparativo(request.POST, request.FILES)
 		formget = FormMapaComparativo()
-		mapa = get_object_or_404(MapaComparativo, pk = id_objeto)
+		mapa = get_object_or_404(MapaComparativo, pk = idObjeto)
 		erro = 'Mapa '+str(mapa.id)+' Não existe'
 		if mapa.dtLiberacao >= date.today():
 			erro = 'Mapa só estará liberado dia: '

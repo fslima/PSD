@@ -10,7 +10,11 @@ class GrupoMercadoria(models.Model):
 
 	nomeGrupoMercadoria = models.CharField(max_length = 50)
 	
-	def adiciona(self, request, id_objeto):
+	def adicionarr(self, request, idObjeto):
+		self.save()
+		return 'validos'
+
+	def editar(self, request, idObjeto):
 		self.save()
 		return 'validos'
 
@@ -23,7 +27,11 @@ class UnidadeMaterial(models.Model):
 
 	nomeUnidadeMaterial = models.CharField(max_length = 50)
 	
-	def adiciona(self, request, id_objeto):
+	def adicionar(self, request, idObjeto):
+		self.save()
+		return 'validos'
+
+	def editar(self, request, idObjeto):
 		self.save()
 		return 'validos'
 
@@ -37,7 +45,11 @@ class CentroCusto(models.Model):
 	nomeCentroCusto = models.CharField(max_length = 50)
 	gerente = models.ForeignKey(User)	
 
-	def adiciona(self, request, id_objeto):
+	def adicionar(self, request, idObjeto):
+		self.save()
+		return 'validos'
+
+	def editar(self, request, idObjeto):
 		self.save()
 		return 'validos'
 
@@ -50,7 +62,7 @@ class Fabricante(models.Model):
 
 	nomeFabricante = models.CharField(max_length = 50)
 
-	def adiciona(self, request, id_objeto):
+	def adicionar(self, request, idObjeto):
 		self.save()
 		return 'validos'
 
@@ -70,7 +82,7 @@ class Material(models.Model):
 	dtUltimaCompra = models.DateField(null = True)
 	usuario = models.ForeignKey(User)
 
-	def adiciona(self, request, id_objeto):
+	def adicionar(self, request, idObjeto):
 		self.usuario = request.user
 		self.vlUltimaCompra = '0.00'
 		self.dtUltimaCompra = datetime.now()
@@ -105,7 +117,7 @@ class Fornecedor(models.Model):
 #	dtExclusao = models.DateField()
 #	status = models.CharField(max_length = 1)
 
-	def adiciona(self, request, id_objeto):
+	def adicionar(self, request, idObjeto):
 #		self.dtIclusao = datetime.now()l
 		self.save()
 		return 'validos'
@@ -125,7 +137,7 @@ class Requisicao(models.Model):
 	diasParaCotacao = models.PositiveSmallIntegerField()
 		
 
-	def adiciona(self, request, id_objeto):
+	def adicionar(self, request, idObjeto):
 		self.dtRequisicao = datetime.now()
 		self.status = 'Aguardando Aprovação'
 		self.solicitante = request.user
@@ -136,8 +148,8 @@ class Requisicao(models.Model):
 		if self.status == u'Aguardando Aprovação':
 			itens = ItemRequisicao.objects.filter(requisicao = self)
 			for item in itens:
-				if Cotacao().adiciona(item, self.diasParaCotacao) != 'Validos':
-					return Cotacao().adiciona(item, self.diasParaCotacao)
+				if Cotacao().adicionar(item, self.diasParaCotacao) != 'Validos':
+					return Cotacao().adicionar(item, self.diasParaCotacao)
 			self.status = 'Aprovada'
 			self.dtDeferimento = datetime.now()
 			self.save()
@@ -156,8 +168,8 @@ class ItemRequisicao(models.Model):
 	qtd = models.PositiveSmallIntegerField()
 	status = models.CharField(max_length = 50)
 
-	def adiciona(self, request, id_objeto):
-		self.requisicao = Requisicao.objects.get(pk = id_objeto)
+	def adicionar(self, request, idObjeto):
+		self.requisicao = Requisicao.objects.get(pk = idObjeto)
 		self.status = 'Aguardando Cotações'
 		self.save()
 		return 'validos'
@@ -179,7 +191,7 @@ class Cotacao(models.Model):
 	dtLimite = models.DateField()
 	obs = models.TextField(max_length = 100, null = True)
 
-	def adiciona(self, item, diasParaCotacao):
+	def adicionar(self, item, diasParaCotacao):
 		fornecedores = Fornecedor.objects.filter(grupoMercadoria = item.material.grupoMercadoria)
 		if len(fornecedores) == 0:
 			return 'Não há fornecedores para o item: '+str(item)
@@ -187,7 +199,7 @@ class Cotacao(models.Model):
 			cotacao = Cotacao(itemRequisicao = item, fornecedor = fornecedor)
 			cotacao.dtLimite = datetime.now() + timedelta(diasParaCotacao)
 			cotacao.save()
-		MapaComparativo().adiciona(item, diasParaCotacao)
+		MapaComparativo().adicionar(item, diasParaCotacao)
 		return 'Validos'
 
 	class Meta:
@@ -202,7 +214,7 @@ class MapaComparativo(models.Model):
 	dtLiberacao = models.DateField()
 	obs = models.TextField(max_length = 100, null = True)
 
-	def adiciona(self, item, diasParaCotacao):
+	def adicionar(self, item, diasParaCotacao):
 		self.dtLiberacao = datetime.now() + timedelta(diasParaCotacao)
 		self.save()
 		cotacoes = Cotacao.objects.filter(itemRequisicao = item)
