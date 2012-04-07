@@ -10,7 +10,7 @@ class GrupoMercadoria(models.Model):
 
 	nomeGrupoMercadoria = models.CharField(max_length = 50)
 	
-	def adicionarr(self, request, idObjeto):
+	def adicionar(self, request, idObjeto):
 		self.save()
 		return 'validos'
 
@@ -66,6 +66,10 @@ class Fabricante(models.Model):
 		self.save()
 		return 'validos'
 
+	def editar(self, request, idObjeto):
+		self.save()
+		return 'validos'
+
 	class Meta:
 		db_table = 'fabricante'
 
@@ -86,6 +90,10 @@ class Material(models.Model):
 		self.usuario = request.user
 		self.vlUltimaCompra = '0.00'
 		self.dtUltimaCompra = datetime.now()
+		self.save()
+		return 'validos'
+
+	def editar(self, request, idObjeto):
 		self.save()
 		return 'validos'
 	
@@ -115,7 +123,10 @@ class Fornecedor(models.Model):
 	status = models.CharField(max_length = 1)
 
 	def adicionar(self, request, idObjeto):
-#		self.dtIclusao = datetime.now()l
+		self.save()
+		return 'validos'
+
+	def editar(self, request, idObjeto):
 		self.save()
 		return 'validos'
 	
@@ -138,6 +149,10 @@ class Requisicao(models.Model):
 		self.dtRequisicao = datetime.now()
 		self.status = 'Aguardando Aprovação'
 		self.solicitante = request.user
+		self.save()
+		return 'validos'
+
+	def editar(self, request, idObjeto):
 		self.save()
 		return 'validos'
 
@@ -199,6 +214,10 @@ class Cotacao(models.Model):
 		MapaComparativo().adicionar(item, diasParaCotacao)
 		return 'Validos'
 
+	def editar(self, request, idObjeto):
+		self.save()
+		return 'validos'
+
 	class Meta:
 		db_table = 'cotacao'
 
@@ -219,6 +238,7 @@ class MapaComparativo(models.Model):
 		cotacoes = Cotacao.objects.filter(itemRequisicao = item)
 		for cotacao in cotacoes:
 			self.cotacao.add(cotacao)
+
 	def finaliza(self):
 		self.cotacao.all()[0].itemRequisicao.alteraStatus('Mapa Finalizado')
 		self.status = 'Finalizado'

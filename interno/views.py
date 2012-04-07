@@ -56,6 +56,10 @@ def adiciona(request, objeto, idObjeto):
 		formpost = FormRequisicao(request.POST, request.FILES, )
 		formget = FormRequisicao()
 	if str(objeto) == 'itemrequisicao':
+		requisicao = get_object_or_404(Requisicao, pk = idObjeto, solicitante = request.user)
+		if requisicao.status == 'Aprovada':
+			erro = 'Não é possível inserir item em cotação Aprovada'
+			return render_to_response('500.html', locals(), context_instance = RequestContext(request))
 		titulo = 'Itens da Requisicao'
 		formpost = FormItemRequisicao(request.POST, request.FILES, )
 		formget = FormItemRequisicao()
@@ -181,7 +185,7 @@ def exibe(request, objeto, idObjeto):
 	if str(objeto) == 'requisicao':
 		titulo = 'Requisicao'
 		titulo_membros = 'Itens da Requisicao'
-		objeto = get_object_or_404(Requisicao, pk = idObjeto)
+		objeto = get_object_or_404(Requisicao, pk = idObjeto, solicitante = request.user)
 		itens = ItemRequisicao.objects.filter(requisicao = objeto)
 		form = FormRequisicao(instance = objeto)
 	if str(objeto) == 'mapa':
@@ -200,7 +204,7 @@ def exibe(request, objeto, idObjeto):
 def edita(request, objeto, idObjeto):
 	if not request.user.has_perm('interno.change_'+str(objeto)):
 			erro = 'Você não possui acesso para modificar '+str(objeto)
-			return render_to_response("500.html", locals())
+			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
 	if str(objeto) == 'grupomercadoria':
 		grupoMercadoria_para_editar = get_object_or_404(GrupoMercadoria, pk = idObjeto)
 		formpost = FormGrupoMercadoria(request.POST, request.FILES, instance = grupoMercadoria_para_editar)
@@ -255,7 +259,10 @@ def edita(request, objeto, idObjeto):
 	if request.method == 'POST':
 		form = formpost
 		if form.is_valid():
-			form.save()
+			objeto_form = form.save(commit = False)
+			if objeto_form.editar(request, idObjeto) != 'validos':
+				erro =  objeto_form.editar(request, idObjeto)
+				return render_to_response("edita.html", locals(), context_instance = RequestContext(request))
 			if str(objeto) == 'gruposfornecedor':
 				return HttpResponseRedirect("/lista/fornecedor")
 			return HttpResponseRedirect("/lista/"+str(objeto))
@@ -434,6 +441,13 @@ def filtra(request, objeto):
 				fornecedor = valor_campo[2]
 				status = valor_campo[3]
 				query = MapaComparativo.objects.filter(status__icontains = status).order_by('id').reverse()
+				requisicoes = Requisicao.objects.filter(solicitante = request.user)
+				if requisicoes != None:
+					itens = ItemRequisicao.objects.filter(requisicao__in = requisicoes)
+					if itens != None:
+						cotacoes = Cotacao.objects.filter(itemRequisicao__in = itens)
+						if cotacoes != None:
+							query = query.filter(cotacao__in = cotacoes)
 				if dtLiberacaoP != None:
 					query = query.filter(dtLiberacao__gte = dtLiberacaoP)
 				if dtLiberacaoA != None:
@@ -565,8 +579,11 @@ def finaliza(request, objeto, idObjeto):
 		objetototal = 'Cotações'
 		formpost = FormMapaComparativo(request.POST, request.FILES)
 		formget = FormMapaComparativo()
-		erro = 'Mapa '+str(mapa.id)+' Não existe'
+		erro = 'Mapa não existe'
 		mapa = get_object_or_404(MapaComparativo, pk = idObjeto)
+		if mapa.cotacao.all()[0].itemRequisicao.requisicao.solicitante != request.user:
+			erro = 'Você só possui acesso aos mapas das suas requisições'
+			return render_to_response('500.html', locals(), context_instance = RequestContext(request))
 		if mapa.dtLiberacao >= date.today():
 			erro = 'Mapa só estará liberado dia: '
 			data = mapa.dtLiberacao + timedelta(1)
