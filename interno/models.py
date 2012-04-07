@@ -100,7 +100,7 @@ class Fornecedor(models.Model):
 	fantasia = models.CharField(max_length = 50)
 	cnpj = models.CharField(max_length = 14)
 	grupoMercadoria = models.ManyToManyField(GrupoMercadoria, related_name = 'gm_fornecedor')
-	usuario = models.ForeignKey(User)
+	usuario = models.OneToOneField(User)
 	tel1 = models.BigIntegerField(max_length = 10)
 	tel2 = models.BigIntegerField(max_length = 10, null = True, blank = True)
 	email = models.EmailField(max_length = 50)
@@ -112,10 +112,7 @@ class Fornecedor(models.Model):
 	cidade = models.CharField(max_length = 50)
 	uf = models.CharField(max_length = 2)
 	cep = models.BigIntegerField(max_length = 8)
-#	dtInclusao = models.DateField(null = True)
-#	dtAlteracao = models.DateField()
-#	dtExclusao = models.DateField()
-#	status = models.CharField(max_length = 1)
+	status = models.CharField(max_length = 1)
 
 	def adicionar(self, request, idObjeto):
 #		self.dtIclusao = datetime.now()l
@@ -183,7 +180,7 @@ class ItemRequisicao(models.Model):
 
 class Cotacao(models.Model):
 	def __unicode__(self):
-		return self.itemRequisicao.material.nomeMaterial
+		return str(self.dtLimite)
 
 	itemRequisicao = models.ForeignKey(ItemRequisicao, related_name = 'item_proposta')
 	fornecedor = models.ForeignKey(Fornecedor, related_name = 'fornecedor_proposta')
@@ -213,15 +210,18 @@ class MapaComparativo(models.Model):
 	cotacaoVencedora = models.ForeignKey(Cotacao, related_name = 'cotacao_vencedora', null = True)
 	dtLiberacao = models.DateField()
 	obs = models.TextField(max_length = 100, null = True)
+	status = models.CharField(max_length = 50)
 
 	def adicionar(self, item, diasParaCotacao):
 		self.dtLiberacao = datetime.now() + timedelta(diasParaCotacao)
+		self.status = 'Aberto'
 		self.save()
 		cotacoes = Cotacao.objects.filter(itemRequisicao = item)
 		for cotacao in cotacoes:
 			self.cotacao.add(cotacao)
 	def finaliza(self):
 		self.cotacao.all()[0].itemRequisicao.alteraStatus('Mapa Finalizado')
+		self.status = 'Finalizado'
 		self.save()
 
 	class Meta:

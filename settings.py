@@ -29,7 +29,7 @@ LANGUAGE_CODE = 'pt-br'
 
 SITE_ID = 1
 
-DATE_FORMAT = 'd / m / Y'
+DATE_FORMAT = 'd/m/Y'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -80,5 +80,5 @@ INSTALLED_APPS = (
 	'PSD.interno',
 )
 
-LOGIN_URL = '/login/'
+LOGIN_URL = '/'
 LOGIN_REDIRECT_URL = '/inicio'

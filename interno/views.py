@@ -193,7 +193,7 @@ def exibe(request, objeto, idObjeto):
 	if str(objeto) == 'cotacao':
 		titulo = 'Cotação'
 		objeto = get_object_or_404(Cotacao, pk = idObjeto)
-		form = FormCotacao(instance = objeto)
+		form = FormExibeCotacao(instance = objeto)
 	return render_to_response('exibe.html', locals(), context_instance = RequestContext(request))
 
 @login_required
@@ -246,6 +246,10 @@ def edita(request, objeto, idObjeto):
 	if str(objeto) == 'cotacao':
 		titulo = 'Cotação'
 		cotacao_para_editar = get_object_or_404(Cotacao, pk = idObjeto)
+		if cotacao_para_editar.dtLimite < date.today():
+			erro = 'A data limite para esta cotação foi: '
+			data = cotacao_para_editar.dtLimite
+			return render_to_response('500.html', locals(), context_instance = RequestContext(request))
 		formpost = FormCotacao(request.POST, request.FILES, instance = cotacao_para_editar)
 		formget = FormCotacao(instance = cotacao_para_editar)
 	if request.method == 'POST':
@@ -326,7 +330,7 @@ def filtra(request, objeto):
 		unidadeMaterial = {'unidadeMaterial': 'Unidade de Medida'}
 		tpMaterial = {'tpMaterial': 'Tipo de Material'}
 		campos = [nomeMaterial, fabricante, grupoMercadoria, unidadeMaterial, tpMaterial]
-		colunas = [fabricante.keys()[0], grupoMercadoria.keys()[0], unidadeMaterial.keys()[0], tpMaterial.keys()[0]]
+		colunas = ['Nome', 'Fabricante', 'Grupo de Mercadoria', 'Unidade de Medida', 'Tipo de Material']
 		if request.method == 'POST':
 			form = formpost
 			if form.is_valid():
@@ -370,8 +374,9 @@ def filtra(request, objeto):
 		bairro = {'bairro': 'Bairro'}
 		cidade = {'cidade': 'Cidade'}
 		uf = {'uf': 'UF'}
-		campos = [razao, fantasia, cnpj, usuario, bairro, cidade, uf]
-		colunas = [razao.keys()[0], fantasia.keys()[0], cnpj.keys()[0], usuario.keys()[0], bairro.keys()[0], cidade.keys()[0], uf.keys()[0]]
+		status = {'status': 'Status'}
+		campos = [razao, fantasia, cnpj, usuario, bairro, cidade, uf, status]
+		colunas = ['Razão Social', 'Nome Fantasia', 'CNPJ', 'Login', 'Bairro', 'Cidade', 'UF']
 		if request.method == 'POST':
 			form = formpost
 			if form.is_valid():
@@ -390,7 +395,8 @@ def filtra(request, objeto):
 				bairro = valor_campo[4]
 				cidade = valor_campo[5]
 				uf = valor_campo[6]
-				query = Fornecedor.objects.filter(razao__icontains = razao).filter(fantasia__icontains = fantasia).filter(cnpj__icontains = cnpj).filter(bairro__icontains = bairro).filter(cidade__icontains = cidade).filter(uf__icontains = uf)
+				status = valor_campo[7]
+				query = Fornecedor.objects.filter(razao__icontains = razao).filter(fantasia__icontains = fantasia).filter(cnpj__icontains = cnpj).filter(bairro__icontains = bairro).filter(cidade__icontains = cidade).filter(uf__icontains = uf).filter(status__icontains = status)
 				if usuario != None:
 					query = query.filter(usuario = usuario)
 				total = query.count()
@@ -409,8 +415,9 @@ def filtra(request, objeto):
 		dtLiberacaoP = {'dtLiberacaoP': 'Data de Liberação'}
 		dtLiberacaoA = {'dtLiberacaoA': 'Data de Liberação'}
 		fornecedor = {'fornecedorVencedor': 'Fornecedor'}
-		campos = [dtLiberacaoP, dtLiberacaoA, fornecedor]
-		colunas = ['Nº do Mapa', 'Data de Liberação', 'Fornecedor Vencedor', 'Item Cotado', 'Valor Cotado']
+		status = {'status': 'Status'}
+		campos = [dtLiberacaoP, dtLiberacaoA, fornecedor, status]
+		colunas = ['Nº do Mapa', 'Data de Liberação', 'Fornecedor Vencedor', 'Item Cotado', 'Valor Cotado', 'Status do Mapa']
 		if request.method == 'POST':
 			form = formpost
 			if form.is_valid():
@@ -425,7 +432,8 @@ def filtra(request, objeto):
 				dtLiberacaoP = valor_campo[0]
 				dtLiberacaoA = valor_campo[1]
 				fornecedor = valor_campo[2]
-				query = MapaComparativo.objects.all().order_by('id').reverse()
+				status = valor_campo[3]
+				query = MapaComparativo.objects.filter(status__icontains = status).order_by('id').reverse()
 				if dtLiberacaoP != None:
 					query = query.filter(dtLiberacao__gte = dtLiberacaoP)
 				if dtLiberacaoA != None:
@@ -441,6 +449,54 @@ def filtra(request, objeto):
 			form = FormFiltraMapaComparativo()
 		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
 
+	if str(objeto) == 'cotacao':
+		titulo = 'Pesquisar Cotação'
+		objetototal = 'Cotações'
+		formpost = FormFiltraCotacao(request.POST, request.FILES)
+		formget = FormFiltraCotacao()
+		dtLimiteP = {'dtLimiteP': 'Data Limite'}
+		dtLimiteA = {'dtLimiteA': 'Data Limite'}
+		vlCotacaoP = {'vlCotacaoP': 'Valor Cotado'}
+		vlCotacaoA = {'vlCotacaoA': 'Valor Cotado'}
+		itemRequisicao = {'itemRequisicao': 'Item Cotado'}
+		campos = [dtLimiteP, dtLimiteA, vlCotacaoP, vlCotacaoA, itemRequisicao]
+		colunas = ['Data Limite', 'Valor Cotado', 'Item da Cotação']
+		if request.method == 'POST':
+			form = formpost
+			if form.is_valid():
+				parametros = []	
+				valor_campo = []		
+				for campo in campos:
+					valor_campo.append(form.cleaned_data[campo.keys()[0]])
+					if valor_campo[-1] != '':
+						parametros.append(campo[campo.keys()[0]])
+					if valor_campo[-1] == None:
+						parametros.pop(-1)
+				dtLimiteP = valor_campo[0]
+				dtLimiteA = valor_campo[1]
+				vlCotacaoP = valor_campo[2]
+				vlCotacaoA = valor_campo[3]
+				itemRequisicao = valor_campo[4]
+				fornecedor = Fornecedor.objects.filter(usuario = request.user)
+				query = Cotacao.objects.filter(fornecedor = fornecedor).order_by('dtLimite').reverse()
+				if dtLimiteP != None:
+					query = query.filter(dtLimite__gte = dtLimiteP)
+				if dtLimiteA != None:
+					query = query.filter(dtLimite__lte = dtLimiteA)
+				if vlCotacaoP != None:
+					query = query.filter(vlCotacao__gte = vlCotacaoP)
+				if vlCotacaoA != None:
+					query = query.filter(vlCotacao__lte = vlCotacaoA)
+				if itemRequisicao != None:
+					query = query.filter(itemRequisicao = itemRequisicao)
+				total = query.count()
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+			else:
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))	
+		else:
+			form = FormFiltraCotacao()
+		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+
 	if str(objeto) == 'requisicao':
 		titulo = 'Pesquisar Requisição'
 		objetototal = 'Requisições'
@@ -448,11 +504,12 @@ def filtra(request, objeto):
 		formget = FormFiltraRequisicao()
 		dtRequisicaoP = {'dtRequisicaoP': 'Data da Requisição'}
 		dtRequisicaoA = {'dtRequisicaoA': 'Data de Requisição'}
-		itemRequisicao = {'itemRequisicao': 'Item'}
 		dtDeferimentoP = {'dtDeferimentoP': 'Data do Deferimento'}
 		dtDeferimentoA = {'dtDeferimentoA': 'Data do Deferimento'}
+		centroCusto = {'centroCusto': 'Centro de Custo'}
+		itemRequisicao = {'itemRequisicao': 'Item'}
 		status = {'status': 'Situação'}
-		campos = [dtRequisicaoP, dtRequisicaoA, itemRequisicao, dtDeferimentoP, dtDeferimentoA, status]
+		campos = [dtRequisicaoP, dtRequisicaoA, itemRequisicao, dtDeferimentoP, dtDeferimentoA, centroCusto, status]
 		colunas = ['Nº Requisição', 'Data da Requisição', 'Solicitante', 'Data do Deferimento', 'Status']
 		if request.method == 'POST':
 			form = formpost
@@ -470,7 +527,8 @@ def filtra(request, objeto):
 				itemRequisicao = valor_campo[2]
 				dtDeferimentoP = valor_campo[3]
 				dtDeferimentoA = valor_campo[4]
-				status = valor_campo[5]
+				centroCusto = valor_campo[5]
+				status = valor_campo[6]
 				query = Requisicao.objects.filter(status__icontains = status, solicitante = request.user).order_by('id').reverse()
 				if dtRequisicaoP != None:
 					query = query.filter(dtRequisicao__gte = dtRequisicaoP)
@@ -480,6 +538,8 @@ def filtra(request, objeto):
 					query = query.filter(dtDeferimento__gte = dtDeferimentoP)
 				if dtDeferimentoA != None:
 					query = query.filter(dtDeferimento__lte = dtDeferimentoA)
+				if centroCusto != None:
+					query = query.filter(centroCusto = centroCusto)
 				if itemRequisicao != None:
 					itens = ItemRequisicao.objects.filter(requisicao__in = query, material = itemRequisicao)
 					listaIdRequisicao = []
@@ -497,16 +557,16 @@ def filtra(request, objeto):
 
 @login_required
 def finaliza(request, objeto, idObjeto):
-	if not request.user.has_perm('interno.change_mapacomparativo'):
+	if str(objeto) == 'mapa':
+		if not request.user.has_perm('interno.change_mapacomparativo'):
 			erro = 'Você não possui acesso para finalizar mapa'
 			return render_to_response("500.html", locals())
-	if str(objeto) == 'mapa':
 		titulo = 'Mapa Comparativo'
 		objetototal = 'Cotações'
 		formpost = FormMapaComparativo(request.POST, request.FILES)
 		formget = FormMapaComparativo()
-		mapa = get_object_or_404(MapaComparativo, pk = idObjeto)
 		erro = 'Mapa '+str(mapa.id)+' Não existe'
+		mapa = get_object_or_404(MapaComparativo, pk = idObjeto)
 		if mapa.dtLiberacao >= date.today():
 			erro = 'Mapa só estará liberado dia: '
 			data = mapa.dtLiberacao + timedelta(1)

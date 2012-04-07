@@ -13,6 +13,16 @@
 <table>
 <caption><a href="" class="section">Informações Gerais</a></caption>
 {% for campos in form %}
+{% if campos.name = "itemRequisicao" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.itemRequisicao.material}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Quantidade</b></td>
+			<th scope="row">{{objeto.itemRequisicao.qtd}} ({{objeto.itemRequisicao.material.unidadeMaterial}})</th>
+		</tr>
+{% else %}
 {% if campos.name = "unidadeMaterial" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
@@ -71,7 +81,7 @@
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{campos.value}}</th>
 		</tr>
-{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
+{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
 {% endfor %}
 </table>
 {% if itens %}

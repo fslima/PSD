@@ -12,19 +12,16 @@
 <a href="/filtra/{{ objeto }}"><img src="/media/img/exibir.gif/" />Pesquisar {{ objeto|capfirst }}</a>
 <div class="module">
 <table>
-<caption><a href="/lista/{{ objeto }}" class="section">Alunos</a></caption>
+<caption><a href="/lista/{{ objeto }}" class="section">{{ titulo }}</a></caption>
 {%for registro in lista %}
 		<tr>
 			<td><a href="/exibe/{{ objeto }}/{{ registro.id }}/"><img src="/media/img/exibir.gif/" /></a></td>
 			<td><a href="/edita/{{ objeto }}/{{ registro.id }}/"><img src="/media/img/alterar.gif/" /></a></td>
 			<td><a href="/deleta/{{ objeto }}/{{ registro.id }}/"><img src="/media/img/delete.gif/" /></a></td>
-			<th scope="row">{{registro}} {% if registro.empresa %} ({{registro.empresa}}) {% endif %}
-			{% if registro.oportunidade.empresa %} ({{registro.oportunidade.empresa}}) {% endif %}</th>
-			{% if registro.solicitante %}
+				{% if objeto != 'cotacao' %} <th scope="row"> {{registro}} </th>{% endif %}
+				{% if objeto == 'cotacao' %} <th scope="row"> {{registro.dtLimite}} </th>{% endif %}
+			{% if objeto == 'requisicao' %}
 				<td><a href="/adiciona/itemrequisicao/{{ registro.id }}" class="addlink">Incluir Item</a></td>
-			{% endif %}
-			{% if registro.curso %}
-				<td><a href="/edita/cursosdaoportunidade/{{ registro.id }}/" class="addlink">Relacionar Cursos</a></td>
 			{% endif %}
 		</tr>
 {% empty %}

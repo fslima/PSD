@@ -7,6 +7,27 @@
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
 <h1>Editar {{titulo}}</h1>
+{% if objeto == 'cotacao' %}
+<div class="module">
+<table>
+<caption><a href="" class="section">Dados da Cotação</a></caption>
+		<tr>
+			<td scope="row"><b>Item da Cotação</b></td>
+			<th scope="row">{{cotacao_para_editar.itemRequisicao.material}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Fabricante</b></td>
+			<th scope="row">{{cotacao_para_editar.itemRequisicao.material.fabricante}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Quantidade</b></td>
+			<th scope="row">{{cotacao_para_editar.itemRequisicao.qtd}} ({{cotacao_para_editar.itemRequisicao.material.unidadeMaterial}})</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Data Limite</b></td>
+			<th scope="row">{{cotacao_para_editar.dtLimite}}</th>
+		</tr>
+{% endif %}
 <font color='red'><b>{{ erro }}</b></font>
 <form action="" method="POST"> 
 	<table>
@@ -17,4 +38,6 @@
 		</tr>
 	</table>
 </form>
+
+</div>
 {% endblock %}

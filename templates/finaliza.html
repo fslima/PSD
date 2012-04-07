@@ -36,7 +36,7 @@
 <td></td><td></td><td></td> </tr>
 {%for registro in query %}
 <tr class="row1"><td class="action-checkbox"><input type="radio" value="{{registro.id}}" name="cotacao" /></td>
-<th><a href="/exibe/material/{{registro.id}}">{{registro}}</a></th>
+<th><a href="/exibe/material/{{registro.id}}">{{registro.fornecedor}}</a></th>
 <td>{{registro.itemRequisicao.material}}</td><td>R$ {{registro.vlCotacao}}</td><td>{{registro.obs}}</td> </tr>
 {% endfor %}
 </tbody>

@@ -56,7 +56,7 @@
 {%for registro in query %}
 <tr class="row1">
 <td>{{registro.razao}}</td>
-<th><a href="/exibe/fornecedor/{{registro.id}}">{{registro.fantasia}}</a></th><td>{{registro.cnpj}}</td><td>{{registro.usuario}}</td><td>{{registro.bairro}}</td><td>{{registro.cidade}}</td><td>{{registro.uf}}</td> </tr>
+<th><a href="/exibe/fornecedor/{{registro.id}}">{{registro.fantasia}}</a></th><td>{{registro.cnpj}}</td><td>{{registro.usuario}}</td><td>{{registro.bairro}}</td><td>{{registro.cidade}}</td><td>{{registro.uf}}</td></tr>
 {% endfor %}
 {% endif %}
 {% if objeto == 'requisicao' %}
@@ -70,7 +70,14 @@
 {%for registro in query %}
 <tr class="row1">
 <th><a href="/exibe/mapa/{{registro.id}}">{{registro}}</a></th>
-<td>{{registro.dtLiberacao}}</td><td>{{registro.cotacaoVencedora.fornecedor}}</td> <td>{{registro.cotacaoVencedora}}</td><td>{{registro.cotacaoVencedora.vlCotacao}}</td> </tr>
+<td>{{registro.dtLiberacao}}</td><td>{{registro.cotacaoVencedora.fornecedor}}</td> <td>{{registro.cotacaoVencedora}}</td><td>{{registro.cotacaoVencedora.vlCotacao}}</td> <td>{{registro.status}}</td> </tr>
+{% endfor %}
+{% endif %}
+{% if objeto == 'cotacao' %}
+{%for registro in query %}
+<tr class="row1">
+<th><a href="/exibe/cotacao/{{registro.id}}">{{registro.dtLimite}}</a></th>
+<td>{{registro.vlCotacao}}</td><td>{{registro.itemRequisicao}}</td></tr>
 {% endfor %}
 {% endif %}
 </tbody>
