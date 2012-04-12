@@ -11,7 +11,7 @@
     <div class="module filtered" id="changelist">
 <div id="toolbar">
 <div><!-- DIV needed for valid HTML -->
-<form action="" method="POST">
+<form action="" method="POST" name="form" onsubmit="return validaFinalizarMapa()">
 <table>
 		{{ form.as_table }}
 	</table>
@@ -35,15 +35,16 @@
 <th><a href=""> Nenhuma Cotação Vencedora</a></th>
 <td></td><td></td><td></td> </tr>
 {%for registro in query %}
-<tr class="row1"><td class="action-checkbox"><input type="radio" value="{{registro.id}}" name="cotacao" /></td>
-<th><a href="/exibe/material/{{registro.id}}">{{registro.fornecedor}}</a></th>
+<input type="hidden" value="{{registro.fornecedor}}" name="for" />
+<tr class="row1"><td><input type="radio" value="{{registro.id}}" name="cotacao" /></td>
+<th><a href="/exibe/fornecedor/{{registro.fornecedor.id}}">{{registro.fornecedor}}</label></a></th>
 <td>{{registro.itemRequisicao.material}}</td><td>R$ {{registro.vlCotacao}}</td><td>{{registro.obs}}</td> </tr>
 {% endfor %}
 </tbody>
 </table>
 </div>
 <p class="paginator">
-  <input type="submit" value="Confirmar Vencedor" onsubmit="return confirmarFinalizaMapa()"/>
+  <input type="submit" value="Confirmar Vencedor"/>
 </p>
       </form>
     </div>

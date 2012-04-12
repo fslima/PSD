@@ -139,7 +139,7 @@ def lista(request, objeto):
 		manter = []
 		for mapa in lista:
 			lista1.append(mapa)
-			if mapa.cotacao.all()[0].itemRequisicao.status == u'Mapa Finalizado':
+			if mapa.cotacao.all()[0].itemRequisicao.status == u'Mapa Finalizado' or mapa.cotacao.all()[0].itemRequisicao.requisicao.solicitante != request.user:
 					if mapa not in remover:
 						remover.append(mapa)
 					else:
@@ -593,7 +593,7 @@ def finaliza(request, objeto, idObjeto):
 			form = formpost
 			if form.is_valid():	
 				mapa.obs = form.cleaned_data['obs']
-				if request.POST['cotacao'] != 0:
+				if int(request.POST['cotacao']) != 0:
 					id_cotacao = int(request.POST['cotacao'])
 					mapa.cotacaoVencedora = Cotacao.objects.get(pk = id_cotacao)
 				mapa.finaliza()	
