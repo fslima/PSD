@@ -12,7 +12,7 @@
     <div class="module filtered" id="changelist">
 <div id="toolbar">
 <div><!-- DIV needed for valid HTML -->
-<form action="" method="POST" name="form" onsubmit="return show_confirm()"> 
+<form action="" method="POST" name="form"> 
 <table>
 		{{ form.as_table }}
 		<tr>
@@ -70,7 +70,9 @@
 {%for registro in query %}
 <tr class="row1">
 <th><a href="/exibe/mapa/{{registro.id}}">{{registro}}</a></th>
-<td>{{registro.dtLiberacao}}</td><td>{{registro.cotacaoVencedora.fornecedor}}</td> <td>{{registro.cotacaoVencedora}}</td><td>{{registro.cotacaoVencedora.vlCotacao}}</td> <td>{{registro.status}}</td> </tr>
+<td>{{registro.dtLiberacao}}</td>
+<td><a href="/exibe/fornecedor/{{registro.cotacaoVencedora.fornecedor.id}}">{{registro.cotacaoVencedora.fornecedor}}</a></td> 
+<td><a href="/exibe/material/{{registro.cotacaoVencedora.itemRequisicao.material.id}}">{{registro.cotacaoVencedora.itemRequisicao}}</a></td><td>{{registro.cotacaoVencedora.vlCotacao}}</td> <td>{{registro.status}}</td> </tr>
 {% endfor %}
 {% endif %}
 {% if objeto == 'cotacao' %}
@@ -79,7 +81,32 @@
 <th><a href="/exibe/cotacao/{{registro.id}}">{{registro.dtLimite}}</a></th>
 <td>{{registro.vlCotacao}}</td><td>{{registro.itemRequisicao}}</td></tr>
 {% endfor %}
+{% endif%}
+{% if objeto == 'fabricante' %}
+{%for registro in query %}
+<tr class="row1">
+<th><a href="/exibe/fabricante/{{registro.id}}">{{registro}}</a></th>
+{% endfor %}
 {% endif %}
+{% if objeto == 'unidadematerial' %}
+{%for registro in query %}
+<tr class="row1">
+<th><a href="/exibe/unidadematerial/{{registro.id}}">{{registro}}</a></th>
+<td>{{registro.descUnidadeMaterial}}</td></tr>
+{% endfor %}
+{% endif%}
+{% if objeto == 'grupomercadoria' %}
+{%for registro in query %}
+<tr class="row1">
+<th><a href="/exibe/grupomercadoria/{{registro.id}}">{{registro}}</a></th></tr>
+{% endfor %}
+{% endif%}
+{% if objeto == 'centrocusto' %}
+{%for registro in query %}
+<tr class="row1">
+<th><a href="/exibe/centrocusto/{{registro.id}}">{{registro}}</a></th><td>{{registro.gerente}}</td></tr>
+{% endfor %}
+{% endif%}
 </tbody>
 </table>
 </div>

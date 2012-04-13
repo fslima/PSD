@@ -7,8 +7,7 @@
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
-{% if objeto.nomeMaterial %}<h1>{{objeto.nomeMaterial}}</h1>{% endif %}{% if objeto.vaga %}<h1>{{objeto.vaga}}</h1>{% endif %}
-{% if objeto.oportunidade and objeto.aluno  %}<h1>{{objeto.aluno}} >>> {{objeto.oportunidade.empresa}}</h1>{% endif %}
+<h1>{{ objeto }}</h1>
 <div class="module">
 <table>
 <caption><a href="" class="section">Informações Gerais</a></caption>
@@ -22,11 +21,20 @@
 			<td scope="row"><b>Quantidade</b></td>
 			<th scope="row">{{objeto.itemRequisicao.qtd}} ({{objeto.itemRequisicao.material.unidadeMaterial}})</th>
 		</tr>
-{% else %}
-{% if campos.name = "unidadeMaterial" %}
+{% else %}{% if campos.name = "unidadeMaterial" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{objeto.unidadeMaterial}}</th>
+		</tr>
+{% else %}{% if campos.name = "gerente" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.gerente}}</th>
+		</tr>
+{% else %}{% if campos.name = "fabricante" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.fabricante}}</th>
 		</tr>
 {% else %}{% if campos.name = "grupoMercadoria" %}
 		<tr>
@@ -81,7 +89,7 @@
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{campos.value}}</th>
 		</tr>
-{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
+{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
 {% endfor %}
 </table>
 {% if itens %}

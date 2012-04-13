@@ -63,6 +63,9 @@ def adiciona(request, objeto, idObjeto):
 		titulo = 'Itens da Requisicao'
 		formpost = FormItemRequisicao(request.POST, request.FILES, )
 		formget = FormItemRequisicao()
+	if str(objeto) == 'mapa':
+		erro = 'Não é possível cadastrar mapa manualmente'
+		return render_to_response('500.html', locals(), context_instance = RequestContext(request))
 	if request.method == 'POST': 
 		form = formpost
 		if form.is_valid():
@@ -152,7 +155,12 @@ def lista(request, objeto):
 	if str(objeto) == 'cotacao':
 		titulo = 'Itens para Cotação'
 		lista_vazia = 'Nenhum item para cotação'
-		fornecedor = get_object_or_404(Fornecedor, usuario = request.user)
+		fornecedor = Fornecedor.objects.filter(usuario = request.user)
+		if len(fornecedor) == 0:
+			erro = 'Área restrita à fornecedores'
+			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
+		else:
+			fornecedor = get_object_or_404(Fornecedor, usuario = request.user)
 		lista = Cotacao.objects.filter(fornecedor = fornecedor).exclude(dtLimite__lte = datetime.now() - timedelta(1)).order_by('id').reverse()
 	return render_to_response('lista.html', locals(), context_instance = RequestContext(request))
 
@@ -259,10 +267,13 @@ def edita(request, objeto, idObjeto):
 	if request.method == 'POST':
 		form = formpost
 		if form.is_valid():
-			objeto_form = form.save(commit = False)
-			if objeto_form.editar(request, idObjeto) != 'validos':
-				erro =  objeto_form.editar(request, idObjeto)
-				return render_to_response("edita.html", locals(), context_instance = RequestContext(request))
+			if str(objeto) == 'gruposfornecedor':
+				objeto_form = form.save()
+			else:
+				objeto_form = form.save(commit = False)
+				if objeto_form.editar(request, idObjeto) != 'validos':
+					erro =  objeto_form.editar(request, idObjeto)
+					return render_to_response("edita.html", locals(), context_instance = RequestContext(request))
 			if str(objeto) == 'gruposfornecedor':
 				return HttpResponseRedirect("/lista/fornecedor")
 			return HttpResponseRedirect("/lista/"+str(objeto))
@@ -342,18 +353,18 @@ def filtra(request, objeto):
 			form = formpost
 			if form.is_valid():
 				parametros = []	
-				valor_campo = []		
+				valorCampo = []		
 				for campo in campos:
-					valor_campo.append(form.cleaned_data[campo.keys()[0]])
-					if valor_campo[-1] != '':
+					valorCampo.append(form.cleaned_data[campo.keys()[0]])
+					if valorCampo[-1] != '':
 						parametros.append(campo[campo.keys()[0]])
-					if valor_campo[-1] == None:
+					if valorCampo[-1] == None:
 						parametros.pop(-1)
-				nomeMaterial = valor_campo[0]
-				fabricante = valor_campo[1]
-				grupoMercadoria = valor_campo[2]
-				unidadeMaterial = valor_campo[3]
-				tpMaterial = valor_campo[4]
+				nomeMaterial = valorCampo[0]
+				fabricante = valorCampo[1]
+				grupoMercadoria = valorCampo[2]
+				unidadeMaterial = valorCampo[3]
+				tpMaterial = valorCampo[4]
 				query = Material.objects.filter(nomeMaterial__icontains = nomeMaterial).filter(tpMaterial__icontains = tpMaterial)
 				if fabricante != None:
 					query = query.filter(fabricante = fabricante)
@@ -388,21 +399,21 @@ def filtra(request, objeto):
 			form = formpost
 			if form.is_valid():
 				parametros = []	
-				valor_campo = []		
+				valorCampo = []		
 				for campo in campos:
-					valor_campo.append(form.cleaned_data[campo.keys()[0]])
-					if valor_campo[-1] != '':
+					valorCampo.append(form.cleaned_data[campo.keys()[0]])
+					if valorCampo[-1] != '':
 						parametros.append(campo[campo.keys()[0]])
-					if valor_campo[-1] == None:
+					if valorCampo[-1] == None:
 						parametros.pop(-1)
-				razao = valor_campo[0]
-				fantasia = valor_campo[1]
-				cnpj = valor_campo[2]
-				usuario = valor_campo[3]
-				bairro = valor_campo[4]
-				cidade = valor_campo[5]
-				uf = valor_campo[6]
-				status = valor_campo[7]
+				razao = valorCampo[0]
+				fantasia = valorCampo[1]
+				cnpj = valorCampo[2]
+				usuario = valorCampo[3]
+				bairro = valorCampo[4]
+				cidade = valorCampo[5]
+				uf = valorCampo[6]
+				status = valorCampo[7]
 				query = Fornecedor.objects.filter(razao__icontains = razao).filter(fantasia__icontains = fantasia).filter(cnpj__icontains = cnpj).filter(bairro__icontains = bairro).filter(cidade__icontains = cidade).filter(uf__icontains = uf).filter(status__icontains = status)
 				if usuario != None:
 					query = query.filter(usuario = usuario)
@@ -429,17 +440,17 @@ def filtra(request, objeto):
 			form = formpost
 			if form.is_valid():
 				parametros = []	
-				valor_campo = []		
+				valorCampo = []		
 				for campo in campos:
-					valor_campo.append(form.cleaned_data[campo.keys()[0]])
-					if valor_campo[-1] != '':
+					valorCampo.append(form.cleaned_data[campo.keys()[0]])
+					if valorCampo[-1] != '':
 						parametros.append(campo[campo.keys()[0]])
-					if valor_campo[-1] == None:
+					if valorCampo[-1] == None:
 						parametros.pop(-1)
-				dtLiberacaoP = valor_campo[0]
-				dtLiberacaoA = valor_campo[1]
-				fornecedor = valor_campo[2]
-				status = valor_campo[3]
+				dtLiberacaoP = valorCampo[0]
+				dtLiberacaoA = valorCampo[1]
+				fornecedor = valorCampo[2]
+				status = valorCampo[3]
 				query = MapaComparativo.objects.filter(status__icontains = status).order_by('id').reverse()
 				requisicoes = Requisicao.objects.filter(solicitante = request.user)
 				if requisicoes != None:
@@ -479,18 +490,18 @@ def filtra(request, objeto):
 			form = formpost
 			if form.is_valid():
 				parametros = []	
-				valor_campo = []		
+				valorCampo = []		
 				for campo in campos:
-					valor_campo.append(form.cleaned_data[campo.keys()[0]])
-					if valor_campo[-1] != '':
+					valorCampo.append(form.cleaned_data[campo.keys()[0]])
+					if valorCampo[-1] != '':
 						parametros.append(campo[campo.keys()[0]])
-					if valor_campo[-1] == None:
+					if valorCampo[-1] == None:
 						parametros.pop(-1)
-				dtLimiteP = valor_campo[0]
-				dtLimiteA = valor_campo[1]
-				vlCotacaoP = valor_campo[2]
-				vlCotacaoA = valor_campo[3]
-				itemRequisicao = valor_campo[4]
+				dtLimiteP = valorCampo[0]
+				dtLimiteA = valorCampo[1]
+				vlCotacaoP = valorCampo[2]
+				vlCotacaoA = valorCampo[3]
+				itemRequisicao = valorCampo[4]
 				fornecedor = Fornecedor.objects.filter(usuario = request.user)
 				query = Cotacao.objects.filter(fornecedor = fornecedor).order_by('dtLimite').reverse()
 				if dtLimiteP != None:
@@ -529,20 +540,20 @@ def filtra(request, objeto):
 			form = formpost
 			if form.is_valid():
 				parametros = []	
-				valor_campo = []		
+				valorCampo = []		
 				for campo in campos:
-					valor_campo.append(form.cleaned_data[campo.keys()[0]])
-					if valor_campo[-1] != '':
+					valorCampo.append(form.cleaned_data[campo.keys()[0]])
+					if valorCampo[-1] != '':
 						parametros.append(campo[campo.keys()[0]])
-					if valor_campo[-1] == None:
+					if valorCampo[-1] == None:
 						parametros.pop(-1)
-				dtRequisicaoP = valor_campo[0]
-				dtRequisicaoA = valor_campo[1]
-				itemRequisicao = valor_campo[2]
-				dtDeferimentoP = valor_campo[3]
-				dtDeferimentoA = valor_campo[4]
-				centroCusto = valor_campo[5]
-				status = valor_campo[6]
+				dtRequisicaoP = valorCampo[0]
+				dtRequisicaoA = valorCampo[1]
+				itemRequisicao = valorCampo[2]
+				dtDeferimentoP = valorCampo[3]
+				dtDeferimentoA = valorCampo[4]
+				centroCusto = valorCampo[5]
+				status = valorCampo[6]
 				query = Requisicao.objects.filter(status__icontains = status, solicitante = request.user).order_by('id').reverse()
 				if dtRequisicaoP != None:
 					query = query.filter(dtRequisicao__gte = dtRequisicaoP)
@@ -566,6 +577,128 @@ def filtra(request, objeto):
 				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))	
 		else:
 			form = FormFiltraRequisicao()
+		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+
+	if str(objeto) == 'fabricante':
+		titulo = 'Pesquisar Fabricante'
+		objetototal = 'Fabricantes'
+		formpost = FormFiltraFabricante(request.POST, request.FILES)
+		formget = FormFiltraFabricante()
+		nomeFabricante = {'nomeFabricante': 'Nome do Fabricante'}
+		campos = [nomeFabricante]
+		colunas = ['Fabricante']
+		if request.method == 'POST':
+			form = formpost
+			if form.is_valid():
+				parametros = []	
+				valorCampo = []		
+				for campo in campos:
+					valorCampo.append(form.cleaned_data[campo.keys()[0]])
+					if valorCampo[-1] != '':
+						parametros.append(campo[campo.keys()[0]])
+					if valorCampo[-1] == None:
+						parametros.pop(-1)
+				nomeFabricante = valorCampo[0]
+				query = Fabricante.objects.filter(nomeFabricante__icontains = nomeFabricante).order_by('nomeFabricante')
+				total = query.count()
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+			else:
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))	
+		else:
+			form = FormFiltraFabricante()
+		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+
+	if str(objeto) == 'unidadematerial':
+		titulo = 'Pesquisar Unidade de Medida'
+		objetototal = 'Unidades'
+		formpost = FormFiltraUnidadeMaterial(request.POST, request.FILES)
+		formget = FormFiltraUnidadeMaterial()
+		nomeUnidadeMaterial = {'nomeUnidadeMaterial': 'Unidade de Medida'}
+		descUnidadeMaterial = {'descUnidadeMaterial': 'Descrição'}
+		campos = [nomeUnidadeMaterial, descUnidadeMaterial]
+		colunas = ['Unidade de Medida', 'Descrição']
+		if request.method == 'POST':
+			form = formpost
+			if form.is_valid():
+				parametros = []	
+				valorCampo = []		
+				for campo in campos:
+					valorCampo.append(form.cleaned_data[campo.keys()[0]])
+					if valorCampo[-1] != '':
+						parametros.append(campo[campo.keys()[0]])
+					if valorCampo[-1] == None:
+						parametros.pop(-1)
+				nomeUnidadeMaterial = valorCampo[0]
+				descUnidadeMaterial = valorCampo[1]
+				query = UnidadeMaterial.objects.filter(nomeUnidadeMaterial__icontains = nomeUnidadeMaterial).filter(nomeUnidadeMaterial__icontains = nomeUnidadeMaterial).order_by('descUnidadeMaterial')
+				total = query.count()
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+			else:
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))	
+		else:
+			form = FormFiltraUnidadeMaterial()
+		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+
+	if str(objeto) == 'grupomercadoria':
+		titulo = 'Pesquisar Grupo de Mercadoria'
+		objetototal = 'Grupos de Mercadoria'
+		formpost = FormFiltraGrupoMercadoria(request.POST, request.FILES)
+		formget = FormFiltraGrupoMercadoria()
+		nomeGrupoMercadoria = {'nomeGrupoMercadoria': 'Grupo de Mercadoria'}
+		campos = [nomeGrupoMercadoria]
+		colunas = ['Grupo de Mercadoria']
+		if request.method == 'POST':
+			form = formpost
+			if form.is_valid():
+				parametros = []	
+				valorCampo = []		
+				for campo in campos:
+					valorCampo.append(form.cleaned_data[campo.keys()[0]])
+					if valorCampo[-1] != '':
+						parametros.append(campo[campo.keys()[0]])
+					if valorCampo[-1] == None:
+						parametros.pop(-1)
+				nomeGrupoMercadoria = valorCampo[0]
+				query = GrupoMercadoria.objects.filter(nomeGrupoMercadoria__icontains = nomeGrupoMercadoria).order_by('nomeGrupoMercadoria')
+				total = query.count()
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+			else:
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))	
+		else:
+			form = FormFiltraGrupoMercadoria()
+		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+
+	if str(objeto) == 'centrocusto':
+		titulo = 'Pesquisar Centro de Custo'
+		objetototal = 'Centros de Custo'
+		formpost = FormFiltraCentroCusto(request.POST, request.FILES)
+		formget = FormFiltraCentroCusto()
+		nomeCentroCusto = {'nomeCentroCusto': 'Centro de Custo'}
+		gerente = {'gerente': 'Gerente'}
+		campos = [nomeCentroCusto, gerente]
+		colunas = ['Centro de Custo', 'Gerente']
+		if request.method == 'POST':
+			form = formpost
+			if form.is_valid():
+				parametros = []	
+				valorCampo = []		
+				for campo in campos:
+					valorCampo.append(form.cleaned_data[campo.keys()[0]])
+					if valorCampo[-1] != '':
+						parametros.append(campo[campo.keys()[0]])
+					if valorCampo[-1] == None:
+						parametros.pop(-1)
+				nomeCentroCusto = valorCampo[0]
+				gerente = valorCampo[1]
+				query = CentroCusto.objects.filter(nomeCentroCusto__icontains = nomeCentroCusto).order_by('nomeCentroCusto')
+				if gerente != None:
+					query = query.filter(gerente = gerente)
+				total = query.count()
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
+			else:
+				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))	
+		else:
+			form = FormFiltraCentroCusto()
 		return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
 
 

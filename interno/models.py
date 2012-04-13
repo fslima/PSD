@@ -26,6 +26,7 @@ class UnidadeMaterial(models.Model):
 		return self.nomeUnidadeMaterial
 
 	nomeUnidadeMaterial = models.CharField(max_length = 50)
+	descUnidadeMaterial = models.CharField(max_length = 50)
 	
 	def adicionar(self, request, idObjeto):
 		self.save()
@@ -120,7 +121,7 @@ class Fornecedor(models.Model):
 	cidade = models.CharField(max_length = 50)
 	uf = models.CharField(max_length = 2)
 	cep = models.BigIntegerField(max_length = 8)
-	status = models.CharField(max_length = 1)
+	status = models.CharField(max_length = 50)
 
 	def adicionar(self, request, idObjeto):
 		self.save()
@@ -204,7 +205,7 @@ class Cotacao(models.Model):
 	obs = models.TextField(max_length = 100, null = True)
 
 	def adicionar(self, item, diasParaCotacao):
-		fornecedores = Fornecedor.objects.filter(grupoMercadoria = item.material.grupoMercadoria)
+		fornecedores = Fornecedor.objects.filter(grupoMercadoria = item.material.grupoMercadoria, status = 'Ativo')
 		if len(fornecedores) == 0:
 			return 'Não há fornecedores para o item: '+str(item)
 		for fornecedor in fornecedores:

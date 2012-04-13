@@ -8,7 +8,7 @@
 {% block conteudo %}
 {% csrf_token %}
 <h1>{{ titulo }}</h1>
-<a href="/adiciona/{{ objeto }}/000" class="addlink">Adicionar {{ objeto|capfirst }}</a>     |
+<a href="/adiciona/{{ objeto }}/000" class="addlink">{{ fornecedor }} {{ objeto|capfirst }}</a>     |
 <a href="/filtra/{{ objeto }}"><img src="/media/img/exibir.gif/" />Pesquisar {{ objeto|capfirst }}</a>
 <div class="module">
 <table>
@@ -22,6 +22,9 @@
 				{% if objeto == 'cotacao' %} <th scope="row"> {{registro.dtLimite}} </th>{% endif %}
 			{% if objeto == 'requisicao' %}
 				<td><a href="/adiciona/itemrequisicao/{{ registro.id }}" class="addlink">Incluir Item</a></td>
+			{% endif %}
+			{% if objeto == 'fornecedor' %}
+				<td><a href="/edita/gruposfornecedor/{{ registro.id }}" class="addlink">Incluir Grupo de Mercadoria</a></td>
 			{% endif %}
 		</tr>
 {% empty %}

@@ -12,10 +12,11 @@ class FormGrupoMercadoria(forms.ModelForm):
 
 class FormUnidadeMaterial(forms.ModelForm):
 	nomeUnidadeMaterial = forms.CharField(label = 'Unidade de Medida')
+	descUnidadeMaterial = forms.CharField(label = 'Descrição')
 	
 	class Meta:
 		model = UnidadeMaterial
-		fields = ('nomeUnidadeMaterial',)
+		fields = ('nomeUnidadeMaterial', 'descUnidadeMaterial')
 
 class FormCentroCusto(forms.ModelForm):
 	nomeCentroCusto = forms.CharField(label = 'Centro de Custo')
@@ -59,7 +60,7 @@ class FormFornecedor(forms.ModelForm):
 				('SC','SC'),('SE','SE'),('SP','SP'), ('TO','TO')], 
 				initial = ('',''),
 				label = 'Estado')
-	status = forms.ChoiceField([('',''), ('A','Ativo'), ('S','Suspenso'), ('E','Excluido'),], 
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Suspenso','Suspenso'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação')
 	cep = forms.CharField(min_length = 8, max_length = 8)
@@ -69,7 +70,6 @@ class FormFornecedor(forms.ModelForm):
 		fields = ('razao', 'fantasia', 'cnpj', 'usuario', 'tel1', 'tel2', 'email', 'site', 'status', 'logradouro', 'nrimovel', 'complemento', 'bairro', 'cidade', 'uf', 'cep')
 
 class FormGruposFornecedor(forms.ModelForm):
-	#forms.CharField(label = 'Fabricante')
 
 	class Meta:
 		model = Fornecedor
@@ -122,6 +122,30 @@ class FormExibeMapaComparativo(forms.ModelForm):
 		model = MapaComparativo
 		fields = ('dtLiberacao', 'cotacaoVencedora', 'obs')
 
+class FormFiltraGrupoMercadoria(forms.Form):
+	nomeGrupoMercadoria = forms.CharField(label = 'Grupo de Mercadoria', required = False)
+	
+	fields = ('nomeGrupoMercadoria',)
+
+class FormFiltraUnidadeMaterial(forms.Form):
+	nomeUnidadeMaterial = forms.CharField(label = 'Unidade de Medida', required = False)
+	descUnidadeMaterial = forms.CharField(label = 'Descrição', required = False)
+	
+	fields = ('nomeUnidadeMaterial', 'descUnidadeMaterial')
+
+class FormFiltraCentroCusto(forms.Form):
+	nomeCentroCusto = forms.CharField(label = 'Centro de Custo', required = False)
+	gerente = forms.ModelChoiceField(queryset=User.objects.filter(is_active = 't').order_by('username'), label = 'Gerente', required = False)
+	
+	class Meta:
+		model = CentroCusto
+		fields = ('nomeCentroCusto', 'gerente')
+
+class FormFiltraFabricante(forms.Form):
+	nomeFabricante = forms.CharField(label = 'Fabricante', required = False)
+	
+	fields = ('nomeFabricante',)
+
 class FormFiltraCotacao(forms.Form):
 	vlCotacaoP = forms.DecimalField(max_digits = 20, decimal_places = 2, required = False, label = 'Valor Unitário a partir de')
 	vlCotacaoA = forms.DecimalField(max_digits = 20, decimal_places = 2, required = False, label = 'Valor Unitário ate')
@@ -170,7 +194,7 @@ class FormFiltraFornecedor(forms.Form):
 				('SC','SC'),('SE','SE'),('SP','SP'), ('TO','TO')], 
 				initial = ('',''),
 				label = 'Estado', required = False)
-	status = forms.ChoiceField([('',''), ('A','Ativo'), ('S','Suspenso'), ('E','Excluido'),], 
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Suspenso','Suspenso'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação', required = False)
 
