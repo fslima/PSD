@@ -7,7 +7,7 @@
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
 <h1>Editar {{titulo}}</h1>
-{% if objeto == 'cotacao' %}
+{% if tpObjeto == 'cotacao' %}
 <div class="module">
 <table>
 <caption><a href="" class="section">Dados da Cotação</a></caption>
@@ -34,7 +34,7 @@
 		{{ form.as_table }}
 		<tr>
 			<td><button class="button" type="submit">Atualizar</td>
-			<td><a href="/lista/{{ objeto }}"><button class="button" type="reset">Voltar</button></a></td>
+			<td><a href="/lista/{{ tpObjeto }}"><button class="button" type="reset">Voltar</button></a></td>
 		</tr>
 	</table>
 </form>

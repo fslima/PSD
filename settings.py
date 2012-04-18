@@ -30,6 +30,7 @@ LANGUAGE_CODE = 'pt-br'
 SITE_ID = 1
 
 DATE_FORMAT = 'd/m/Y'
+DATETIME_FORMAT = 'd/m/Y H:i'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.

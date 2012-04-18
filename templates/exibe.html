@@ -7,8 +7,23 @@
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
-<h1>{{ objeto }}</h1>
+<h1>{{ objeto }}</h1><a href="/edita/{{ tpObjeto }}/{{ objeto.id }}/"><img src="/media/img/alterar.gif/" />Modificar</a> | 
+<a href="/deleta/{{ tpObjeto }}/{{ objeto.id }}/"><img src="/media/img/delete.gif/" />Excluir</a>
 <div class="module">
+<div id="content-related">
+    <div class="module" id="recent-actions-module">
+        <h2>Log {{ objeto }}</h2>
+        <h3>Inclusão</h3>
+	<ul>Data: {{ objeto.dtInclusao|default_if_none:"" }}</ul>
+	<ul>Usuário: {{ objeto.usuarioInclusao|default_if_none:"" }}</ul>
+	<h3>Alteração</h3>
+	<ul>Data: {{ objeto.dtAlteracao|default_if_none:"" }}</ul>
+	<ul>Usuário: {{ objeto.usuarioAlteracao|default_if_none:"" }}</ul>
+	<h3>Alteração</h3>
+	<ul>Data: {{ objeto.dtExclusao|default_if_none:"" }}</ul>
+	<ul>Usuário: {{ objeto.usuarioExclusao|default_if_none:"" }}</ul>
+    </div>
+</div>
 <table>
 <caption><a href="" class="section">Informações Gerais</a></caption>
 {% for campos in form %}
@@ -19,12 +34,12 @@
 		</tr>
 		<tr>
 			<td scope="row"><b>Quantidade</b></td>
-			<th scope="row">{{objeto.itemRequisicao.qtd}} ({{objeto.itemRequisicao.material.unidadeMaterial}})</th>
+			<th scope="row">{{objeto.itemRequisicao.qtd}} ({{objeto.itemRequisicao.material.unidadeMedida}})</th>
 		</tr>
-{% else %}{% if campos.name = "unidadeMaterial" %}
+{% else %}{% if campos.name = "unidadeMedida" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.unidadeMaterial}}</th>
+			<th scope="row">{{objeto.unidadeMedida}}</th>
 		</tr>
 {% else %}{% if campos.name = "gerente" %}
 		<tr>
@@ -40,14 +55,6 @@
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{objeto.grupoMercadoria}}</th>
-		</tr>
-		<tr>
-			<td scope="row"><b>Valor da Última Compra</b></td>
-			<th scope="row">{{objeto.vlUltimaCompra}}</th>
-		</tr>
-		<tr>
-			<td scope="row"><b>Data da Última Compra</b></td>
-			<th scope="row">{{objeto.dtUltimaCompra}}</th>
 		</tr>
 {% else %}{% if campos.name = "usuario" %}
 		<tr>
@@ -111,5 +118,6 @@
 {% endfor %}
 </table>
 {% endif %}
-</div>
+
+
 {% endblock %}

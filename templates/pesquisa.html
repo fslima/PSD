@@ -45,74 +45,78 @@
 </tr>
 </thead>
 <tbody>
-{% if objeto == 'material' %}
+{% if tpObjeto == 'material' %}
 {%for registro in query %}
-<tr class="row1">
+<tr class="{% cycle 'row1' 'row2' %}">
 <th><a href="/exibe/material/{{registro.id}}">{{registro}}</a></th>
-<td>{{registro.fabricante}}</td><td>{{registro.grupoMercadoria}}</td><td>{{registro.unidadeMaterial}}</td><td>{{registro.tpMaterial}}</td> </tr>
+<td>{{registro.fabricante}}</td><td>{{registro.grupoMercadoria}}</td><td>{{registro.unidadeMedida}}</td><td>{{registro.tpMaterial}}</td>
+<td>{{registro.status}}</td></tr>
 {% endfor %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"l,is" }}</p>
 {% endif %}
-{% if objeto == 'fornecedor' %}
+{% if tpObjeto == 'fornecedor' %}
 {%for registro in query %}
-<tr class="row1">
+<tr class="{% cycle 'row1' 'row2' %}">
 <td>{{registro.razao}}</td>
 <th><a href="/exibe/fornecedor/{{registro.id}}">{{registro.fantasia}}</a></th><td>{{registro.cnpj}}</td><td>{{registro.usuario}}</td><td>{{registro.bairro}}</td><td>{{registro.cidade}}</td><td>{{registro.uf}}</td></tr>
 {% endfor %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"r,es" }}</p>
 {% endif %}
-{% if objeto == 'requisicao' %}
+{% if tpObjeto == 'requisicao' %}
 {%for registro in query %}
-<tr class="row1">
+<tr class="{% cycle 'row1' 'row2' %}">
 <th><a href="/exibe/requisicao/{{registro.id}}">{{registro}}</a></th>
 <td>{{registro.dtRequisicao}}</td><td>{{registro.solicitante}}</td> <td>{{registro.dtDeferimento}}</td><td>{{registro.status}}</td> </tr>
 {% endfor %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"ão,ões" }}</p>
 {% endif %}
-{% if objeto == 'mapa' %}
+{% if tpObjeto == 'mapa' %}
 {%for registro in query %}
-<tr class="row1">
+<tr class="{% cycle 'row1' 'row2' %}">
 <th><a href="/exibe/mapa/{{registro.id}}">{{registro}}</a></th>
 <td>{{registro.dtLiberacao}}</td>
 <td><a href="/exibe/fornecedor/{{registro.cotacaoVencedora.fornecedor.id}}">{{registro.cotacaoVencedora.fornecedor}}</a></td> 
 <td><a href="/exibe/material/{{registro.cotacaoVencedora.itemRequisicao.material.id}}">{{registro.cotacaoVencedora.itemRequisicao}}</a></td><td>{{registro.cotacaoVencedora.vlCotacao}}</td> <td>{{registro.status}}</td> </tr>
 {% endfor %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize }}</p>
 {% endif %}
-{% if objeto == 'cotacao' %}
+{% if tpObjeto == 'cotacao' %}
 {%for registro in query %}
-<tr class="row1">
+<tr class="{% cycle 'row1' 'row2' %}">
 <th><a href="/exibe/cotacao/{{registro.id}}">{{registro.dtLimite}}</a></th>
 <td>{{registro.vlCotacao}}</td><td>{{registro.itemRequisicao}}</td></tr>
 {% endfor %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize }}</p>
 {% endif%}
-{% if objeto == 'fabricante' %}
+{% if tpObjeto == 'fabricante' %}
 {%for registro in query %}
-<tr class="row1">
-<th><a href="/exibe/fabricante/{{registro.id}}">{{registro}}</a></th>
+<tr class="{% cycle 'row1' 'row2' %}">
+<th><a href="/exibe/fabricante/{{registro.id}}">{{registro}}</a></th><td>{{registro.status}}</td></tr>
 {% endfor %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize }}</p>
 {% endif %}
-{% if objeto == 'unidadematerial' %}
+{% if tpObjeto == 'unidademedida' %}
 {%for registro in query %}
-<tr class="row1">
-<th><a href="/exibe/unidadematerial/{{registro.id}}">{{registro}}</a></th>
-<td>{{registro.descUnidadeMaterial}}</td></tr>
+<tr class="{% cycle 'row1' 'row2' %}">
+<th><a href="/exibe/unidademedida/{{registro.id}}">{{registro}}</a></th>
+<td>{{registro.descUnidadeMedida}}</td><td>{{registro.status}}</td></tr>
 {% endfor %}
-{% endif%}
-{% if objeto == 'grupomercadoria' %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"e de Medida,es de Medida" }}</p>
+{% endif %}
+{% if tpObjeto == 'grupomercadoria' %}
 {%for registro in query %}
-<tr class="row1">
-<th><a href="/exibe/grupomercadoria/{{registro.id}}">{{registro}}</a></th></tr>
+<tr class="{% cycle 'row1' 'row2' %}">
+<th><a href="/exibe/grupomercadoria/{{registro.id}}">{{registro}}</a></th><td>{{registro.status}}</td></tr>
 {% endfor %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"o de Mercadoria,os de Mercadoria" }}</p>
 {% endif%}
-{% if objeto == 'centrocusto' %}
+{% if tpObjeto == 'centrocusto' %}
 {%for registro in query %}
-<tr class="row1">
-<th><a href="/exibe/centrocusto/{{registro.id}}">{{registro}}</a></th><td>{{registro.gerente}}</td></tr>
+<tr class="{% cycle 'row1' 'row2' %}">
+<th><a href="/exibe/centrocusto/{{registro.id}}">{{registro}}</a></th><td>{{registro.gerente}}</td><td>{{registro.status}}</td></tr>
 {% endfor %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"o de Custo,os de Custo" }}</p>
 {% endif%}
-</tbody>
-</table>
-</div>
-<p class="paginator">
-{{total}} {{objetototal}}
-</p>
       </form>
     </div>
   </div>     

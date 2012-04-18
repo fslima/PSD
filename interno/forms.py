@@ -5,42 +5,60 @@ from models import *
 
 class FormGrupoMercadoria(forms.ModelForm):
 	nomeGrupoMercadoria = forms.CharField(label = 'Grupo de Mercadoria')
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
+				initial = ('',''),
+				label = 'Situação')
 	
 	class Meta:
 		model = GrupoMercadoria
-		fields = ('nomeGrupoMercadoria',)
+		fields = ('nomeGrupoMercadoria','status')
 
-class FormUnidadeMaterial(forms.ModelForm):
-	nomeUnidadeMaterial = forms.CharField(label = 'Unidade de Medida')
-	descUnidadeMaterial = forms.CharField(label = 'Descrição')
+class FormUnidadeMedida(forms.ModelForm):
+	nomeUnidadeMedida = forms.CharField(label = 'Unidade de Medida')
+	descUnidadeMedida = forms.CharField(label = 'Descrição')
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
+				initial = ('',''),
+				label = 'Situação')
 	
 	class Meta:
-		model = UnidadeMaterial
-		fields = ('nomeUnidadeMaterial', 'descUnidadeMaterial')
+		model = UnidadeMedida
+		fields = ('nomeUnidadeMedida', 'descUnidadeMedida', 'status')
 
 class FormCentroCusto(forms.ModelForm):
 	nomeCentroCusto = forms.CharField(label = 'Centro de Custo')
+	gerente = forms.ModelChoiceField(queryset=User.objects.filter(is_active = 't').order_by('username'))
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
+				initial = ('',''),
+				label = 'Situação')
 	
 	class Meta:
 		model = CentroCusto
-		fields = ('nomeCentroCusto', 'gerente')
+		fields = ('nomeCentroCusto', 'gerente', 'status')
 
 class FormFabricante(forms.ModelForm):
 	nomeFabricante = forms.CharField(label = 'Fabricante')
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
+				initial = ('',''),
+				label = 'Situação')
 	
 	class Meta:
 		model = Fabricante
-		fields = ('nomeFabricante',)
+		fields = ('nomeFabricante', 'status')
 
 class FormMaterial(forms.ModelForm):
 	nomeMaterial = forms.CharField(label = 'Nome')
-	fabricante = forms.ModelChoiceField(queryset = Fabricante.objects.all(), label = 'Fabricante')
+	fabricante = forms.ModelChoiceField(queryset = Fabricante.objects.filter(status = 'Ativo'), label = 'Fabricante')
+	unidadeMedida = forms.ModelChoiceField(queryset = UnidadeMedida.objects.filter(status = 'Ativo'), label = 'Unidade de Medida')
+	grupoMercadoria = forms.ModelChoiceField(queryset = GrupoMercadoria.objects.filter(status = 'Ativo'), label = 'Grupo de Mercadoria')
 	tpMaterial = forms.ChoiceField([('Mercadoria','Mercadoria'), ('Servico', 'Servico')], 
-				     initial = ('Mercadoria','Mercadoria'))
+				     initial = ('Mercadoria','Mercadoria'), label = 'Tipo de Material')
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
+				initial = ('',''),
+				label = 'Situação')
 
 	class Meta:
 		model = Material
-		fields = ('nomeMaterial', 'fabricante', 'grupoMercadoria', 'unidadeMaterial', 'tpMaterial')
+		fields = ('nomeMaterial', 'fabricante', 'grupoMercadoria', 'unidadeMedida', 'tpMaterial', 'status')
 
 class FormFornecedor(forms.ModelForm):
 	razao = forms.CharField(label = 'Razão Social')
@@ -124,27 +142,39 @@ class FormExibeMapaComparativo(forms.ModelForm):
 
 class FormFiltraGrupoMercadoria(forms.Form):
 	nomeGrupoMercadoria = forms.CharField(label = 'Grupo de Mercadoria', required = False)
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
+				initial = ('',''),
+				label = 'Situação', required = False)
 	
-	fields = ('nomeGrupoMercadoria',)
+	fields = ('nomeGrupoMercadoria', 'status')
 
-class FormFiltraUnidadeMaterial(forms.Form):
-	nomeUnidadeMaterial = forms.CharField(label = 'Unidade de Medida', required = False)
-	descUnidadeMaterial = forms.CharField(label = 'Descrição', required = False)
+class FormFiltraUnidadeMedida(forms.Form):
+	nomeUnidadeMedida = forms.CharField(label = 'Unidade de Medida', required = False)
+	descUnidadeMedida = forms.CharField(label = 'Descrição', required = False)
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
+				initial = ('',''),
+				label = 'Situação', required = False)
 	
-	fields = ('nomeUnidadeMaterial', 'descUnidadeMaterial')
+	fields = ('nomeUnidadeMedida', 'descUnidadeMedida', 'status')
 
 class FormFiltraCentroCusto(forms.Form):
 	nomeCentroCusto = forms.CharField(label = 'Centro de Custo', required = False)
 	gerente = forms.ModelChoiceField(queryset=User.objects.filter(is_active = 't').order_by('username'), label = 'Gerente', required = False)
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
+				initial = ('',''),
+				label = 'Situação', required = False)
 	
 	class Meta:
 		model = CentroCusto
-		fields = ('nomeCentroCusto', 'gerente')
+		fields = ('nomeCentroCusto', 'gerente', 'status')
 
 class FormFiltraFabricante(forms.Form):
 	nomeFabricante = forms.CharField(label = 'Fabricante', required = False)
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
+				initial = ('',''),
+				label = 'Situação', required = False)
 	
-	fields = ('nomeFabricante',)
+	fields = ('nomeFabricante', 'status')
 
 class FormFiltraCotacao(forms.Form):
 	vlCotacaoP = forms.DecimalField(max_digits = 20, decimal_places = 2, required = False, label = 'Valor Unitário a partir de')
@@ -171,11 +201,14 @@ class FormFiltraMaterial(forms.Form):
 	nomeMaterial = forms.CharField(label = 'Nome', required = False)
 	fabricante = forms.ModelChoiceField(queryset=Fabricante.objects.all(), required = False, label = 'Fabricante')
 	grupoMercadoria = forms.ModelChoiceField(queryset=GrupoMercadoria.objects.all(), required = False, label = 'Grupo de Mercadoria')
-	unidadeMaterial = forms.ModelChoiceField(queryset=UnidadeMaterial.objects.all(), required = False, label = 'Unidade de Medida')
+	unidadeMedida = forms.ModelChoiceField(queryset=UnidadeMedida.objects.all(), required = False, label = 'Unidade de Medida')
 	tpMaterial = forms.ChoiceField([('Mercadoria','Mercadoria'), ('Servico', 'Servico')], 
 				     initial = ('Mercadoria','Mercadoria'), required = False, label = 'Tipo de Material')
+	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
+				initial = ('',''),
+				label = 'Situação', required = False)
 
-	fields = ('nomeMaterial', 'fabricante', 'grupoMercadoria', 'unidadeMaterial', 'tpMaterial')
+	fields = ('nomeMaterial', 'fabricante', 'grupoMercadoria', 'unidadeMedida', 'tpMaterial', 'status')
 
 class FormFiltraFornecedor(forms.Form):
 	razao = forms.CharField(label = 'Razão Social', required = False)

@@ -8,22 +8,22 @@
 {% block conteudo %}
 {% csrf_token %}
 <h1>{{ titulo }}</h1>
-<a href="/adiciona/{{ objeto }}/000" class="addlink">{{ fornecedor }} {{ objeto|capfirst }}</a>     |
-<a href="/filtra/{{ objeto }}"><img src="/media/img/exibir.gif/" />Pesquisar {{ objeto|capfirst }}</a>
+<a href="/adiciona/{{ tpObjeto }}/000" class="addlink">Adicionar {{ tpObjeto|capfirst }}</a>     |
+<a href="/filtra/{{ tpObjeto }}"><img src="/media/img/exibir.gif/" />Pesquisar {{ tpObjeto|capfirst }}</a>
 <div class="module">
 <table>
-<caption><a href="/lista/{{ objeto }}" class="section">{{ titulo }}</a></caption>
+<caption><a href="/lista/{{ tpObjeto }}" class="section">{{ titulo }}</a></caption>
 {%for registro in lista %}
 		<tr>
-			<td><a href="/exibe/{{ objeto }}/{{ registro.id }}/"><img src="/media/img/exibir.gif/" /></a></td>
-			<td><a href="/edita/{{ objeto }}/{{ registro.id }}/"><img src="/media/img/alterar.gif/" /></a></td>
-			<td><a href="/deleta/{{ objeto }}/{{ registro.id }}/"><img src="/media/img/delete.gif/" /></a></td>
-				{% if objeto != 'cotacao' %} <th scope="row"> {{registro}} </th>{% endif %}
-				{% if objeto == 'cotacao' %} <th scope="row"> {{registro.dtLimite}} </th>{% endif %}
-			{% if objeto == 'requisicao' %}
+			<td><a href="/exibe/{{ tpObjeto }}/{{ registro.id }}/"><img src="/media/img/exibir.gif/" /></a></td>
+			<td><a href="/edita/{{ tpObjeto }}/{{ registro.id }}/"><img src="/media/img/alterar.gif/" /></a></td>
+			<td><a href="/deleta/{{ tpObjeto }}/{{ registro.id }}/"><img src="/media/img/delete.gif/" /></a></td>
+				{% if tpObjeto != 'cotacao' %} <th scope="row"> {{registro}} </th>{% endif %}
+				{% if tpObjeto == 'cotacao' %} <th scope="row"> {{registro.dtLimite}} </th>{% endif %}
+			{% if tpObjeto == 'requisicao' %}
 				<td><a href="/adiciona/itemrequisicao/{{ registro.id }}" class="addlink">Incluir Item</a></td>
 			{% endif %}
-			{% if objeto == 'fornecedor' %}
+			{% if tpObjeto == 'fornecedor' %}
 				<td><a href="/edita/gruposfornecedor/{{ registro.id }}" class="addlink">Incluir Grupo de Mercadoria</a></td>
 			{% endif %}
 		</tr>

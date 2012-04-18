@@ -2,63 +2,104 @@
 {% extends "base.html" %}
 
 {# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
-{% block titulo %}Excluir {{objeto}}{% endblock %}
+{% block titulo %}Excluir {{objeto_para_deletar}}{% endblock %}
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
 <h1>Confirmar Exclusão</h1>
 <div class="module">
 <table>
-<caption><a href="" class="section">Excluir {{ objeto|capfirst }}</a></caption>
+<caption><a href="" class="section">Informações gerais</a></caption>
 <form action="" method="POST"> 
 {% for campos in form %}
-{% ifnotequal campos.value form.curso.value %} 
-{% if campos.name = "unidadeMaterial" %}
+{% if campos.name = "itemRequisicao" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto_para_deletar.unidadeMaterial}}</th>
+			<th scope="row">{{objeto_para_deletar.itemRequisicao.material}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Quantidade</b></td>
+			<th scope="row">{{objeto_para_deletar.itemRequisicao.qtd}} ({{objeto_para_deletar.itemRequisicao.material.unidadeMedida}})</th>
+		</tr>
+{% else %}{% if campos.name = "unidadeMedida" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto_para_deletar.unidadeMedida}}</th>
+		</tr>
+{% else %}{% if campos.name = "gerente" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto_para_deletar.gerente}}</th>
+		</tr>
+{% else %}{% if campos.name = "fabricante" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto_para_deletar.fabricante}}</th>
 		</tr>
 {% else %}{% if campos.name = "grupoMercadoria" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{objeto_para_deletar.grupoMercadoria}}</th>
 		</tr>
-		<tr>
-			<td scope="row"><b>Valor da Última Compra</b></td>
-			<th scope="row">{{objeto_para_deletar.vlUltimaCompra}}</th>
-		</tr>
-		<tr>
-			<td scope="row"><b>Data da Última Compra</b></td>
-			<th scope="row">{{objeto_para_deletar.dtUltimaCompra}}</th>
-		</tr>
-{% else %}{% if campos.name = "aluno" %}
+{% else %}{% if campos.name = "usuario" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto_para_deletar.aluno}}</th>
+			<th scope="row">{{objeto_para_deletar.usuario}}</th>
+		</tr>
+{% else %}{% if campos.name = "cotacaoVencedora" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto_para_deletar.cotacaoVencedora.fornecedor}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Item Cotado</b></td>
+			<th scope="row">{{objeto_para_deletar.cotacaoVencedora}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Valor da Cotação</b></td>
+			<th scope="row">{{objeto_para_deletar.cotacaoVencedora.vlCotacao}}</th>
+		</tr>
+{% else %}{% if campos.name = "centroCusto" %}
+		<tr>
+			<td scope="row"><b>Data de Criação</b></td>
+			<th scope="row">{{objeto_para_deletar.dtRequisicao}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Solicitante</b></td>
+			<th scope="row">{{objeto_para_deletar.solicitante}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Centro de Custo</b></td>
+			<th scope="row">{{objeto_para_deletar.centroCusto}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Status da Requisição</b></td>
+			<th scope="row">{{objeto_para_deletar.status}}</th>
 		</tr>
 {% else %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{campos.value}}</th>
 		</tr>
-{% endif %}{% endif %}{% endif %}
-{% endifnotequal %}
+{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
 {% endfor %}
 </table>
-{% if membros %}
+{% if itens %}
 <table>
 <caption><a href="" class="section">{{titulo_membros}}</a></caption>
-{%for membro in membros %}
-		<tr>	
-			<th scope="row">{{membro}}</th>
-			<td></td>
+<tr>	
+			<th scope="row">Item Requisitado</th>
+			<td>Quantidade</td>
+			<td>          </td>
+			<td>Status do Item</td>
 		</tr>
-{% empty %}
-<tr>
-	<td><a href=""></td>
-	<td></td>
-	<th scope="row">Nenhum Evento Cadastrado</th>
-</tr>
+{%for item in itens %}
+		<tr>	
+			<th scope="row">{{item}}</th>
+			<td>{{item.qtd}}</td>
+			<td>          </td>
+			<td>{{item.status}}</td>
+		</tr>
 {% endfor %}
 </table>
 {% endif %}
@@ -66,7 +107,7 @@
 <table>
 		<tr>
 			<td><button class="button"type="submit">Excluir</td>
-			<td><a href="/lista/{{ objeto }}"><button class="button" type="reset">Voltar</button></a></td>
+			<td><a href="/lista/{{ tpObjeto }}"><button class="button" type="reset">Voltar</button></a></td>
 		</tr>
 </table>
 </form>
