@@ -7,6 +7,7 @@
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
 <h1>Editar {{titulo}}</h1>
+<font color='red'><b>{{ erro }}</b></font>
 {% if tpObjeto == 'cotacao' %}
 <div class="module">
 <table>

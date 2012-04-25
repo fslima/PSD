@@ -13,7 +13,7 @@
 <script type="text/javascript" src="/admin_media/js/jquery.min.js"></script>
 <script type="text/javascript" src="/admin_media/js/jquery.init.js"></script>
 <script type="text/javascript" src="/admin_media/js/actions.min.js"></script>
-<script type="text/javascript" src="/media/js/forms.js">></script>
+<script type="text/javascript" src="/media/js/forms.js"></script>
 <script type="text/javascript">
 (function($) {
     $(document).ready(function($) {
@@ -49,6 +49,9 @@
 		{% endif %}
 		{% if perms.interno.change_mapacomparativo %}
 		<a href="/lista/mapa">Mapa Comparativo    |</a>
+		{% endif %}
+		{% if perms.interno.aprovar_requisicao %}
+		<a href="/lista/aprovacoes">Aprovação    |</a>
 		{% endif %}
 		{% if perms.interno.change_cotacao %}
 		<a href="/lista/cotacao">Cotação    </a>

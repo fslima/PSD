@@ -90,31 +90,31 @@ def adiciona(request, tpObjeto, idObjeto):
 def lista(request, tpObjeto):
 	if str(tpObjeto) == 'grupomercadoria':
 		titulo = 'Cadastro de Grupos de Mercadoria'
-		lista_vazia = 'Nenhum Grupo de Mercadoria Cadastrado'
+		listaVazia = 'Nenhum Grupo de Mercadoria Cadastrado'
 		lista = GrupoMercadoria.objects.filter(status = 'Ativo').order_by('nomeGrupoMercadoria')
 	if str(tpObjeto) == 'unidademedida':
 		titulo = 'Cadastro de Unidades de Medida do Material'
-		lista_vazia = 'Nenhuma Unidade de Medida Cadastrada'
+		listaVazia = 'Nenhuma Unidade de Medida Cadastrada'
 		lista = UnidadeMedida.objects.filter(status = 'Ativo').order_by('nomeUnidadeMedida')
 	if str(tpObjeto) == 'centrocusto':
 		titulo = 'Cadastro de Centros de Custo'
-		lista_vazia = 'Nenhum Centro de Custo Cadastrado'
+		listaVazia = 'Nenhum Centro de Custo Cadastrado'
 		lista = CentroCusto.objects.filter(status = 'Ativo').order_by('nomeCentroCusto')
 	if str(tpObjeto) == 'fabricante':
 		titulo = 'Cadastro de Fabricante'
-		lista_vazia = 'Nenhum Fabricante Cadastrado'
+		listaVazia = 'Nenhum Fabricante Cadastrado'
 		lista = Fabricante.objects.filter(status = 'Ativo').order_by('nomeFabricante')
 	if str(tpObjeto) == 'material':
 		titulo = 'Cadastro de Materiais'
-		lista_vazia = 'Nenhum Material Cadastrado'
+		listaVazia = 'Nenhum Material Cadastrado'
 		lista = Material.objects.filter(status = 'Ativo').order_by('nomeMaterial')
 	if str(tpObjeto) == 'fornecedor':
 		titulo = 'Cadastro de Fornecedores'
-		lista_vazia = 'Nenhum Fornecedor Cadastrado'
+		listaVazia = 'Nenhum Fornecedor Cadastrado'
 		lista = Fornecedor.objects.filter(status = 'Ativo').order_by('fantasia')
 	if str(tpObjeto) == 'requisicao':
 		titulo = 'Requisições Em Aberto'
-		lista_vazia = 'Nenhuma Requisição sua está em Aberto'
+		listaVazia = 'Nenhuma Requisição sua está em Aberto'
 		lista = Requisicao.objects.filter(solicitante = request.user).order_by('id').reverse()
 		lista1 = []
 		remover = []
@@ -135,7 +135,7 @@ def lista(request, tpObjeto):
 		lista = lista1
 	if str(tpObjeto) == 'mapa':
 		titulo = 'Lista de Mapas Comparativos'
-		lista_vazia = 'Nenhum Mapa Cadastrado'
+		listaVazia = 'Nenhum Mapa Cadastrado'
 		lista = MapaComparativo.objects.filter(dtLiberacao__lt = datetime.now()).order_by('id').reverse()
 		lista1 = []
 		remover = []
@@ -154,7 +154,7 @@ def lista(request, tpObjeto):
 		lista = lista1
 	if str(tpObjeto) == 'cotacao':
 		titulo = 'Itens para Cotação'
-		lista_vazia = 'Nenhum item para cotação'
+		listaVazia = 'Nenhum item para cotação'
 		fornecedor = Fornecedor.objects.filter(usuario = request.user)
 		if len(fornecedor) == 0:
 			erro = 'Área restrita à fornecedores'
@@ -162,6 +162,13 @@ def lista(request, tpObjeto):
 		else:
 			fornecedor = get_object_or_404(Fornecedor, usuario = request.user)
 		lista = Cotacao.objects.filter(fornecedor = fornecedor).exclude(dtLimite__lte = datetime.now() - timedelta(1)).order_by('id').reverse()
+	if str(tpObjeto) == 'aprovacoes':
+		titulo = 'Aprovações Pendentes'
+		listaMapasVazia = 'Nenhum mapa pendente de aprovação'
+		listaRequisicoesVazia = 'Nenhuma requisição pendente de aprovação'
+		listaRequisicoes = Requisicao.objects.filter(status = u'Aguardando Aprovação').order_by('id').reverse()
+		listaMapas = MapaComparativo.objects.filter(status = u'Aguardando Aprovação').order_by('id').reverse()
+		return render_to_response('lista_aprovacoes.html', locals(), context_instance = RequestContext(request))
 	return render_to_response('lista.html', locals(), context_instance = RequestContext(request))
 
 def exibe(request, tpObjeto, idObjeto):
@@ -200,12 +207,18 @@ def exibe(request, tpObjeto, idObjeto):
 		titulo = 'Mapa Comparativo'
 		titulo_cotacoes = 'Cotacoes'
 		objeto = get_object_or_404(MapaComparativo, pk = idObjeto)
-		cotacoes = Cotacao.objects.filter(cotacoes_do_mapa = objeto)
+		if objeto.dtLiberacao < date.today():
+			cotacoes = objeto.cotacao.all()
 		form = FormExibeMapaComparativo(instance = objeto)
 	if str(tpObjeto) == 'cotacao':
 		titulo = 'Cotação'
 		objeto = get_object_or_404(Cotacao, pk = idObjeto)
 		form = FormExibeCotacao(instance = objeto)
+	if str(tpObjeto) == 'obs':
+		titulo = 'Cotação'
+		objeto = get_object_or_404(Cotacao, pk = idObjeto)
+		form = FormExibeCotacao(instance = objeto)
+		return render_to_response('obs.html', locals(), context_instance = RequestContext(request))
 	return render_to_response('exibe.html', locals(), context_instance = RequestContext(request))
 
 @login_required
@@ -324,18 +337,22 @@ def deleta(request, tpObjeto, idObjeto):
 @login_required
 def aprova(request, tpObjeto, idObjeto):
 	if str(tpObjeto) == 'requisicao':
-		titulo = 'Requisicao'
-		titulo_membros = 'Itens da Requisicao'
+		titulo = 'Aprovar Requisição: '
 		objeto = get_object_or_404(Requisicao, pk = idObjeto)
-		itens = ItemRequisicao.objects.filter(requisicao = tpObjeto)
-		form = FormRequisicao(instance = tpObjeto)
-		if request.method == 'POST':
-			if tpObjeto.aprova() != 'Validos':
-					erro =  tpObjeto.aprova()
-					return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
-			return HttpResponseRedirect("/lista/requisicao")
-		else:
+		itens = ItemRequisicao.objects.filter(requisicao = idObjeto)
+		form = FormRequisicao(instance = objeto)
+	if str(tpObjeto) == 'mapa':
+		titulo = 'Aprovar Mapa: '
+		objeto = get_object_or_404(MapaComparativo, pk = idObjeto)
+		cotacoes = objeto.cotacao.all().order_by('vlCotacao')
+		form = FormExibeMapaComparativo(instance = objeto)
+	if request.method == 'POST':
+		if objeto.aprovar() != 'Validos':
+			erro =  objeto.aprovar()
 			return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
+		return HttpResponseRedirect("/lista/aprovacoes")
+	else:
+		return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
 
 @login_required
 def filtra(request, tpObjeto):
@@ -464,7 +481,7 @@ def filtra(request, tpObjeto):
 					if itens != None:
 						cotacoes = Cotacao.objects.filter(itemRequisicao__in = itens)
 						if cotacoes != None:
-							query = query.filter(cotacao__in = cotacoes)
+							query = query.filter(cotacao__in = cotacoes).distinct('id')
 				if dtLiberacaoP != None:
 					query = query.filter(dtLiberacao__gte = dtLiberacaoP)
 				if dtLiberacaoA != None:
@@ -751,7 +768,7 @@ def finaliza(request, tpObjeto, idObjeto):
 				if int(request.POST['cotacao']) != 0:
 					id_cotacao = int(request.POST['cotacao'])
 					mapa.cotacaoVencedora = Cotacao.objects.get(pk = id_cotacao)
-				mapa.finaliza()	
+				mapa.finalizar()	
 				return HttpResponseRedirect("/lista/mapa")
 			else:
 				return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))	

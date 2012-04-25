@@ -1,6 +1,9 @@
 {# inclui o template base.html #}
 {% extends "base.html" %}
 
+{# carrega os filtros customizados para templates #}
+{% load templates %}
+
 {# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
 {% block titulo %}Visualizar {{titulo}}{% endblock %}
 {% block menu %}<a href="/cadastro/">Cadastro    |</a>{% endblock %}
@@ -101,7 +104,7 @@
 </table>
 {% if itens %}
 <table>
-<caption><a href="" class="section">{{titulo_membros}}</a></caption>
+<caption><a href="" class="section">Itens da Requisição</a></caption>
 <tr>	
 			<th scope="row">Item Requisitado</th>
 			<td>Quantidade</td>
@@ -118,6 +121,25 @@
 {% endfor %}
 </table>
 {% endif %}
-
-
+{% if cotacoes %}
+<table>
+<caption><a href="" class="section">Cotações</a></caption>
+<tr>	
+			<th scope="row">Fornecedor</th>
+			<td><b>Valor Unitário</b></td>
+			<td><b>Qtd</b></td>
+			<td><b>Valor Total Cotado</b></td>
+			<td><b>Obs do Fornecedor</b></td>
+		</tr>
+{%for cotacao in cotacoes %}
+		<tr>	
+			<th scope="row">{{ cotacao.fornecedor }}</th>
+			<td>{{ cotacao.vlCotacao }}</td>
+			<td>{{ cotacao.itemRequisicao.qtd }}</td>
+			<td>{{ cotacao.vlCotacao|multiplicar:cotacao.itemRequisicao.qtd }}</td>
+			<td><a href="javascript:popup('/exibe/obs/{{cotacao.id}}')"><img src="/media/img/exibir.gif/" /></a></td>
+		</tr>
+{% endfor %}
+</table>
+{% endif %}
 {% endblock %}

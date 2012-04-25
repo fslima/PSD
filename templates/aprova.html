@@ -1,38 +1,68 @@
 {# inclui o template base.html #}
 {% extends "base.html" %}
 
+{# carrega os filtros customizados para templates #}
+{% load templates %}
+
 {# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
-{% block titulo %}Visualizar {{titulo}}{% endblock %}
+{% block titulo %}{{ titulo }}{% endblock %}
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
-{% if objeto.nome %}<h1>{{objeto.nome}}</h1>{% endif %}{% if objeto.vaga %}<h1>{{objeto.vaga}}</h1>{% endif %}
-{% if objeto.oportunidade and objeto.aluno  %}<h1>{{objeto.aluno}} >>> {{objeto.oportunidade.empresa}}</h1>{% endif %}
 
+<h1>{{ titulo }}: {{ objeto }}</h1>
 <font color='red'><b>{{ erro }}</b></font>
 <div class="module">
 <table>
 <caption><a href="" class="section">Informações Gerais</a></caption>
-<form action="" method="POST"> 
+<form action="" method="POST">
 {% for campos in form %}
-{% ifnotequal campos.value form.curso.value %} 
-{% if campos.name = "unidadeMaterial" %}
+{% if campos.name = "itemRequisicao" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.unidadeMaterial}}</th>
+			<th scope="row">{{objeto.itemRequisicao.material}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Quantidade</b></td>
+			<th scope="row">{{objeto.itemRequisicao.qtd}} ({{objeto.itemRequisicao.material.unidadeMedida}})</th>
+		</tr>
+{% else %}{% if campos.name = "unidadeMedida" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.unidadeMedida}}</th>
+		</tr>
+{% else %}{% if campos.name = "gerente" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.gerente}}</th>
+		</tr>
+{% else %}{% if campos.name = "fabricante" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.fabricante}}</th>
 		</tr>
 {% else %}{% if campos.name = "grupoMercadoria" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{objeto.grupoMercadoria}}</th>
 		</tr>
+{% else %}{% if campos.name = "usuario" %}
 		<tr>
-			<td scope="row"><b>Valor da Última Compra</b></td>
-			<th scope="row">{{objeto.vlUltimaCompra}}</th>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.usuario}}</th>
+		</tr>
+{% else %}{% if campos.name = "cotacaoVencedora" %}
+		<tr>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.cotacaoVencedora.fornecedor}}</th>
 		</tr>
 		<tr>
-			<td scope="row"><b>Data da Última Compra</b></td>
-			<th scope="row">{{objeto.dtUltimaCompra}}</th>
+			<td scope="row"><b>Item Cotado</b></td>
+			<th scope="row">{{objeto.cotacaoVencedora}}</th>
+		</tr>
+		<tr>
+			<td scope="row"><b>Valor da Cotação</b></td>
+			<th scope="row">{{objeto.cotacaoVencedora.vlCotacao}}</th>
 		</tr>
 {% else %}{% if campos.name = "centroCusto" %}
 		<tr>
@@ -56,28 +86,46 @@
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{campos.value}}</th>
 		</tr>
-{% endif %}{% endif %}{% endif %}
-{% endifnotequal %}
+{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
 {% endfor %}
 </table>
 {% if itens %}
 <table>
-<caption><a href="" class="section">{{titulo_membros}}</a></caption>
+<caption><a href="" class="section">Itens da Requisição</a></caption>
 <tr>	
 			<th scope="row">Item Requisitado</th>
 			<td>Quantidade</td>
+			<td>          </td>
+			<td>Status do Item</td>
 		</tr>
 {%for item in itens %}
 		<tr>	
 			<th scope="row">{{item}}</th>
 			<td>{{item.qtd}}</td>
+			<td>          </td>
+			<td>{{item.status}}</td>
 		</tr>
-{% empty %}
-<tr>
-	<td><a href=""></td>
-	<td></td>
-	<th scope="row">Nenhum Evento Cadastrado</th>
-</tr>
+{% endfor %}
+</table>
+{% endif %}
+{% if cotacoes %}
+<table>
+<caption><a href="" class="section">Cotações</a></caption>
+<tr>	
+			<th scope="row">Fornecedor</th>
+			<td><b>Valor Unitário</b></td>
+			<td><b>Qtd</b></td>
+			<td><b>Valor Total Cotado</b></td>
+			<td><b>Obs do Fornecedor</b></td>
+		</tr>
+{%for cotacao in cotacoes %}
+		<tr>	
+			<th scope="row">{{ cotacao.fornecedor }}</th>
+			<td>{{ cotacao.vlCotacao }}</td>
+			<td>{{ cotacao.itemRequisicao.qtd }}</td>
+			<td>{{ cotacao.vlCotacao|multiplicar:cotacao.itemRequisicao.qtd }}</td>
+			<td><a href="javascript:popup('/exibe/obs/{{cotacao.id}}')"><img src="/media/img/exibir.gif/" /></a></td>
+		</tr>
 {% endfor %}
 </table>
 {% endif %}

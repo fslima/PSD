@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User, Group
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 class GrupoMercadoria(models.Model):
 	def __unicode__(self):
@@ -315,7 +315,7 @@ class Requisicao(models.Model):
 		self.save()
 		return 'validos'
 
-	def aprova(self):
+	def aprovar(self):
 		if self.status == u'Aguardando Aprovação':
 			itens = ItemRequisicao.objects.filter(requisicao = self)
 			for item in itens:
@@ -346,7 +346,7 @@ class ItemRequisicao(models.Model):
 		self.save()
 		return 'validos'
 
-	def alteraStatus(self, status):
+	def alterarStatus(self, status):
 		self.status = status
 		self.save()
 
@@ -375,6 +375,8 @@ class Cotacao(models.Model):
 		return 'Validos'
 
 	def editar(self, request, idObjeto):
+		if self.dtLimite < date.today():
+			return 'Data limite para esta cotação foi'+str(self.dtLimite)
 		self.save()
 		return 'validos'
 
@@ -399,10 +401,18 @@ class MapaComparativo(models.Model):
 		for cotacao in cotacoes:
 			self.cotacao.add(cotacao)
 
-	def finaliza(self):
-		self.cotacao.all()[0].itemRequisicao.alteraStatus('Mapa Finalizado')
-		self.status = 'Finalizado'
+	def finalizar(self):
+		self.cotacao.all()[0].itemRequisicao.alterarStatus('Mapa Aguardando Aprovação')
+		self.status = u'Aguardando Aprovação'
 		self.save()
+
+	def aprovar(self):
+		if self.status == u'Aguardando Aprovação':
+			self.cotacao.all()[0].itemRequisicao.alterarStatus('Mapa Finalizado')
+			self.status = u'Finalizado'
+			self.save()
+			return 'Validos'
+		return 'Mapa não foi finalizado ou já está aprovado'
 
 	class Meta:
 		db_table = 'mapa_comparativo'

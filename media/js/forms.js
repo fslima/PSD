@@ -1,13 +1,8 @@
 
 
-function show_confirm(){
-	var r=confirm("Confirmar o envio");
-	if (r==false){
-		return false;
-	}else{
-	
-	}
-}
+function popup(url){
+	window.open(url,"janela1","width=600,height=300,scrollbars=YES")
+} 
 
 function validaFinalizarMapa(){
 	var empresa=document.forms["form"]["for"].value;

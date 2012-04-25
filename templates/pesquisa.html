@@ -1,6 +1,9 @@
 {# inclui o template base.html #}
 {% extends "basep.html" %}
 
+{# carrega os filtros customizados para templates #}
+{% load templates %}
+
 {# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
 {% block titulo %}{{titulo}}{% endblock %}
 {% block menu %}<a href="/cadastro/">Cadastro    |</a>{% endblock %}
@@ -76,7 +79,7 @@
 <th><a href="/exibe/mapa/{{registro.id}}">{{registro}}</a></th>
 <td>{{registro.dtLiberacao}}</td>
 <td><a href="/exibe/fornecedor/{{registro.cotacaoVencedora.fornecedor.id}}">{{registro.cotacaoVencedora.fornecedor}}</a></td> 
-<td><a href="/exibe/material/{{registro.cotacaoVencedora.itemRequisicao.material.id}}">{{registro.cotacaoVencedora.itemRequisicao}}</a></td><td>{{registro.cotacaoVencedora.vlCotacao}}</td> <td>{{registro.status}}</td> </tr>
+<td><a href="/exibe/material/{{registro.cotacaoVencedora.itemRequisicao.material.id}}">{{registro.cotacaoVencedora.itemRequisicao}}</a></td><td>{{registro.cotacaoVencedora.vlCotacao|multiplicar:registro.cotacaoVencedora.itemRequisicao.qtd}}</td> <td>{{registro.status}}</td> </tr>
 {% endfor %}
 </tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize }}</p>
 {% endif %}
@@ -86,7 +89,7 @@
 <th><a href="/exibe/cotacao/{{registro.id}}">{{registro.dtLimite}}</a></th>
 <td>{{registro.vlCotacao}}</td><td>{{registro.itemRequisicao}}</td></tr>
 {% endfor %}
-</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize }}</p>
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"ão,ões" }}</p>
 {% endif%}
 {% if tpObjeto == 'fabricante' %}
 {%for registro in query %}

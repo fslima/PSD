@@ -1,0 +1,47 @@
+{# inclui o template base.html #}
+{% extends "base.html" %}
+
+{# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
+{% block conteudo %}
+{% csrf_token %}
+<h1>{{ titulo }}</h1>
+<div class="module">
+<table>
+<caption><a href="/lista/{{ tpObjeto }}" class="section">Requisições Aguardando Aprovção</a></caption>
+{%for requisicao in listaRequisicoes %}
+		<tr>
+			<td><a href="/exibe/requisicao/{{ requisicao.id }}"><img src="/media/img/exibir.gif/" /></a></td>
+			<td><a href="/aprova/requisicao/{{ requisicao.id }}"><img src="/media/img/alterar.gif/" /></a></td>
+			<th scope="row"> {{ requisicao }}</th>
+		</tr>
+{% empty %}
+<tr>
+	<td><a href=""></td>
+	<td></td>
+	<th scope="row">{{ listaRequisicoesVazia }}</th>
+</tr>
+{% endfor %}
+</table>
+</div>
+<div class="module">
+<table>
+<caption><a href="/lista/{{ tpObjeto }}" class="section">Mapas Aguardando Aprovção</a></caption>
+{%for mapa in listaMapas %}
+		<tr>
+			<td><a href="/exibe/mapa/{{ mapa.id }}"><img src="/media/img/exibir.gif/" /></a></td>
+			<td><a href="/aprova/mapa/{{ mapa.id }}"><img src="/media/img/alterar.gif/" /></a></td>
+			<th scope="row"> {{ mapa }}</th>
+		</tr>
+{% empty %}
+<tr>
+	<td><a href=""></td>
+	<td></td>
+	<th scope="row">{{ listaMapasVazia }}</th>
+</tr>
+{% endfor %}
+</table>
+</div>
+{% endblock %}
