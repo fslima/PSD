@@ -14,7 +14,7 @@
 {%for requisicao in listaRequisicoes %}
 		<tr>
 			<td><a href="/exibe/requisicao/{{ requisicao.id }}"><img src="/media/img/exibir.gif/" /></a></td>
-			<td><a href="/aprova/requisicao/{{ requisicao.id }}"><img src="/media/img/alterar.gif/" /></a></td>
+			<td><a href="/aprova/requisicao/{{ requisicao.id }}"><img src="/media/img/aprovar.gif/" /></a></td>
 			<th scope="row"> {{ requisicao }}</th>
 		</tr>
 {% empty %}
@@ -32,7 +32,7 @@
 {%for mapa in listaMapas %}
 		<tr>
 			<td><a href="/exibe/mapa/{{ mapa.id }}"><img src="/media/img/exibir.gif/" /></a></td>
-			<td><a href="/aprova/mapa/{{ mapa.id }}"><img src="/media/img/alterar.gif/" /></a></td>
+			<td><a href="/aprova/mapa/{{ mapa.id }}"><img src="/media/img/aprovar.gif/" /></a></td>
 			<th scope="row"> {{ mapa }}</th>
 		</tr>
 {% empty %}

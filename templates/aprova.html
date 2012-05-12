@@ -58,7 +58,7 @@
 		</tr>
 		<tr>
 			<td scope="row"><b>Item Cotado</b></td>
-			<th scope="row">{{objeto.cotacaoVencedora}}</th>
+			<th scope="row">{{objeto.cotacaoVencedora.itemRequisicao|default_if_none:""}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Valor da Cotação</b></td>
@@ -121,9 +121,9 @@
 {%for cotacao in cotacoes %}
 		<tr>	
 			<th scope="row">{{ cotacao.fornecedor }}</th>
-			<td>{{ cotacao.vlCotacao }}</td>
+			<td>{{ cotacao.vlCotacao|default_if_none:"Não Cotou" }}</td>
 			<td>{{ cotacao.itemRequisicao.qtd }}</td>
-			<td>{{ cotacao.vlCotacao|multiplicar:cotacao.itemRequisicao.qtd }}</td>
+			<td>{{ cotacao.vlCotacao|default_if_none:""|multiplicar:cotacao.itemRequisicao.qtd }}</td>
 			<td><a href="javascript:popup('/exibe/obs/{{cotacao.id}}')"><img src="/media/img/exibir.gif/" /></a></td>
 		</tr>
 {% endfor %}

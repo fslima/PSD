@@ -63,6 +63,8 @@ def adiciona(request, tpObjeto, idObjeto):
 		titulo = 'Itens da Requisicao'
 		formpost = FormItemRequisicao(request.POST, request.FILES, )
 		formget = FormItemRequisicao()
+		formRequisicao = FormRequisicao(instance = requisicao)
+		itens = ItemRequisicao.objects.filter(requisicao = requisicao)
 	if str(tpObjeto) == 'mapa':
 		erro = 'Não é possível cadastrar mapa manualmente'
 		return render_to_response('500.html', locals(), context_instance = RequestContext(request))
@@ -142,7 +144,7 @@ def lista(request, tpObjeto):
 		manter = []
 		for mapa in lista:
 			lista1.append(mapa)
-			if mapa.cotacao.all()[0].itemRequisicao.status == u'Mapa Finalizado' or mapa.cotacao.all()[0].itemRequisicao.requisicao.solicitante != request.user:
+			if mapa.cotacoes.all()[0].itemRequisicao.status == u'Mapa Finalizado' or mapa.cotacoes.all()[0].itemRequisicao.requisicao.solicitante != request.user:
 					if mapa not in remover:
 						remover.append(mapa)
 					else:
@@ -208,7 +210,7 @@ def exibe(request, tpObjeto, idObjeto):
 		titulo_cotacoes = 'Cotacoes'
 		objeto = get_object_or_404(MapaComparativo, pk = idObjeto)
 		if objeto.dtLiberacao < date.today():
-			cotacoes = objeto.cotacao.all()
+			cotacoes = objeto.cotacoes.all()
 		form = FormExibeMapaComparativo(instance = objeto)
 	if str(tpObjeto) == 'cotacao':
 		titulo = 'Cotação'
@@ -257,6 +259,7 @@ def edita(request, tpObjeto, idObjeto):
 		formpost = FormFornecedor(request.POST, request.FILES, instance = fornecedor_para_editar)
 		formget = FormFornecedor(instance = fornecedor_para_editar)
 	if str(tpObjeto) == 'gruposfornecedor':
+		tpObjeto = 'fornecedor'
 		titulo = 'Grupos de Mercadoria'
 		fornecedor_para_editar = get_object_or_404(Fornecedor, pk = idObjeto)
 		formpost = FormGruposFornecedor(request.POST, request.FILES, instance = fornecedor_para_editar)
@@ -344,7 +347,7 @@ def aprova(request, tpObjeto, idObjeto):
 	if str(tpObjeto) == 'mapa':
 		titulo = 'Aprovar Mapa: '
 		objeto = get_object_or_404(MapaComparativo, pk = idObjeto)
-		cotacoes = objeto.cotacao.all().order_by('vlCotacao')
+		cotacoes = objeto.cotacoes.all().order_by('vlCotacao')
 		form = FormExibeMapaComparativo(instance = objeto)
 	if request.method == 'POST':
 		if objeto.aprovar() != 'Validos':
@@ -474,18 +477,20 @@ def filtra(request, tpObjeto):
 				dtLiberacaoA = valorCampo[1]
 				fornecedor = valorCampo[2]
 				status = valorCampo[3]
-				query = MapaComparativo.objects.filter(status__icontains = status).order_by('id').reverse()
+				query = MapaComparativo.objects.all().order_by('id').reverse()
 				requisicoes = Requisicao.objects.filter(solicitante = request.user)
 				if requisicoes != None:
 					itens = ItemRequisicao.objects.filter(requisicao__in = requisicoes)
 					if itens != None:
 						cotacoes = Cotacao.objects.filter(itemRequisicao__in = itens)
 						if cotacoes != None:
-							query = query.filter(cotacao__in = cotacoes).distinct('id')
+							query = query.filter(cotacoes__in = cotacoes).distinct('id')
 				if dtLiberacaoP != None:
 					query = query.filter(dtLiberacao__gte = dtLiberacaoP)
 				if dtLiberacaoA != None:
 					query = query.filter(dtLiberacao__lte = dtLiberacaoA)
+				if status != '':
+					query = query.filter(status = status)
 				if fornecedor != None:
 					cotacoes = Cotacao.objects.filter(fornecedor = fornecedor)
 					query = query.filter(cotacaoVencedora__in = cotacoes)
@@ -536,7 +541,8 @@ def filtra(request, tpObjeto):
 				if vlCotacaoA != None:
 					query = query.filter(vlCotacao__lte = vlCotacaoA)
 				if itemRequisicao != None:
-					query = query.filter(itemRequisicao = itemRequisicao)
+					itens = ItemRequisicao.objects.filter(material = itemRequisicao)
+					query = query.filter(itemRequisicao__in = itens)
 				total = query.count()
 				return render_to_response('pesquisa.html', locals(), context_instance = RequestContext(request))
 			else:
@@ -753,14 +759,14 @@ def finaliza(request, tpObjeto, idObjeto):
 		formget = FormMapaComparativo()
 		erro = 'Mapa não existe'
 		mapa = get_object_or_404(MapaComparativo, pk = idObjeto)
-		if mapa.cotacao.all()[0].itemRequisicao.requisicao.solicitante != request.user:
+		if mapa.cotacoes.all()[0].itemRequisicao.requisicao.solicitante != request.user:
 			erro = 'Você só possui acesso aos mapas das suas requisições'
 			return render_to_response('500.html', locals(), context_instance = RequestContext(request))
 		if mapa.dtLiberacao >= date.today():
 			erro = 'Mapa só estará liberado dia: '
 			data = mapa.dtLiberacao + timedelta(1)
 			return render_to_response('500.html', locals(), context_instance = RequestContext(request))
-		query = mapa.cotacao.all().order_by('vlCotacao')
+		query = mapa.cotacoes.all().order_by('vlCotacao')
 		if request.method == 'POST':
 			form = formpost
 			if form.is_valid():	
@@ -768,12 +774,14 @@ def finaliza(request, tpObjeto, idObjeto):
 				if int(request.POST['cotacao']) != 0:
 					id_cotacao = int(request.POST['cotacao'])
 					mapa.cotacaoVencedora = Cotacao.objects.get(pk = id_cotacao)
+				else:
+					mapa.cotacaoVencedora = None
 				mapa.finalizar()	
 				return HttpResponseRedirect("/lista/mapa")
 			else:
 				return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))	
 		else:
-			form = FormMapaComparativo()
+			form = FormMapaComparativo(instance = mapa)
 		return render_to_response('finaliza.html', locals(), context_instance = RequestContext(request))
 
 

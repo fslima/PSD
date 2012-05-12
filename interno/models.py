@@ -306,6 +306,8 @@ class Requisicao(models.Model):
 		return 'validos'
 
 	def editar(self, request, idObjeto):
+		if self.status == 'Aprovada':
+			return 'Não é possível alterar requisição já aprovada'
 		self.dtAlteracao = datetime.now()
 		self.save()
 		return 'validos'
@@ -387,7 +389,7 @@ class MapaComparativo(models.Model):
 	def __unicode__(self):
 		return str(self.id)
 
-	cotacao = models.ManyToManyField(Cotacao, related_name = 'cotacoes_do_mapa', null = True)
+	cotacoes = models.ManyToManyField(Cotacao, related_name = 'cotacoes_do_mapa', null = True)
 	cotacaoVencedora = models.ForeignKey(Cotacao, related_name = 'cotacao_vencedora', null = True)
 	dtLiberacao = models.DateField()
 	obs = models.TextField(max_length = 100, null = True)
@@ -399,16 +401,16 @@ class MapaComparativo(models.Model):
 		self.save()
 		cotacoes = Cotacao.objects.filter(itemRequisicao = item)
 		for cotacao in cotacoes:
-			self.cotacao.add(cotacao)
+			self.cotacoes.add(cotacao)
 
 	def finalizar(self):
-		self.cotacao.all()[0].itemRequisicao.alterarStatus('Mapa Aguardando Aprovação')
+		self.cotacoes.all()[0].itemRequisicao.alterarStatus('Mapa Aguardando Aprovação')
 		self.status = u'Aguardando Aprovação'
 		self.save()
 
 	def aprovar(self):
 		if self.status == u'Aguardando Aprovação':
-			self.cotacao.all()[0].itemRequisicao.alterarStatus('Mapa Finalizado')
+			self.cotacoes.all()[0].itemRequisicao.alterarStatus('Mapa Finalizado')
 			self.status = u'Finalizado'
 			self.save()
 			return 'Validos'

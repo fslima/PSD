@@ -22,7 +22,7 @@
 	<h3>Alteração</h3>
 	<ul>Data: {{ objeto.dtAlteracao|default_if_none:"" }}</ul>
 	<ul>Usuário: {{ objeto.usuarioAlteracao|default_if_none:"" }}</ul>
-	<h3>Alteração</h3>
+	<h3>Exclusão</h3>
 	<ul>Data: {{ objeto.dtExclusao|default_if_none:"" }}</ul>
 	<ul>Usuário: {{ objeto.usuarioExclusao|default_if_none:"" }}</ul>
     </div>
@@ -71,11 +71,11 @@
 		</tr>
 		<tr>
 			<td scope="row"><b>Item Cotado</b></td>
-			<th scope="row">{{objeto.cotacaoVencedora}}</th>
+			<th scope="row">{{objeto.cotacaoVencedora.itemRequisicao|default_if_none:""}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Valor da Cotação</b></td>
-			<th scope="row">{{objeto.cotacaoVencedora.vlCotacao}}</th>
+			<th scope="row">{{objeto.cotacaoVencedora.vlCotacao|default_if_none:""|multiplicar:objeto.cotacaoVencedora.itemRequisicao.qtd}}</th>
 		</tr>
 {% else %}{% if campos.name = "centroCusto" %}
 		<tr>
@@ -134,9 +134,9 @@
 {%for cotacao in cotacoes %}
 		<tr>	
 			<th scope="row">{{ cotacao.fornecedor }}</th>
-			<td>{{ cotacao.vlCotacao }}</td>
+			<td>{{ cotacao.vlCotacao|default_if_none:"Não Cotou" }}</td>
 			<td>{{ cotacao.itemRequisicao.qtd }}</td>
-			<td>{{ cotacao.vlCotacao|multiplicar:cotacao.itemRequisicao.qtd }}</td>
+			<td>{{ cotacao.vlCotacao|default_if_none:""|multiplicar:cotacao.itemRequisicao.qtd }}</td>
 			<td><a href="javascript:popup('/exibe/obs/{{cotacao.id}}')"><img src="/media/img/exibir.gif/" /></a></td>
 		</tr>
 {% endfor %}
