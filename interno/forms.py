@@ -115,6 +115,17 @@ class FormUnidadeMedida(forms.ModelForm):
 		model = UnidadeMedida
 		fields = ('nomeUnidadeMedida', 'descUnidadeMedida', 'status')
 
+class FormEditaRequisicao(forms.ModelForm):
+	centroCusto = forms.ModelChoiceField(queryset=CentroCusto.objects.all(), label = 'Centro de Custo')
+	diasParaCotacao = forms.IntegerField(label = 'Nº de dias para cotação')
+	status = forms.ChoiceField([('',''), ('Aprovada','Aprovada'), ('Aguardando Aprovação','Aguardando Aprovação'), ('Reprovada','Reprovada'), ('Excluido','Excluido')], 
+				initial = ('',''),
+				label = 'Situação', required = False)
+
+	class Meta:
+		model = Requisicao
+		fields = ('centroCusto', 'diasParaCotacao', 'status')
+
 class FormExibeCotacao(forms.ModelForm):
 	vlCotacao = forms.DecimalField(max_digits = 20, decimal_places = 2, label = 'Valor Unitário')
 	itemRequisicao = forms.CharField(label = 'Item da Cotação')
@@ -282,7 +293,7 @@ class FormFiltraRequisicao(forms.Form):
 			)
 	centroCusto = forms.ModelChoiceField(queryset=CentroCusto.objects.all(), required = False, label = 'Centro de Custo')
 	itemRequisicao = forms.ModelChoiceField(queryset=Material.objects.all(), required = False, label = 'Item da Requisição')
-	status = forms.ChoiceField([('',''), ('Aprovada','Aprovada'), ('Aguardando Aprovação','Aguardando Aprovação'), ('Reprovada','Reprovada')], 
+	status = forms.ChoiceField([('',''), ('Aprovada','Aprovada'), ('Aguardando Aprovação','Aguardando Aprovação'), ('Reprovada','Reprovada'), ('Excluido','Excluido')], 
 				initial = ('',''),
 				label = 'Situação', required = False)
 	

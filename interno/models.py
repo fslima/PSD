@@ -296,24 +296,40 @@ class Requisicao(models.Model):
 	dtExclusao = models.DateField(null = True)
 	dtDeferimento = models.DateField(null = True)
 	diasParaCotacao = models.PositiveSmallIntegerField()
-		
+
+	dtInclusao = models.DateTimeField(null = True, auto_now_add = True)
+	usuarioInclusao = models.ForeignKey(User, related_name = 'incluiu_req', null = True)
+	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
+	usuarioAlteracao = models.ForeignKey(User, related_name = 'alterou_req', null = True)
+	dtExclusao = models.DateField(null = True)
+	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_req', null = True)	
 
 	def adicionar(self, request, idObjeto):
 		self.dtRequisicao = datetime.now()
-		self.status = 'Aguardando Aprovação'
+		self.status = u'Aguardando Aprovação'
 		self.solicitante = request.user
 		self.save()
 		return 'validos'
 
 	def editar(self, request, idObjeto):
-		if self.status == 'Aprovada':
-			return 'Não é possível alterar requisição já aprovada'
-		self.dtAlteracao = datetime.now()
+		if self.status not in [u'Excluido', u'Aguardando Aprovação']:
+			return 'Só é possível alterar situação para Excluido ou Aguardando Aprovação'
+		if self.status == u'Excluido':
+			self.dtExclusao = datetime.now()
+			self.usuarioExclusao = request.user
+		if Requisicao.objects.get(pk = idObjeto).status == u'Excluido' and self.status != u'Excluido' and self.status != u'Excluido':
+			self.usuarioExclusao = None
+			self.dtExclusao = None
+		self.usuarioAlteracao = request.user
 		self.save()
 		return 'validos'
 
 	def excluir(self, request, idObjeto):
+		if self.status == 'Aprovada':
+			return 'Não é possível excluir requisição aprovada'
 		self.dtExclusao = datetime.now()
+		self.usuarioExclusao = request.user
+		self.status = u'Excluido'
 		self.save()
 		return 'validos'
 
@@ -328,6 +344,14 @@ class Requisicao(models.Model):
 			self.save()
 			return 'Validos'
 		return 'Requisição já está aprovada'
+
+	def reprovar(self):
+		if self.status == u'Aguardando Aprovação':
+			self.status = 'Reprovada'
+			self.dtDeferimento = datetime.now()
+			self.save()
+			return 'Validos'
+		return 'Requisição deve estar aguardando aprovação'
 
 	class Meta:
 		db_table = 'requisicao'
@@ -364,6 +388,13 @@ class Cotacao(models.Model):
 	vlCotacao = models.DecimalField(max_digits = 20, decimal_places = 2, null = True)
 	dtLimite = models.DateField()
 	obs = models.TextField(max_length = 100, null = True)
+
+	dtInclusao = models.DateTimeField(null = True, auto_now_add = True)
+	usuarioInclusao = models.ForeignKey(User, related_name = 'incluiu_cot', null = True)
+	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
+	usuarioAlteracao = models.ForeignKey(User, related_name = 'alterou_cot', null = True)
+	dtExclusao = models.DateField(null = True)
+	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_cot', null = True)
 
 	def adicionar(self, item, diasParaCotacao):
 		fornecedores = Fornecedor.objects.filter(grupoMercadoria = item.material.grupoMercadoria, status = 'Ativo')

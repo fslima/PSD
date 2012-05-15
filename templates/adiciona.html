@@ -50,7 +50,7 @@
 		<tr>
 			<td><button class="button"type="submit">Adicionar</td>
 		{% if tpObjeto == "itemrequisicao" %}
-			<td><a href="/adiciona/itemrequisicao/{{ idObjeto }}/"><button class="button" type="submit">Adicionar Outro</button></a></td>
+			<td><a href="/lista/requisicao"><button class="button" type="reset">Voltar</button></a></td>
 		{% endif %}
 		{% if tpObjeto != "itemrequisicao" %}
 			<td><a href="/lista/{{ tpObjeto }}"><button class="button" type="reset">Voltar</button></a></td>

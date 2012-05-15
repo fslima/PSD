@@ -78,7 +78,7 @@ def adiciona(request, tpObjeto, idObjeto):
 			if str(tpObjeto) == 'requisicao':
 				return HttpResponseRedirect("/adiciona/itemrequisicao/"+str(objeto_form.id))
 			if str(tpObjeto) == 'itemrequisicao':
-				return HttpResponseRedirect("/lista/requisicao")
+				return HttpResponseRedirect("/adiciona/itemrequisicao/"+str(idObjeto))
 			if str(tpObjeto) == 'fornecedor':
 				return HttpResponseRedirect("/edita/gruposfornecedor/"+str(objeto_form.id))
 			return HttpResponseRedirect("/lista/"+str(tpObjeto))
@@ -117,7 +117,7 @@ def lista(request, tpObjeto):
 	if str(tpObjeto) == 'requisicao':
 		titulo = 'Requisições Em Aberto'
 		listaVazia = 'Nenhuma Requisição sua está em Aberto'
-		lista = Requisicao.objects.filter(solicitante = request.user).order_by('id').reverse()
+		lista = Requisicao.objects.filter(solicitante = request.user).exclude(status = u'Excluido').order_by('id').reverse()
 		lista1 = []
 		remover = []
 		manter = []
@@ -267,8 +267,11 @@ def edita(request, tpObjeto, idObjeto):
 	if str(tpObjeto) == 'requisicao':
 		titulo = 'Requisicao'
 		requisicao_para_editar = get_object_or_404(Requisicao, pk = idObjeto, solicitante = request.user)
-		formpost = FormRequisicao(request.POST, request.FILES, instance = requisicao_para_editar)
-		formget = FormRequisicao(instance = requisicao_para_editar)
+		if requisicao_para_editar.status == u'Aprovada':
+			erro = 'Não é possível alterar requisição já aprovada'
+			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
+		formpost = FormEditaRequisicao(request.POST, request.FILES, instance = requisicao_para_editar)
+		formget = FormEditaRequisicao(instance = requisicao_para_editar)
 	if str(tpObjeto) == 'mapa':
 		return HttpResponseRedirect("/finaliza/mapa/"+str(idObjeto))
 	if str(tpObjeto) == 'cotacao':
@@ -324,6 +327,9 @@ def deleta(request, tpObjeto, idObjeto):
 		form = FormFornecedor(instance = objeto_para_deletar)
 	if str(tpObjeto) == 'requisicao':
 		objeto_para_deletar = get_object_or_404(Requisicao, pk = idObjeto)
+		if objeto_para_deletar.status == u'Aprovada':
+			erro = 'Não é possível alterar requisição já aprovada'
+			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
 		form = FormRequisicao(instance = objeto_para_deletar)
 	if str(tpObjeto) == 'mapa':
 		objeto_para_deletar = get_object_or_404(MapaComparativo, pk = idObjeto)
@@ -357,6 +363,24 @@ def aprova(request, tpObjeto, idObjeto):
 	else:
 		return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
 
+@login_required
+def reprova(request, tpObjeto, idObjeto):
+	if str(tpObjeto) == 'requisicao':
+		titulo = 'Reprovar Requisição: '
+		objeto = get_object_or_404(Requisicao, pk = idObjeto)
+		itens = ItemRequisicao.objects.filter(requisicao = idObjeto)
+		form = FormRequisicao(instance = objeto)
+	if str(tpObjeto) == 'mapa':
+		titulo = 'Reprovar Mapa: '
+		objeto = get_object_or_404(MapaComparativo, pk = idObjeto)
+		cotacoes = objeto.cotacoes.all().order_by('vlCotacao')
+		form = FormExibeMapaComparativo(instance = objeto)
+
+	if objeto.reprovar() != 'Validos':
+		erro =  objeto.aprovar()
+		return render_to_response('aprova.html', locals(), context_instance = RequestContext(request))
+	return HttpResponseRedirect("/lista/aprovacoes")
+	
 @login_required
 def filtra(request, tpObjeto):
 	if str(tpObjeto) == 'material':
