@@ -34,7 +34,11 @@
 		{{ form.as_table }}
 		<tr>
 			<td><button class="button" type="submit">Atualizar</td>
+			{% if tpObjeto == 'gruposfornecedor' %}
+			<td><a href="/lista/fornecedor"><button class="button" type="reset">Voltar</button></a></td>
+			{% else %}
 			<td><a href="/lista/{{ tpObjeto }}"><button class="button" type="reset">Voltar</button></a></td>
+			{% endif %}
 		</tr>
 	</table>
 </form>

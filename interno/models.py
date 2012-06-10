@@ -3,6 +3,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta, date
+from django.core.mail import send_mail
 
 class GrupoMercadoria(models.Model):
 	def __unicode__(self):
@@ -19,9 +20,7 @@ class GrupoMercadoria(models.Model):
 	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_gm', null = True)
 	
 	def adicionar(self, request, idObjeto):
-		if self.status != u'Ativo':
-			erro = 'Para Adicionar a situação deve ser Ativo'
-			return erro
+		self.status = u'Ativo'
 		self.usuarioInclusao = request.user
 		self.save()
 		return 'validos'
@@ -64,9 +63,7 @@ class UnidadeMedida(models.Model):
 
 	
 	def adicionar(self, request, idObjeto):
-		if self.status != u'Ativo':
-			erro = 'Para Adicionar a situação deve ser Ativo'
-			return erro
+		self.status = u'Ativo'
 		self.usuarioInclusao = request.user
 		self.save()
 		return 'validos'
@@ -108,9 +105,7 @@ class CentroCusto(models.Model):
 	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_cc', null = True)	
 
 	def adicionar(self, request, idObjeto):
-		if self.status != u'Ativo':
-			erro = 'Para Adicionar a situação deve ser Ativo'
-			return erro
+		self.status = u'Ativo'
 		self.usuarioInclusao = request.user
 		self.save()
 		return 'validos'
@@ -151,9 +146,7 @@ class Fabricante(models.Model):
 	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_fab', null = True)	
 
 	def adicionar(self, request, idObjeto):
-		if self.status != u'Ativo':
-			erro = 'Para Adicionar a situação deve ser Ativo'
-			return erro
+		self.status = u'Ativo'
 		self.usuarioInclusao = request.user
 		self.save()
 		return 'validos'
@@ -198,9 +191,7 @@ class Material(models.Model):
 	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_mat', null = True)	
 
 	def adicionar(self, request, idObjeto):
-		if self.status != u'Ativo':
-			erro = 'Para Adicionar a situação deve ser Ativo'
-			return erro
+		self.status = u'Ativo'
 		self.usuarioInclusao = request.user
 		self.save()
 		return 'validos'
@@ -256,9 +247,7 @@ class Fornecedor(models.Model):
 	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_for', null = True)	
 
 	def adicionar(self, request, idObjeto):
-		if self.status != u'Ativo':
-			erro = 'Para Adicionar a situação deve ser Ativo'
-			return erro
+		self.status = u'Ativo'
 		self.usuarioInclusao = request.user
 		self.save()
 		return 'validos'
@@ -404,6 +393,11 @@ class Cotacao(models.Model):
 			cotacao = Cotacao(itemRequisicao = item, fornecedor = fornecedor)
 			cotacao.dtLimite = datetime.now() + timedelta(diasParaCotacao)
 			cotacao.save()
+			send_mail('SGF - Notificação de envio de cotação',
+				  str(fornecedor)+',\n\nSua empresa recebeu uma nova cotação. \nVocês tem até o dia '+datetime.strftime(cotacao.dtLimite, "%d/%m/%Y")+' para enviar a resposta.\nSegue link de acesso à cotação:\nhttp://localhost:8000/edita/cotacao/'+str(cotacao.id)+' \nAguardamos a resposta à nossa Cotação.\n\nCordialmente, \nEmpresa XXX \n\n\n ESTA É UMA MENSAGEM ENVIADA AUTOMATICAMENTE PELO SISTEMA, FAVOR NÃO RESPONDER',
+				  'SGF - Sistema de Gestão de Fornecedores',
+				  [fornecedor.usuario.email],
+				  fail_silently = False)
 		MapaComparativo().adicionar(item, diasParaCotacao)
 		return 'Validos'
 

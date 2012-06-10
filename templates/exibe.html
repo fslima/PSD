@@ -71,11 +71,13 @@
 		</tr>
 		<tr>
 			<td scope="row"><b>Item Cotado</b></td>
-			<th scope="row">{{objeto.cotacaoVencedora.itemRequisicao|default_if_none:""}}</th>
+			<th scope="row">{{objeto.cotacaoVencedora.itemRequisicao|default_if_none:"Finalizado sem vencedor"}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Valor da Cotação</b></td>
+			{% if objeto.cotacaoVencedora.vlCotacao %}
 			<th scope="row">{{objeto.cotacaoVencedora.vlCotacao|default_if_none:""|multiplicar:objeto.cotacaoVencedora.itemRequisicao.qtd}}</th>
+			{% endif %}
 		</tr>
 {% else %}{% if campos.name = "centroCusto" %}
 		<tr>

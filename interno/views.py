@@ -29,28 +29,28 @@ def adiciona(request, tpObjeto, idObjeto):
 			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
 	if str(tpObjeto) == 'grupomercadoria':
 		titulo = 'Grupo de Mercadoria'
-		formpost = FormGrupoMercadoria(request.POST, request.FILES)
-		formget = FormGrupoMercadoria()
+		formpost = FormAdicionaGrupoMercadoria(request.POST, request.FILES)
+		formget = FormAdicionaGrupoMercadoria()
 	if str(tpObjeto) == 'unidademedida':
 		titulo = 'Unidade de Medida do Material'
-		formpost = FormUnidadeMedida(request.POST, request.FILES)
-		formget = FormUnidadeMedida()	
+		formpost = FormAdicionaUnidadeMedida(request.POST, request.FILES)
+		formget = FormAdicionaUnidadeMedida()	
 	if str(tpObjeto) == 'centrocusto':
 		titulo = 'Centro de Custo'
-		formpost = FormCentroCusto(request.POST, request.FILES, )
-		formget = FormCentroCusto()
+		formpost = FormAdicionaCentroCusto(request.POST, request.FILES, )
+		formget = FormAdicionaCentroCusto()
 	if str(tpObjeto) == 'fabricante':
 		titulo = 'Fabricante'
-		formpost = FormFabricante(request.POST, request.FILES, )
-		formget = FormFabricante()
+		formpost = FormAdicionaFabricante(request.POST, request.FILES, )
+		formget = FormAdicionaFabricante()
 	if str(tpObjeto) == 'material':
 		titulo = 'Material'
-		formpost = FormMaterial(request.POST, request.FILES, )
-		formget = FormMaterial()
+		formpost = FormAdicionaMaterial(request.POST, request.FILES, )
+		formget = FormAdicionaMaterial()
 	if str(tpObjeto) == 'fornecedor':
 		titulo = 'Fornecedor'
-		formpost = FormFornecedor(request.POST, request.FILES, )
-		formget = FormFornecedor()
+		formpost = FormAdicionaFornecedor(request.POST, request.FILES, )
+		formget = FormAdicionaFornecedor()
 	if str(tpObjeto) == 'requisicao':
 		titulo = 'Requisicao'
 		formpost = FormRequisicao(request.POST, request.FILES, )
@@ -177,28 +177,27 @@ def exibe(request, tpObjeto, idObjeto):
 	if str(tpObjeto) == 'grupomercadoria':
 		titulo = 'Grupo de Mercadoria'
 		objeto = get_object_or_404(GrupoMercadoria, pk = idObjeto)
-		form = FormGrupoMercadoria(instance = objeto)
+		form = FormExibeGrupoMercadoria(instance = objeto)
 	if str(tpObjeto) == 'unidademedida':
 		titulo = 'Unidade de Medida'
 		objeto = get_object_or_404(UnidadeMedida, pk = idObjeto)
-		form = FormUnidadeMedida(instance = objeto)
+		form = FormExibeUnidadeMedida(instance = objeto)
 	if str(tpObjeto) == 'centrocusto':
 		titulo = 'Centro de Custo'
 		objeto = get_object_or_404(CentroCusto, pk = idObjeto)
-		form = FormCentroCusto(instance = objeto)
+		form = FormExibeCentroCusto(instance = objeto)
 	if str(tpObjeto) == 'fabricante':
 		titulo = 'Fabricante'
 		objeto = get_object_or_404(Fabricante, pk = idObjeto)
-		form = FormFabricante(instance = objeto)
+		form = FormExibeFabricante(instance = objeto)
 	if str(tpObjeto) == 'material':
 		titulo = 'Material'
 		objeto = get_object_or_404(Material, pk = idObjeto)
-		v = vars(objeto)
-		form = FormMaterial(instance = objeto)
+		form = FormExibeMaterial(instance = objeto)
 	if str(tpObjeto) == 'fornecedor':
 		titulo = 'Fornecedor'
 		objeto = get_object_or_404(Fornecedor, pk = idObjeto)
-		form = FormFornecedor(instance = objeto)
+		form = FormExibeFornecedor(instance = objeto)
 	if str(tpObjeto) == 'requisicao':
 		titulo = 'Requisicao'
 		titulo_membros = 'Itens da Requisicao'
@@ -230,36 +229,35 @@ def edita(request, tpObjeto, idObjeto):
 			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
 	if str(tpObjeto) == 'grupomercadoria':
 		grupoMercadoria_para_editar = get_object_or_404(GrupoMercadoria, pk = idObjeto)
-		formpost = FormGrupoMercadoria(request.POST, request.FILES, instance = grupoMercadoria_para_editar)
-		formget = FormGrupoMercadoria(instance = grupoMercadoria_para_editar)
+		formpost = FormEditaGrupoMercadoria(request.POST, request.FILES, instance = grupoMercadoria_para_editar)
+		formget = FormEditaGrupoMercadoria(instance = grupoMercadoria_para_editar)
 		titulo = 'Grupo de Mercadoria'		
 	if str(tpObjeto) == 'unidademedida':
 		titulo = 'Unidade de Medida'
 		unidadeMedida_para_editar = get_object_or_404(UnidadeMedida, pk = idObjeto)
-		formpost = FormUnidadeMedida(request.POST, request.FILES, instance = unidadeMedida_para_editar)
-		formget = FormUnidadeMedida(instance = unidadeMedida_para_editar)	
+		formpost = FormEditaUnidadeMedida(request.POST, request.FILES, instance = unidadeMedida_para_editar)
+		formget = FormEditaUnidadeMedida(instance = unidadeMedida_para_editar)	
 	if str(tpObjeto) == 'centrocusto':
 		titulo = 'Centro de Custo'
 		centroCusto_para_editar = get_object_or_404(CentroCusto, pk = idObjeto)
-		formpost = FormCentroCusto(request.POST, request.FILES, instance = centroCusto_para_editar)
-		formget = FormCentroCusto(instance = centroCusto_para_editar)	
+		formpost = FormEditaCentroCusto(request.POST, request.FILES, instance = centroCusto_para_editar)
+		formget = FormEditaCentroCusto(instance = centroCusto_para_editar)	
 	if str(tpObjeto) == 'fabricante':
 		titulo = 'Fabricante'
 		fabricante_para_editar = get_object_or_404(Fabricante, pk = idObjeto)
-		formpost = FormFabricante(request.POST, request.FILES, instance = fabricante_para_editar)
-		formget = FormFabricante(instance = fabricante_para_editar)
+		formpost = FormEditaFabricante(request.POST, request.FILES, instance = fabricante_para_editar)
+		formget = FormEditaFabricante(instance = fabricante_para_editar)
 	if str(tpObjeto) == 'material':
 		titulo = 'Material'
 		material_para_editar = get_object_or_404(Material, pk = idObjeto)
-		formpost = FormMaterial(request.POST, request.FILES, instance = material_para_editar)
-		formget = FormMaterial(instance = material_para_editar)
+		formpost = FormEditaMaterial(request.POST, request.FILES, instance = material_para_editar)
+		formget = FormEditaMaterial(instance = material_para_editar)
 	if str(tpObjeto) == 'fornecedor':
 		titulo = 'Fornecedor'
 		fornecedor_para_editar = get_object_or_404(Fornecedor, pk = idObjeto)
-		formpost = FormFornecedor(request.POST, request.FILES, instance = fornecedor_para_editar)
-		formget = FormFornecedor(instance = fornecedor_para_editar)
+		formpost = FormEditaFornecedor(request.POST, request.FILES, instance = fornecedor_para_editar)
+		formget = FormEditaFornecedor(instance = fornecedor_para_editar)
 	if str(tpObjeto) == 'gruposfornecedor':
-		tpObjeto = 'fornecedor'
 		titulo = 'Grupos de Mercadoria'
 		fornecedor_para_editar = get_object_or_404(Fornecedor, pk = idObjeto)
 		formpost = FormGruposFornecedor(request.POST, request.FILES, instance = fornecedor_para_editar)
@@ -277,12 +275,15 @@ def edita(request, tpObjeto, idObjeto):
 	if str(tpObjeto) == 'cotacao':
 		titulo = 'Cotação'
 		cotacao_para_editar = get_object_or_404(Cotacao, pk = idObjeto)
+		if cotacao_para_editar.fornecedor.usuario != request.user:
+			erro = 'Cotação de outro fornecedor'
+			return render_to_response('500.html', locals(), context_instance = RequestContext(request))
 		if cotacao_para_editar.dtLimite < date.today():
 			erro = 'A data limite para esta cotação foi: '
 			data = cotacao_para_editar.dtLimite
 			return render_to_response('500.html', locals(), context_instance = RequestContext(request))
-		formpost = FormCotacao(request.POST, request.FILES, instance = cotacao_para_editar)
-		formget = FormCotacao(instance = cotacao_para_editar)
+		formpost = FormEditaCotacao(request.POST, request.FILES, instance = cotacao_para_editar)
+		formget = FormEditaCotacao(instance = cotacao_para_editar)
 	if request.method == 'POST':
 		form = formpost
 		if form.is_valid():
@@ -309,22 +310,22 @@ def deleta(request, tpObjeto, idObjeto):
 			return render_to_response("500.html", locals(), context_instance = RequestContext(request))
 	if str(tpObjeto) == 'grupomercadoria':
 		objeto_para_deletar = get_object_or_404(GrupoMercadoria, pk = idObjeto)
-		form = FormGrupoMercadoria(instance = objeto_para_deletar)
+		form = FormExibeGrupoMercadoria(instance = objeto_para_deletar)
 	if str(tpObjeto) == 'centrocusto':
 		objeto_para_deletar = get_object_or_404(CentroCusto, pk = idObjeto)
-		form = FormCentroCusto(instance = objeto_para_deletar)
+		form = FormExibeCentroCusto(instance = objeto_para_deletar)
 	if str(tpObjeto) == 'unidademedida':
 		objeto_para_deletar = get_object_or_404(UnidadeMedida, pk = idObjeto)
-		form = FormUnidadeMedida(instance = objeto_para_deletar)
+		form = FormExibeUnidadeMedida(instance = objeto_para_deletar)
 	if str(tpObjeto) == 'fabricante':
 		objeto_para_deletar = get_object_or_404(Fabricante, pk = idObjeto)
-		form = FormFabricante(instance = objeto_para_deletar)
+		form = FormExibeFabricante(instance = objeto_para_deletar)
 	if str(tpObjeto) == 'material':
 		objeto_para_deletar = get_object_or_404(Material, pk = idObjeto)
-		form = FormMaterial(instance = objeto_para_deletar)
+		form = FormExibeMaterial(instance = objeto_para_deletar)
 	if str(tpObjeto) == 'fornecedor':
 		objeto_para_deletar = get_object_or_404(Fornecedor, pk = idObjeto)
-		form = FormFornecedor(instance = objeto_para_deletar)
+		form = FormExibeFornecedor(instance = objeto_para_deletar)
 	if str(tpObjeto) == 'requisicao':
 		objeto_para_deletar = get_object_or_404(Requisicao, pk = idObjeto)
 		if objeto_para_deletar.status == u'Aprovada':

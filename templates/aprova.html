@@ -54,7 +54,7 @@
 {% else %}{% if campos.name = "cotacaoVencedora" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.cotacaoVencedora.fornecedor}}</th>
+			<th scope="row">{{objeto.cotacaoVencedora.fornecedor|default:"<font color='red'>Finalizado sem vencedor</font>"}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Item Cotado</b></td>
@@ -121,9 +121,11 @@
 {%for cotacao in cotacoes %}
 		<tr>	
 			<th scope="row">{{ cotacao.fornecedor }}</th>
-			<td>{{ cotacao.vlCotacao|default_if_none:"Não Cotou" }}</td>
+			<td>{{ cotacao.vlCotacao|default:"Não Cotou" }}</td>
 			<td>{{ cotacao.itemRequisicao.qtd }}</td>
+			{% if cotacao.vlCotacao %}
 			<td>{{ cotacao.vlCotacao|default_if_none:""|multiplicar:cotacao.itemRequisicao.qtd }}</td>
+			{% endif %}
 			<td><a href="javascript:popup('/exibe/obs/{{cotacao.id}}')"><img src="/media/img/exibir.gif/" /></a></td>
 		</tr>
 {% endfor %}
