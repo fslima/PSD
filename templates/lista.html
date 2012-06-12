@@ -8,7 +8,9 @@
 {% block conteudo %}
 {% csrf_token %}
 <h1>{{ titulo }}</h1>
+{% if tpObjeto != 'mapa' and tpObjeto != 'cotacao' %}
 <a href="/adiciona/{{ tpObjeto }}/000" class="addlink">Adicionar {{ tpObjeto|capfirst }}</a>     |
+{% endif %}
 <a href="/filtra/{{ tpObjeto }}"><img src="/media/img/exibir.gif/" />Pesquisar {{ tpObjeto|capfirst }}</a>
 <div class="module">
 <table>

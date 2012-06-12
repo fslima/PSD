@@ -17,6 +17,12 @@
 			<td><b>Usuário</b></td>
 			<th scope="row">{{request.user}}</th>
 		</tr>
+		<tr>
+			<td><b>Perfil de Acesso:</b></td>
+			<th scope="row"></th>
+		</tr>
+		{%for grupo in request.user.groups.all %}<tr><td></td><th scope="row">{{grupo}}</th></tr>{% endfor %}
 </table>
+
 </div>
 {% endblock %}

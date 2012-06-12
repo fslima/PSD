@@ -114,7 +114,7 @@ class FormFiltraFabricante(forms.Form):
 class FormAdicionaFornecedor(forms.ModelForm):
 	razao = forms.CharField(label = 'Razão Social')
 	fantasia = forms.CharField(label = 'Nome Fantasia')
-	grupoFornecedor = Group.objects.filter(name = 'fornecedor')
+	grupoFornecedor = Group.objects.filter(name = 'FORNECEDOR')
 	usuario =  forms.ModelChoiceField(queryset = User.objects.filter(groups__in = grupoFornecedor), label = 'Login no Sistema')
 	tel1 = forms.CharField(min_length = 10, max_length = 10)
 	tel2 = forms.CharField(min_length = 10, max_length = 10)

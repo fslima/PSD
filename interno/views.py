@@ -166,10 +166,11 @@ def lista(request, tpObjeto):
 		lista = Cotacao.objects.filter(fornecedor = fornecedor).exclude(dtLimite__lte = datetime.now() - timedelta(1)).order_by('id').reverse()
 	if str(tpObjeto) == 'aprovacoes':
 		titulo = 'Aprovações Pendentes'
+		centroCusto = CentroCusto.objects.filter(gerente = request.user)
 		listaMapasVazia = 'Nenhum mapa pendente de aprovação'
 		listaRequisicoesVazia = 'Nenhuma requisição pendente de aprovação'
-		listaRequisicoes = Requisicao.objects.filter(status = u'Aguardando Aprovação').order_by('id').reverse()
-		listaMapas = MapaComparativo.objects.filter(status = u'Aguardando Aprovação').order_by('id').reverse()
+		listaRequisicoes = Requisicao.objects.filter(centroCusto__in = centroCusto, status = u'Aguardando Aprovação').order_by('id').reverse()
+		listaMapas = MapaComparativo.objects.filter(centroCusto__in = centroCusto, status = u'Aguardando Aprovação').order_by('id').reverse()
 		return render_to_response('lista_aprovacoes.html', locals(), context_instance = RequestContext(request))
 	return render_to_response('lista.html', locals(), context_instance = RequestContext(request))
 
@@ -201,7 +202,7 @@ def exibe(request, tpObjeto, idObjeto):
 	if str(tpObjeto) == 'requisicao':
 		titulo = 'Requisicao'
 		titulo_membros = 'Itens da Requisicao'
-		objeto = get_object_or_404(Requisicao, pk = idObjeto, solicitante = request.user)
+		objeto = get_object_or_404(Requisicao, pk = idObjeto)
 		itens = ItemRequisicao.objects.filter(requisicao = objeto)
 		form = FormRequisicao(instance = objeto)
 	if str(tpObjeto) == 'mapa':
@@ -775,7 +776,7 @@ def filtra(request, tpObjeto):
 @login_required
 def finaliza(request, tpObjeto, idObjeto):
 	if str(tpObjeto) == 'mapa':
-		if not request.user.has_perm('interno.change_mapacomparativo'):
+		if not request.user.has_perm('interno.finalizar_mapa'):
 			erro = 'Você não possui acesso para finalizar mapa'
 			return render_to_response("500.html", locals())
 		titulo = 'Mapa Comparativo'

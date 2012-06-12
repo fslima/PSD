@@ -272,6 +272,7 @@ class Fornecedor(models.Model):
 
 	class Meta:
 		db_table = 'fornecedor'
+		permissions = [('change_gruposfornecedor', 'Pode alterar grupos de mercadoria do fornecedor')]
 
 class Requisicao(models.Model):
 	def __unicode__(self):
@@ -417,12 +418,14 @@ class MapaComparativo(models.Model):
 	cotacoes = models.ManyToManyField(Cotacao, related_name = 'cotacoes_do_mapa', null = True)
 	cotacaoVencedora = models.ForeignKey(Cotacao, related_name = 'cotacao_vencedora', null = True)
 	dtLiberacao = models.DateField()
+	centroCusto = models.ForeignKey(CentroCusto, related_name = 'cc_mapa')
 	obs = models.TextField(max_length = 100, null = True)
 	status = models.CharField(max_length = 50)
 
 	def adicionar(self, item, diasParaCotacao):
 		self.dtLiberacao = datetime.now() + timedelta(diasParaCotacao)
 		self.status = 'Aberto'
+		self.centroCusto = item.requisicao.centroCusto
 		self.save()
 		cotacoes = Cotacao.objects.filter(itemRequisicao = item)
 		for cotacao in cotacoes:
@@ -442,8 +445,8 @@ class MapaComparativo(models.Model):
 		return 'Mapa não foi finalizado ou já está aprovado'
 
 	class Meta:
-		db_table = 'mapa_comparativo'
-		permissions = [('finalizar_mapacomparativo', 'Pode finalizar mapa comparativo'), ('aprovar_mapacomparativo', 'Pode aprovar mapa comparativo')]
+		db_table = 'mapa'
+		permissions = [('finalizar_mapa', 'Pode finalizar mapa comparativo'), ('aprovar_mapa', 'Pode aprovar mapa comparativo')]
 
 
 
