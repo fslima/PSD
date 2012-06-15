@@ -80,6 +80,7 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
 	'PSD.interno',
+	'PSD.relatorios',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',

@@ -52,7 +52,7 @@
 {%for registro in query %}
 <tr class="{% cycle 'row1' 'row2' %}">
 <th><a href="/exibe/material/{{registro.id}}">{{registro}}</a></th>
-<td>{{registro.fabricante}}</td><td>{{registro.grupoMercadoria}}</td><td>{{registro.unidadeMedida}}</td><td>{{registro.tpMaterial}}</td>
+<td>{{registro.fabricante}}</td><td>{{registro.grupo_mercadoria}}</td><td>{{registro.unidade_medida}}</td><td>{{registro.tp_material}}</td>
 <td>{{registro.status}}</td></tr>
 {% endfor %}
 </tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"l,is" }}</p>
@@ -69,25 +69,25 @@
 {%for registro in query %}
 <tr class="{% cycle 'row1' 'row2' %}">
 <th><a href="/exibe/requisicao/{{registro.id}}">{{registro}}</a></th>
-<td>{{registro.dtRequisicao}}</td><td>{{registro.solicitante}}</td> <td>{{registro.dtDeferimento}}</td><td>{{registro.status}}</td> </tr>
+<td>{{registro.dt_requisicao}}</td><td>{{registro.solicitante}}</td> <td>{{registro.dt_deferimento}}</td><td>{{registro.status}}</td> </tr>
 {% endfor %}
 </tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"ão,ões" }}</p>
 {% endif %}
-{% if tpObjeto == 'mapa' %}
+{% if tpObjeto == 'mapacomparativo' %}
 {%for registro in query %}
 <tr class="{% cycle 'row1' 'row2' %}">
 <th><a href="/exibe/mapa/{{registro.id}}">{{registro}}</a></th>
-<td>{{registro.dtLiberacao}}</td>
-<td><a href="/exibe/fornecedor/{{registro.cotacaoVencedora.fornecedor.id}}">{{registro.cotacaoVencedora.fornecedor}}</a></td> 
-<td><a href="/exibe/material/{{registro.cotacaoVencedora.itemRequisicao.material.id}}">{{registro.cotacaoVencedora.itemRequisicao}}</a></td><td>{{registro.cotacaoVencedora.vlCotacao|default_if_none:""}}</td> <td>{{registro.status}}</td> </tr>
+<td>{{registro.dt_liberacao}}</td>
+<td><a href="/exibe/fornecedor/{{registro.cotacao_vencedora.fornecedor.id}}">{{registro.cotacao_vencedora.fornecedor}}</a></td> 
+<td><a href="/exibe/material/{{registro.cotacao_vencedora.item_requisicao.material.id}}">{{registro.cotacao_vencedora.item_requisicao}}</a></td><td>{{registro.cotacao_vencedora.vl_cotacao|default_if_none:""}}</td> <td>{{registro.status}}</td> </tr>
 {% endfor %}
 </tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize }}</p>
 {% endif %}
 {% if tpObjeto == 'cotacao' %}
 {%for registro in query %}
 <tr class="{% cycle 'row1' 'row2' %}">
-<th><a href="/exibe/cotacao/{{registro.id}}">{{registro.dtLimite}}</a></th>
-<td>{{registro.vlCotacao}}</td><td>{{registro.itemRequisicao}}</td></tr>
+<th><a href="/exibe/cotacao/{{registro.id}}">{{registro.dt_limite}}</a></th>
+<td>{{registro.vl_cotacao}}</td><td>{{registro.item_requisicao}}</td></tr>
 {% endfor %}
 </tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"ão,ões" }}</p>
 {% endif%}
@@ -102,7 +102,7 @@
 {%for registro in query %}
 <tr class="{% cycle 'row1' 'row2' %}">
 <th><a href="/exibe/unidademedida/{{registro.id}}">{{registro}}</a></th>
-<td>{{registro.descUnidadeMedida}}</td><td>{{registro.status}}</td></tr>
+<td>{{registro.desc_unidade_medida}}</td><td>{{registro.status}}</td></tr>
 {% endfor %}
 </tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"e de Medida,es de Medida" }}</p>
 {% endif %}

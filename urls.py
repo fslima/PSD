@@ -6,6 +6,7 @@ from django.conf.urls.defaults import *
 from django.contrib.auth.views import *
 from django.contrib import admin
 from PSD.interno.views import *
+from PSD.relatorios.views import *
 
 admin.autodiscover()
 
@@ -29,12 +30,10 @@ urlpatterns = patterns('',
 	(r'^aprova/(?P<tpObjeto>\w+)/(?P<idObjeto>\d+)/$', aprova),
 	(r'^reprova/(?P<tpObjeto>\w+)/(?P<idObjeto>\d+)/$', reprova),
 
-#	(r'^servico/oportunidades/abertas$', servico__oportunidades_abertas),
-#	(r'^servico/exibir/(?P<tpObjeto>\w+)', servico_exibir),
-#	(r'^servico/cadastrar/(?P<tpObjeto>\w+)', servico_cadastrar),
-#	(r'^editora/(?P<id_editora>\d+)/$', editora),
-#	(r'^adiciona_livro$', adiciona_livro),
-#	(r'^livro/(?P<id_editora>\d+)/$', livro),
+	(r'^relatorios$', relatorios),
+	(r'^relatorio/(?P<tpObjeto>\w+)/(?P<tpRel>\w+)/$', fornecedor),
+
+
 )
 
 if settings.DEBUG:

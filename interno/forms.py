@@ -4,35 +4,37 @@ from django import forms
 from models import *
 
 class FormAdicionaCentroCusto(forms.ModelForm):
-	nomeCentroCusto = forms.CharField(label = 'Centro de Custo')
-	gerente = forms.ModelChoiceField(queryset=User.objects.filter(is_active = 't').order_by('username'))
+	nome_centro_custo = forms.CharField(label = 'Centro de Custo')
+	grupoGerente = Group.objects.filter(name__iexact = 'gerente')
+	gerente = forms.ModelChoiceField(queryset=User.objects.filter(groups__in = grupoGerente, is_active = 't').order_by('username'))
 		
 	class Meta:
 		model = CentroCusto
-		fields = ('nomeCentroCusto', 'gerente')
+		fields = ('nome_centro_custo', 'gerente')
 
 class FormEditaCentroCusto(forms.ModelForm):
-	nomeCentroCusto = forms.CharField(label = 'Centro de Custo')
-	gerente = forms.ModelChoiceField(queryset=User.objects.filter(is_active = 't').order_by('username'))
+	nome_centro_custo = forms.CharField(label = 'Centro de Custo')
+	grupoGerente = Group.objects.filter(name__iexact = 'gerente')
+	gerente = forms.ModelChoiceField(queryset=User.objects.filter(groups__in = grupoGerente, is_active = 't').order_by('username'))
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação')
 	
 	class Meta:
 		model = CentroCusto
-		fields = ('nomeCentroCusto', 'gerente', 'status')
+		fields = ('nome_centro_custo', 'gerente', 'status')
 
 class FormExibeCentroCusto(forms.ModelForm):
-	nomeCentroCusto = forms.CharField(label = 'Centro de Custo')
+	nome_centro_custo = forms.CharField(label = 'Centro de Custo')
 	gerente = forms.CharField(label = 'Gerente')
 	status = forms.CharField(label = 'Situação')
 	
 	class Meta:
 		model = CentroCusto
-		fields = ('nomeCentroCusto', 'gerente', 'status')
+		fields = ('nome_centro_custo', 'gerente', 'status')
 
 class FormFiltraCentroCusto(forms.Form):
-	nomeCentroCusto = forms.CharField(label = 'Centro de Custo', required = False)
+	nome_centro_custo = forms.CharField(label = 'Centro de Custo', required = False)
 	gerente = forms.ModelChoiceField(queryset=User.objects.filter(is_active = 't').order_by('username'), label = 'Gerente', required = False)
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
@@ -40,81 +42,81 @@ class FormFiltraCentroCusto(forms.Form):
 	
 	class Meta:
 		model = CentroCusto
-		fields = ('nomeCentroCusto', 'gerente', 'status')
+		fields = ('nome_centro_custo', 'gerente', 'status')
 
 class FormEditaCotacao(forms.ModelForm):
-	vlCotacao = forms.DecimalField(max_digits = 20, decimal_places = 2, label = 'Valor Unitário')
+	vl_cotacao = forms.DecimalField(max_digits = 20, decimal_places = 2, label = 'Valor Unitário')
 	
 	class Meta:
 		model = Cotacao
-		fields = ('vlCotacao', 'obs')
+		fields = ('vl_cotacao', 'obs')
 
 class FormExibeCotacao(forms.ModelForm):
-	vlCotacao = forms.DecimalField(max_digits = 20, decimal_places = 2, label = 'Valor Unitário')
-	itemRequisicao = forms.CharField(label = 'Item da Cotação')
-	dtLimite = forms.CharField(label = 'Data Limite')
+	vl_cotacao = forms.DecimalField(max_digits = 20, decimal_places = 2, label = 'Valor Unitário')
+	item_requisicao = forms.CharField(label = 'Item da Cotação')
+	dt_limite = forms.CharField(label = 'Data Limite')
 
 	class Meta:
 		model = Cotacao
-		fields = ('itemRequisicao', 'dtLimite', 'vlCotacao', 'obs')
+		fields = ('item_requisicao', 'dt_limite', 'vl_cotacao', 'obs')
 
 class FormFiltraCotacao(forms.Form):
-	vlCotacaoP = forms.DecimalField(max_digits = 20, decimal_places = 2, required = False, label = 'Valor Unitário a partir de')
-	vlCotacaoA = forms.DecimalField(max_digits = 20, decimal_places = 2, required = False, label = 'Valor Unitário ate')
-	dtLimiteP = forms.DateField(
+	vl_cotacaoP = forms.DecimalField(max_digits = 20, decimal_places = 2, required = False, label = 'Valor Unitário a partir de')
+	vl_cotacaoA = forms.DecimalField(max_digits = 20, decimal_places = 2, required = False, label = 'Valor Unitário ate')
+	dt_limiteP = forms.DateField(
 				label = 'Data limite a partir de',
 				widget = forms.DateInput(format = '%d/%m/%Y'),
 				input_formats = ['%d/%m/%Y'],
 				required = False
 			)
-	dtLimiteA = forms.DateField(
+	dt_limiteA = forms.DateField(
 				label = 'Data limite ate',
 				widget = forms.DateInput(format = '%d/%m/%Y'),
 				input_formats = ['%d/%m/%Y'],
 				required = False
 			)
-	itemRequisicao = forms.ModelChoiceField(queryset=Material.objects.all(), required = False, label = 'Item da Cotação')
+	item_requisicao = forms.ModelChoiceField(queryset=Material.objects.all(), required = False, label = 'Item da Cotação')
 	
 	
-	fields = ('dtLimiteP', 'dtLimiteA', 'dtLimiteP', 'dtLimiteA', 'itemRequisicao')
+	fields = ('dt_limiteP', 'dt_limiteA', 'dt_limiteP', 'dt_limiteA', 'item_requisicao')
 
 class FormAdicionaFabricante(forms.ModelForm):
-	nomeFabricante = forms.CharField(label = 'Fabricante')
+	nome_fabricante = forms.CharField(label = 'Fabricante')
 	
 	class Meta:
 		model = Fabricante
-		fields = ('nomeFabricante',)
+		fields = ('nome_fabricante',)
 
 class FormEditaFabricante(forms.ModelForm):
-	nomeFabricante = forms.CharField(label = 'Fabricante')
+	nome_fabricante = forms.CharField(label = 'Fabricante')
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação')
 
 	class Meta:
 		model = Fabricante
-		fields = ('nomeFabricante', 'status')
+		fields = ('nome_fabricante', 'status')
 
 class FormExibeFabricante(forms.ModelForm):
-	nomeFabricante = forms.CharField(label = 'Fabricante')
+	nome_fabricante = forms.CharField(label = 'Fabricante')
 	status = forms.CharField(label = 'Situação')
 
 	class Meta:
 		model = Fabricante
-		fields = ('nomeFabricante', 'status')
+		fields = ('nome_fabricante', 'status')
 
 class FormFiltraFabricante(forms.Form):
-	nomeFabricante = forms.CharField(label = 'Fabricante', required = False)
+	nome_fabricante = forms.CharField(label = 'Fabricante', required = False)
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação', required = False)
 	
-	fields = ('nomeFabricante', 'status')
+	fields = ('nome_fabricante', 'status')
 
 class FormAdicionaFornecedor(forms.ModelForm):
 	razao = forms.CharField(label = 'Razão Social')
 	fantasia = forms.CharField(label = 'Nome Fantasia')
-	grupoFornecedor = Group.objects.filter(name = 'FORNECEDOR')
+	grupoFornecedor = Group.objects.filter(name__iexact = 'fornecedor')
 	usuario =  forms.ModelChoiceField(queryset = User.objects.filter(groups__in = grupoFornecedor), label = 'Login no Sistema')
 	tel1 = forms.CharField(min_length = 10, max_length = 10)
 	tel2 = forms.CharField(min_length = 10, max_length = 10)
@@ -138,7 +140,7 @@ class FormAdicionaFornecedor(forms.ModelForm):
 class FormEditaFornecedor(forms.ModelForm):
 	razao = forms.CharField(label = 'Razão Social')
 	fantasia = forms.CharField(label = 'Nome Fantasia')
-	grupoFornecedor = Group.objects.filter(name = 'fornecedor')
+	grupoFornecedor = Group.objects.filter(name__iexact = 'fornecedor')
 	usuario =  forms.ModelChoiceField(queryset = User.objects.filter(groups__in = grupoFornecedor), label = 'Login no Sistema')
 	tel1 = forms.CharField(min_length = 10, max_length = 10)
 	tel2 = forms.CharField(min_length = 10, max_length = 10)
@@ -205,40 +207,40 @@ class FormGruposFornecedor(forms.ModelForm):
 
 	class Meta:
 		model = Fornecedor
-		fields = ('grupoMercadoria',)
+		fields = ('grupo_mercadoria',)
 
 class FormAdicionaGrupoMercadoria(forms.ModelForm):
-	nomeGrupoMercadoria = forms.CharField(label = 'Grupo de Mercadoria')
+	nome_grupo_mercadoria = forms.CharField(label = 'Grupo de Mercadoria')
 	
 	class Meta:
 		model = GrupoMercadoria
-		fields = ('nomeGrupoMercadoria',)
+		fields = ('nome_grupo_mercadoria',)
 
 class FormEditaGrupoMercadoria(forms.ModelForm):
-	nomeGrupoMercadoria = forms.CharField(label = 'Grupo de Mercadoria')
+	nome_grupo_mercadoria = forms.CharField(label = 'Grupo de Mercadoria')
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação')
 	
 	class Meta:
 		model = GrupoMercadoria
-		fields = ('nomeGrupoMercadoria','status')
+		fields = ('nome_grupo_mercadoria','status')
 
 class FormExibeGrupoMercadoria(forms.ModelForm):
-	nomeGrupoMercadoria = forms.CharField(label = 'Grupo de Mercadoria')
+	nome_grupo_mercadoria = forms.CharField(label = 'Grupo de Mercadoria')
 	status = forms.CharField(label = 'Situação')
 	
 	class Meta:
 		model = GrupoMercadoria
-		fields = ('nomeGrupoMercadoria','status')
+		fields = ('nome_grupo_mercadoria','status')
 
 class FormFiltraGrupoMercadoria(forms.Form):
-	nomeGrupoMercadoria = forms.CharField(label = 'Grupo de Mercadoria', required = False)
+	nome_grupo_mercadoria = forms.CharField(label = 'Grupo de Mercadoria', required = False)
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação', required = False)
 	
-	fields = ('nomeGrupoMercadoria', 'status')
+	fields = ('nome_grupo_mercadoria', 'status')
 
 class FormItemRequisicao(forms.ModelForm):
 	material = forms.ModelChoiceField(queryset=Material.objects.all(), label = 'Material / Serviço')
@@ -249,23 +251,23 @@ class FormItemRequisicao(forms.ModelForm):
 		fields = ('material', 'qtd')
 
 class FormAdicionaMaterial(forms.ModelForm):
-	nomeMaterial = forms.CharField(label = 'Nome')
+	nome_material = forms.CharField(label = 'Nome')
 	fabricante = forms.ModelChoiceField(queryset = Fabricante.objects.filter(status = 'Ativo'), label = 'Fabricante')
-	unidadeMedida = forms.ModelChoiceField(queryset = UnidadeMedida.objects.filter(status = 'Ativo'), label = 'Unidade de Medida')
-	grupoMercadoria = forms.ModelChoiceField(queryset = GrupoMercadoria.objects.filter(status = 'Ativo'), label = 'Grupo de Mercadoria')
-	tpMaterial = forms.ChoiceField([('Mercadoria','Mercadoria'), ('Servico', 'Servico')], 
+	unidade_medida = forms.ModelChoiceField(queryset = UnidadeMedida.objects.filter(status = 'Ativo'), label = 'Unidade de Medida')
+	grupo_mercadoria = forms.ModelChoiceField(queryset = GrupoMercadoria.objects.filter(status = 'Ativo'), label = 'Grupo de Mercadoria')
+	tp_material = forms.ChoiceField([('Mercadoria','Mercadoria'), ('Servico', 'Servico')], 
 				     initial = ('Mercadoria','Mercadoria'), label = 'Tipo de Material')
 
 	class Meta:
 		model = Material
-		fields = ('nomeMaterial', 'fabricante', 'grupoMercadoria', 'unidadeMedida', 'tpMaterial')
+		fields = ('nome_material', 'fabricante', 'grupo_mercadoria', 'unidade_medida', 'tp_material')
 
 class FormEditaMaterial(forms.ModelForm):
-	nomeMaterial = forms.CharField(label = 'Nome')
+	nome_material = forms.CharField(label = 'Nome')
 	fabricante = forms.ModelChoiceField(queryset = Fabricante.objects.filter(status = 'Ativo'), label = 'Fabricante')
-	unidadeMedida = forms.ModelChoiceField(queryset = UnidadeMedida.objects.filter(status = 'Ativo'), label = 'Unidade de Medida')
-	grupoMercadoria = forms.ModelChoiceField(queryset = GrupoMercadoria.objects.filter(status = 'Ativo'), label = 'Grupo de Mercadoria')
-	tpMaterial = forms.ChoiceField([('Mercadoria','Mercadoria'), ('Servico', 'Servico')], 
+	unidade_medida = forms.ModelChoiceField(queryset = UnidadeMedida.objects.filter(status = 'Ativo'), label = 'Unidade de Medida')
+	grupo_mercadoria = forms.ModelChoiceField(queryset = GrupoMercadoria.objects.filter(status = 'Ativo'), label = 'Grupo de Mercadoria')
+	tp_material = forms.ChoiceField([('Mercadoria','Mercadoria'), ('Servico', 'Servico')], 
 				     initial = ('Mercadoria','Mercadoria'), label = 'Tipo de Material')
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
@@ -273,32 +275,32 @@ class FormEditaMaterial(forms.ModelForm):
 
 	class Meta:
 		model = Material
-		fields = ('nomeMaterial', 'fabricante', 'grupoMercadoria', 'unidadeMedida', 'tpMaterial', 'status')
+		fields = ('nome_material', 'fabricante', 'grupo_mercadoria', 'unidade_medida', 'tp_material', 'status')
 
 class FormExibeMaterial(forms.ModelForm):
-	nomeMaterial = forms.CharField(label = 'Nome')
+	nome_material = forms.CharField(label = 'Nome')
 	fabricante = forms.CharField(label = 'Fabricante')
-	unidadeMedida = forms.CharField(label = 'Unidade de Medida')
-	grupoMercadoria = forms.CharField(label = 'Grupo de Mercadoria')
-	tpMaterial = forms.CharField(label = 'Tipo de Material')
+	unidade_medida = forms.CharField(label = 'Unidade de Medida')
+	grupo_mercadoria = forms.CharField(label = 'Grupo de Mercadoria')
+	tp_material = forms.CharField(label = 'Tipo de Material')
 	status = forms.CharField(label = 'Situação')
 
 	class Meta:
 		model = Material
-		fields = ('nomeMaterial', 'fabricante', 'grupoMercadoria', 'unidadeMedida', 'tpMaterial', 'status')
+		fields = ('nome_material', 'fabricante', 'grupo_mercadoria', 'unidade_medida', 'tp_material', 'status')
 
 class FormFiltraMaterial(forms.Form):	
-	nomeMaterial = forms.CharField(label = 'Nome', required = False)
+	nome_material = forms.CharField(label = 'Nome', required = False)
 	fabricante = forms.ModelChoiceField(queryset=Fabricante.objects.all(), required = False, label = 'Fabricante')
-	grupoMercadoria = forms.ModelChoiceField(queryset=GrupoMercadoria.objects.all(), required = False, label = 'Grupo de Mercadoria')
-	unidadeMedida = forms.ModelChoiceField(queryset=UnidadeMedida.objects.all(), required = False, label = 'Unidade de Medida')
-	tpMaterial = forms.ChoiceField([('Mercadoria','Mercadoria'), ('Servico', 'Servico')], 
+	grupo_mercadoria = forms.ModelChoiceField(queryset=GrupoMercadoria.objects.all(), required = False, label = 'Grupo de Mercadoria')
+	unidade_medida = forms.ModelChoiceField(queryset=UnidadeMedida.objects.all(), required = False, label = 'Unidade de Medida')
+	tp_material = forms.ChoiceField([('Mercadoria','Mercadoria'), ('Servico', 'Servico')], 
 				     initial = ('Mercadoria','Mercadoria'), required = False, label = 'Tipo de Material')
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação', required = False)
 
-	fields = ('nomeMaterial', 'fabricante', 'grupoMercadoria', 'unidadeMedida', 'tpMaterial', 'status')
+	fields = ('nome_material', 'fabricante', 'grupo_mercadoria', 'unidade_medida', 'tp_material', 'status')
 
 class FormMapaComparativo(forms.ModelForm):
 	
@@ -307,22 +309,22 @@ class FormMapaComparativo(forms.ModelForm):
 		fields = ('obs',)
 
 class FormExibeMapaComparativo(forms.ModelForm):
-	dtLiberacao = forms.CharField(label = 'Liberação do Mapa')
-	cotacaoVencedora = forms.CharField(label = 'Cotação Vencedora')
+	dt_liberacao = forms.CharField(label = 'Liberação do Mapa')
+	cotacao_vencedora = forms.CharField(label = 'Cotação Vencedora')
 
 
 	class Meta:
 		model = MapaComparativo
-		fields = ('dtLiberacao', 'cotacaoVencedora', 'obs')
+		fields = ('dt_liberacao', 'cotacao_vencedora', 'obs')
 
 class FormFiltraMapaComparativo(forms.Form):
-	dtLiberacaoP = forms.DateField(
+	dt_liberacaoP = forms.DateField(
 				label = 'Liberacao a partir de',
 				widget = forms.DateInput(format = '%d/%m/%Y'),
 				input_formats = ['%d/%m/%Y'],
 				required = False
 			)
-	dtLiberacaoA = forms.DateField(
+	dt_liberacaoA = forms.DateField(
 				label = 'Liberacao até',
 				widget = forms.DateInput(format = '%d/%m/%Y'),
 				input_formats = ['%d/%m/%Y'],
@@ -334,97 +336,97 @@ class FormFiltraMapaComparativo(forms.Form):
 				label = 'Situação', required = False)
 	
 	
-	fields = ('dtLiberacaoP', 'dtLiberacaoA', 'fornecedorVencedor', 'status')
+	fields = ('dt_liberacaoP', 'dt_liberacaoA', 'fornecedorVencedor', 'status')
 
 class FormRequisicao(forms.ModelForm):
-	centroCusto = forms.ModelChoiceField(queryset=CentroCusto.objects.all(), label = 'Centro de Custo')
-	diasParaCotacao = forms.IntegerField(label = 'Nº de dias para cotação')
+	centro_custo = forms.ModelChoiceField(queryset=CentroCusto.objects.all(), label = 'Centro de Custo')
+	dias_para_cotacao = forms.IntegerField(label = 'Nº de dias para cotação')
 
 	class Meta:
 		model = Requisicao
-		fields = ('centroCusto', 'diasParaCotacao')
+		fields = ('centro_custo', 'dias_para_cotacao')
 
 class FormEditaRequisicao(forms.ModelForm):
-	centroCusto = forms.ModelChoiceField(queryset=CentroCusto.objects.all(), label = 'Centro de Custo')
-	diasParaCotacao = forms.IntegerField(label = 'Nº de dias para cotação')
+	centro_custo = forms.ModelChoiceField(queryset=CentroCusto.objects.all(), label = 'Centro de Custo')
+	dias_para_cotacao = forms.IntegerField(label = 'Nº de dias para cotação')
 	status = forms.ChoiceField([('',''), ('Aprovada','Aprovada'), ('Aguardando Aprovação','Aguardando Aprovação'), ('Reprovada','Reprovada'), ('Excluido','Excluido')], 
 				initial = ('',''),
 				label = 'Situação', required = False)
 
 	class Meta:
 		model = Requisicao
-		fields = ('centroCusto', 'diasParaCotacao', 'status')
+		fields = ('centro_custo', 'dias_para_cotacao', 'status')
 
 class FormFiltraRequisicao(forms.Form):
-	dtRequisicaoP = forms.DateField(
+	dt_requisicaoP = forms.DateField(
 				label = 'Criação a partir de',
 				widget = forms.DateInput(format = '%d/%m/%Y'),
 				input_formats = ['%d/%m/%Y'],
 				required = False
 			)
-	dtRequisicaoA = forms.DateField(
+	dt_requisicaoA = forms.DateField(
 				label = 'Criação até',
 				widget = forms.DateInput(format = '%d/%m/%Y'),
 				input_formats = ['%d/%m/%Y'],
 				required = False
 			)
-	dtDeferimentoP = forms.DateField(
+	dt_deferimentoP = forms.DateField(
 				label = 'Deferimento a partir de',
 				widget = forms.DateInput(format = '%d/%m/%Y'),
 				input_formats = ['%d/%m/%Y'],
 				required = False
 			)
-	dtDeferimentoA = forms.DateField(
+	dt_deferimentoA = forms.DateField(
 				label = 'Deferimento até',
 				widget = forms.DateInput(format = '%d/%m/%Y'),
 				input_formats = ['%d/%m/%Y'],
 				required = False
 			)
-	centroCusto = forms.ModelChoiceField(queryset=CentroCusto.objects.all(), required = False, label = 'Centro de Custo')
-	itemRequisicao = forms.ModelChoiceField(queryset=Material.objects.all(), required = False, label = 'Item da Requisição')
+	centro_custo = forms.ModelChoiceField(queryset=CentroCusto.objects.all(), required = False, label = 'Centro de Custo')
+	item_requisicao = forms.ModelChoiceField(queryset=Material.objects.all(), required = False, label = 'Item da Requisição')
 	status = forms.ChoiceField([('',''), ('Aprovada','Aprovada'), ('Aguardando Aprovação','Aguardando Aprovação'), ('Reprovada','Reprovada'), ('Excluido','Excluido')], 
 				initial = ('',''),
 				label = 'Situação', required = False)
 	
 	
-	fields = ('dtRequisicaoP', 'dtRequisicaoA', 'itemRequisicao', 'dtDeferimentoP', 'dtDeferimentoA', 'centroCusto')
+	fields = ('dt_requisicaoP', 'dt_requisicaoA', 'item_requisicao', 'dt_deferimentoP', 'dt_deferimentoA', 'centro_custo')
 
 class FormAdicionaUnidadeMedida(forms.ModelForm):
-	nomeUnidadeMedida = forms.CharField(label = 'Unidade de Medida')
-	descUnidadeMedida = forms.CharField(label = 'Descrição')
+	nome_unidade_medida = forms.CharField(label = 'Unidade de Medida')
+	desc_unidade_medida = forms.CharField(label = 'Descrição')
 	
 	class Meta:
 		model = UnidadeMedida
-		fields = ('nomeUnidadeMedida', 'descUnidadeMedida')
+		fields = ('nome_unidade_medida', 'desc_unidade_medida')
 
 class FormEditaUnidadeMedida(forms.ModelForm):
-	nomeUnidadeMedida = forms.CharField(label = 'Unidade de Medida')
-	descUnidadeMedida = forms.CharField(label = 'Descrição')
+	nome_unidade_medida = forms.CharField(label = 'Unidade de Medida')
+	desc_unidade_medida = forms.CharField(label = 'Descrição')
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação')
 	
 	class Meta:
 		model = UnidadeMedida
-		fields = ('nomeUnidadeMedida', 'descUnidadeMedida', 'status')
+		fields = ('nome_unidade_medida', 'desc_unidade_medida', 'status')
 
 class FormExibeUnidadeMedida(forms.ModelForm):
-	nomeUnidadeMedida = forms.CharField(label = 'Unidade de Medida')
-	descUnidadeMedida = forms.CharField(label = 'Descrição')
+	nome_unidade_medida = forms.CharField(label = 'Unidade de Medida')
+	desc_unidade_medida = forms.CharField(label = 'Descrição')
 	status = forms.CharField(label = 'Situação')
 	
 	class Meta:
 		model = UnidadeMedida
-		fields = ('nomeUnidadeMedida', 'descUnidadeMedida', 'status')
+		fields = ('nome_unidade_medida', 'desc_unidade_medida', 'status')
 
 class FormFiltraUnidadeMedida(forms.Form):
-	nomeUnidadeMedida = forms.CharField(label = 'Unidade de Medida', required = False)
-	descUnidadeMedida = forms.CharField(label = 'Descrição', required = False)
+	nome_unidade_medida = forms.CharField(label = 'Unidade de Medida', required = False)
+	desc_unidade_medida = forms.CharField(label = 'Descrição', required = False)
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação', required = False)
 	
-	fields = ('nomeUnidadeMedida', 'descUnidadeMedida', 'status')
+	fields = ('nome_unidade_medida', 'desc_unidade_medida', 'status')
 
 
 

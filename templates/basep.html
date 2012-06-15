@@ -41,25 +41,27 @@
  <div id="header">
         <div id="branding">
            <h1>
-		{% if perms.interno.add_material or perms.interno.add_fornecedor %}
-		<a href="/cadastro">Cadastro    |</a>
+		{% if not perms.interno.change_cotacao or perms.interno.del_mapacomparativo %}
+		<a href="/cadastro">Cadastro</a>
 		{% endif %}
 		{% if perms.interno.add_requisicao %}
-		<a href="/lista/requisicao">Requisição    |</a>
+		<a href="/lista/requisicao">|    Requisição</a>
 		{% endif %}
 		{% if perms.interno.change_mapacomparativo %}
-		<a href="/lista/mapa">Mapa Comparativo    |</a>
+		<a href="/lista/mapacomparativo">|    Mapa Comparativo</a>
 		{% endif %}
 		{% if perms.interno.aprovar_requisicao %}
-		<a href="/lista/aprovacoes">Aprovação    |</a>
+		<a href="/lista/aprovacoes">|    Aprovação</a>
+		<a href="/relatorios">|    Relatórios</a>
 		{% endif %}
+		{% if perms.interno.del_mapacomparativo %}
+		<a href="/admin">|    Administração</a>
+		{% else %}
 		{% if perms.interno.change_cotacao %}
-		<a href="/lista/cotacao">Cotação    </a>
-		{% endif %}
+		<a href="/lista/cotacao">Cotação</a>
+		{% endif %}{% endif %}
 	   </h1>
         </div>
-
-
  </div>	
     <div id="content" class="flex">
       {% block conteudo %}{% endblock %}

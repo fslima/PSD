@@ -13,14 +13,14 @@
 <table>
 <caption><a href="" class="section">Informações Gerais</a></caption>
 {% for campos in formRequisicao %}
-{% if campos.name = "centroCusto" %}
+{% if campos.name = "centro_custo" %}
 		<tr>
 			<td scope="row"><b>Nº da Requisição</b></td>
 			<th scope="row">{{requisicao.id}}</th>
 		</tr>		
 		<tr>
 			<td scope="row"><b>Data de Criação</b></td>
-			<th scope="row">{{requisicao.dtRequisicao}}</th>
+			<th scope="row">{{requisicao.dt_requisicao}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Solicitante</b></td>
@@ -28,7 +28,7 @@
 		</tr>
 		<tr>
 			<td scope="row"><b>Centro de Custo</b></td>
-			<th scope="row">{{requisicao.centroCusto}}</th>
+			<th scope="row">{{requisicao.centro_custo}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Status da Requisição</b></td>

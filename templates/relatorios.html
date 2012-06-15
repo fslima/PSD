@@ -1,0 +1,24 @@
+{# inclui o template base.html #}
+{% extends "base.html" %}
+
+{# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
+{% block titulo %}SGF - Relatórios{% endblock %}
+
+{# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
+{% block conteudo %}
+{% csrf_token %}
+<h1>Relatórios</h1>
+<div class="module">
+<table>
+<caption><a href="" class="section">Lista de Relatórios</a></caption>
+<tr>
+	<td></td>
+	<th scope="row"><a href="/relatorio/fornecedor/geral">Melhores Fornecedores - Geral</a></th>
+</tr>
+<tr>
+	<td></td>
+	<th scope="row"><a href="/relatorio/fornecedor/grupomercadoria">Melhores Fornecedores - Por Grupo de Mercadoria</a></th>
+</tr>
+</table>
+</div>
+{% endblock %}

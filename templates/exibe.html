@@ -17,32 +17,32 @@
     <div class="module" id="recent-actions-module">
         <h2>Log {{ objeto }}</h2>
         <h3>Inclusão</h3>
-	<ul>Data: {{ objeto.dtInclusao|default_if_none:"" }}</ul>
-	<ul>Usuário: {{ objeto.usuarioInclusao|default_if_none:"" }}</ul>
+	<ul>Data: {{ objeto.dt_inclusao|default_if_none:"" }}</ul>
+	<ul>Usuário: {{ objeto.usuario_inclusao|default_if_none:"" }}</ul>
 	<h3>Alteração</h3>
-	<ul>Data: {{ objeto.dtAlteracao|default_if_none:"" }}</ul>
-	<ul>Usuário: {{ objeto.usuarioAlteracao|default_if_none:"" }}</ul>
+	<ul>Data: {{ objeto.dt_alteracao|default_if_none:"" }}</ul>
+	<ul>Usuário: {{ objeto.usuario_alteracao|default_if_none:"" }}</ul>
 	<h3>Exclusão</h3>
 	<ul>Data: {{ objeto.dtExclusao|default_if_none:"" }}</ul>
-	<ul>Usuário: {{ objeto.usuarioExclusao|default_if_none:"" }}</ul>
+	<ul>Usuário: {{ objeto.usuario_exclusao|default_if_none:"" }}</ul>
     </div>
 </div>
 <table>
 <caption><a href="" class="section">Informações Gerais</a></caption>
 {% for campos in form %}
-{% if campos.name = "itemRequisicao" %}
+{% if campos.name = "item_requisicao" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.itemRequisicao.material}}</th>
+			<th scope="row">{{objeto.item_requisicao.material}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Quantidade</b></td>
-			<th scope="row">{{objeto.itemRequisicao.qtd}} ({{objeto.itemRequisicao.material.unidadeMedida}})</th>
+			<th scope="row">{{objeto.item_requisicao.qtd}} ({{objeto.item_requisicao.material.unidade_medida}})</th>
 		</tr>
-{% else %}{% if campos.name = "unidadeMedida" %}
+{% else %}{% if campos.name = "unidade_medida" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.unidadeMedida}}</th>
+			<th scope="row">{{objeto.unidade_medida}}</th>
 		</tr>
 {% else %}{% if campos.name = "gerente" %}
 		<tr>
@@ -54,35 +54,35 @@
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{objeto.fabricante}}</th>
 		</tr>
-{% else %}{% if campos.name = "grupoMercadoria" %}
+{% else %}{% if campos.name = "grupo_mercadoria" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.grupoMercadoria}}</th>
+			<th scope="row">{{objeto.grupo_mercadoria}}</th>
 		</tr>
 {% else %}{% if campos.name = "usuario" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{objeto.usuario}}</th>
 		</tr>
-{% else %}{% if campos.name = "cotacaoVencedora" %}
+{% else %}{% if campos.name = "cotacao_vencedora" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.cotacaoVencedora.fornecedor}}</th>
+			<th scope="row">{{objeto.cotacao_vencedora.fornecedor}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Item Cotado</b></td>
-			<th scope="row">{{objeto.cotacaoVencedora.itemRequisicao|default_if_none:"Finalizado sem vencedor"}}</th>
+			<th scope="row">{{objeto.cotacao_vencedora.item_requisicao|default_if_none:"Finalizado sem vencedor"}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Valor da Cotação</b></td>
-			{% if objeto.cotacaoVencedora.vlCotacao %}
-			<th scope="row">{{objeto.cotacaoVencedora.vlCotacao|default_if_none:""|multiplicar:objeto.cotacaoVencedora.itemRequisicao.qtd}}</th>
+			{% if objeto.cotacao_vencedora.vl_cotacao %}
+			<th scope="row">{{objeto.cotacao_vencedora.vl_cotacao|default_if_none:""|multiplicar:objeto.cotacao_vencedora.item_requisicao.qtd}}</th>
 			{% endif %}
 		</tr>
-{% else %}{% if campos.name = "centroCusto" %}
+{% else %}{% if campos.name = "centro_custo" %}
 		<tr>
 			<td scope="row"><b>Data de Criação</b></td>
-			<th scope="row">{{objeto.dtRequisicao}}</th>
+			<th scope="row">{{objeto.dt_requisicao}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Solicitante</b></td>
@@ -90,7 +90,7 @@
 		</tr>
 		<tr>
 			<td scope="row"><b>Centro de Custo</b></td>
-			<th scope="row">{{objeto.centroCusto}}</th>
+			<th scope="row">{{objeto.centro_custo}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Status da Requisição</b></td>
@@ -136,9 +136,9 @@
 {%for cotacao in cotacoes %}
 		<tr>	
 			<th scope="row">{{ cotacao.fornecedor }}</th>
-			<td>{{ cotacao.vlCotacao|default_if_none:"Não Cotou" }}</td>
-			<td>{{ cotacao.itemRequisicao.qtd }}</td>
-			<td>{{ cotacao.vlCotacao|default_if_none:""|multiplicar:cotacao.itemRequisicao.qtd }}</td>
+			<td>{{ cotacao.vl_cotacao|default_if_none:"Não Cotou" }}</td>
+			<td>{{ cotacao.item_requisicao.qtd }}</td>
+			<td>{{ cotacao.vl_cotacao|default_if_none:""|multiplicar:cotacao.item_requisicao.qtd }}</td>
 			<td><a href="javascript:popup('/exibe/obs/{{cotacao.id}}')"><img src="/media/img/exibir.gif/" /></a></td>
 		</tr>
 {% endfor %}

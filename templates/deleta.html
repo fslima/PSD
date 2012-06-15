@@ -12,19 +12,19 @@
 <caption><a href="" class="section">Informações gerais</a></caption>
 <form action="" method="POST"> 
 {% for campos in form %}
-{% if campos.name = "itemRequisicao" %}
+{% if campos.name = "item_requisicao" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto_para_deletar.itemRequisicao.material}}</th>
+			<th scope="row">{{objeto_para_deletar.item_requisicao.material}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Quantidade</b></td>
-			<th scope="row">{{objeto_para_deletar.itemRequisicao.qtd}} ({{objeto_para_deletar.itemRequisicao.material.unidadeMedida}})</th>
+			<th scope="row">{{objeto_para_deletar.item_requisicao.qtd}} ({{objeto_para_deletar.item_requisicao.material.unidade_medida}})</th>
 		</tr>
-{% else %}{% if campos.name = "unidadeMedida" %}
+{% else %}{% if campos.name = "unidade_medida" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto_para_deletar.unidadeMedida}}</th>
+			<th scope="row">{{objeto_para_deletar.unidade_medida}}</th>
 		</tr>
 {% else %}{% if campos.name = "gerente" %}
 		<tr>
@@ -36,33 +36,33 @@
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{objeto_para_deletar.fabricante}}</th>
 		</tr>
-{% else %}{% if campos.name = "grupoMercadoria" %}
+{% else %}{% if campos.name = "grupo_mercadoria" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto_para_deletar.grupoMercadoria}}</th>
+			<th scope="row">{{objeto_para_deletar.grupo_mercadoria}}</th>
 		</tr>
 {% else %}{% if campos.name = "usuario" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
 			<th scope="row">{{objeto_para_deletar.usuario}}</th>
 		</tr>
-{% else %}{% if campos.name = "cotacaoVencedora" %}
+{% else %}{% if campos.name = "cotacao_vencedora" %}
 		<tr>
 			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto_para_deletar.cotacaoVencedora.fornecedor}}</th>
+			<th scope="row">{{objeto_para_deletar.cotacao_vencedora.fornecedor}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Item Cotado</b></td>
-			<th scope="row">{{objeto_para_deletar.cotacaoVencedora}}</th>
+			<th scope="row">{{objeto_para_deletar.cotacao_vencedora}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Valor da Cotação</b></td>
-			<th scope="row">{{objeto_para_deletar.cotacaoVencedora.vlCotacao}}</th>
+			<th scope="row">{{objeto_para_deletar.cotacao_vencedora.vl_cotacao}}</th>
 		</tr>
-{% else %}{% if campos.name = "centroCusto" %}
+{% else %}{% if campos.name = "centro_custo" %}
 		<tr>
 			<td scope="row"><b>Data de Criação</b></td>
-			<th scope="row">{{objeto_para_deletar.dtRequisicao}}</th>
+			<th scope="row">{{objeto_para_deletar.dt_requisicao}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Solicitante</b></td>
@@ -70,7 +70,7 @@
 		</tr>
 		<tr>
 			<td scope="row"><b>Centro de Custo</b></td>
-			<th scope="row">{{objeto_para_deletar.centroCusto}}</th>
+			<th scope="row">{{objeto_para_deletar.centro_custo}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Status da Requisição</b></td>

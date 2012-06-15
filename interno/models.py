@@ -7,38 +7,39 @@ from django.core.mail import send_mail
 
 class GrupoMercadoria(models.Model):
 	def __unicode__(self):
-		return self.nomeGrupoMercadoria
+		return self.nome_grupo_mercadoria
 
-	nomeGrupoMercadoria = models.CharField(max_length = 50, unique = True)
+	nome_grupo_mercadoria = models.CharField(max_length = 50, unique = True)
 	status = models.CharField(max_length = 50)
 
-	dtInclusao = models.DateTimeField(null = True, auto_now_add = True)
-	usuarioInclusao = models.ForeignKey(User, related_name = 'incluiu_gm', null = True)
-	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
-	usuarioAlteracao = models.ForeignKey(User, related_name = 'alterou_gm', null = True)
-	dtExclusao = models.DateTimeField(null = True)
-	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_gm', null = True)
+	dt_inclusao = models.DateTimeField(null = True, auto_now_add = True)
+	usuario_inclusao = models.ForeignKey(User, related_name = 'incluiu_gm', null = True)
+	dt_alteracao = models.DateTimeField(null = True, auto_now = True)
+	usuario_alteracao = models.ForeignKey(User, related_name = 'alterou_gm', null = True)
+	dt_exclusao = models.DateTimeField(null = True)
+	usuario_exclusao = models.ForeignKey(User, related_name = 'excluiu_gm', null = True)
 	
 	def adicionar(self, request, idObjeto):
 		self.status = u'Ativo'
-		self.usuarioInclusao = request.user
+		self.usuario_inclusao = request.user
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def editar(self, request, idObjeto):
 		if self.status == u'Excluido':
-			self.dtExclusao = datetime.now()
-			self.usuarioExclusao = request.user
+			self.dt_exclusao = datetime.now()
+			self.usuario_exclusao = request.user
 		if GrupoMercadoria.objects.get(pk = idObjeto).status == u'Excluido' and self.status != u'Excluido':
-			self.usuarioExclusao = None
-			self.dtExclusao = None
-		self.usuarioAlteracao = request.user
+			self.usuario_exclusao = None
+			self.dt_exclusao = None
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def excluir(self, request, idObjeto):
-		self.dtExclusao = datetime.now()
-		self.usuarioExclusao = request.user
+		self.dt_exclusao = datetime.now()
+		self.usuario_exclusao = request.user
 		self.status = u'Excluido'
 		self.save()
 		return 'validos'
@@ -48,40 +49,41 @@ class GrupoMercadoria(models.Model):
 
 class UnidadeMedida(models.Model):
 	def __unicode__(self):
-		return self.nomeUnidadeMedida
+		return self.nome_unidade_medida
 
-	nomeUnidadeMedida = models.CharField(max_length = 50, unique = True)
-	descUnidadeMedida = models.CharField(max_length = 50)
+	nome_unidade_medida = models.CharField(max_length = 50, unique = True)
+	desc_unidade_medida = models.CharField(max_length = 50)
 	status = models.CharField(max_length = 50)
 
-	dtInclusao = models.DateTimeField(null = True, auto_now_add = True)
-	usuarioInclusao = models.ForeignKey(User, related_name = 'incluiu_um', null = True)
-	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
-	usuarioAlteracao = models.ForeignKey(User, related_name = 'alterou_um', null = True)
-	dtExclusao = models.DateField(null = True)
-	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_um', null = True)
+	dt_inclusao = models.DateTimeField(null = True, auto_now_add = True)
+	usuario_inclusao = models.ForeignKey(User, related_name = 'incluiu_um', null = True)
+	dt_alteracao = models.DateTimeField(null = True, auto_now = True)
+	usuario_alteracao = models.ForeignKey(User, related_name = 'alterou_um', null = True)
+	dt_exclusao = models.DateField(null = True)
+	usuario_exclusao = models.ForeignKey(User, related_name = 'excluiu_um', null = True)
 
 	
 	def adicionar(self, request, idObjeto):
 		self.status = u'Ativo'
-		self.usuarioInclusao = request.user
+		self.usuario_inclusao = request.user
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def editar(self, request, idObjeto):
 		if self.status == u'Excluido':
-			self.dtExclusao = datetime.now()
-			self.usuarioExclusao = request.user
+			self.dt_exclusao = datetime.now()
+			self.usuario_exclusao = request.user
 		if UnidadeMedida.objects.get(pk = idObjeto).status == u'Excluido' and self.status != u'Excluido':
-			self.usuarioExclusao = None
-			self.dtExclusao = None
-		self.usuarioAlteracao = request.user
+			self.usuario_exclusao = None
+			self.dt_exclusao = None
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def excluir(self, request, idObjeto):
-		self.dtExclusao = datetime.now()
-		self.usuarioExclusao = request.user
+		self.dt_exclusao = datetime.now()
+		self.usuario_exclusao = request.user
 		self.status = u'Excluido'
 		self.save()
 		return 'validos'
@@ -91,39 +93,40 @@ class UnidadeMedida(models.Model):
 
 class CentroCusto(models.Model):
 	def __unicode__(self):
-		return self.nomeCentroCusto
+		return self.nome_centro_custo
 
-	nomeCentroCusto = models.CharField(max_length = 50, unique = True)
+	nome_centro_custo = models.CharField(max_length = 50, unique = True)
 	gerente = models.ForeignKey(User)
 	status = models.CharField(max_length = 50)
 
-	dtInclusao = models.DateTimeField(null = True, auto_now_add = True)
-	usuarioInclusao = models.ForeignKey(User, related_name = 'incluiu_cc', null = True)
-	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
-	usuarioAlteracao = models.ForeignKey(User, related_name = 'alterou_cc', null = True)
-	dtExclusao = models.DateField(null = True)
-	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_cc', null = True)	
+	dt_inclusao = models.DateTimeField(null = True, auto_now_add = True)
+	usuario_inclusao = models.ForeignKey(User, related_name = 'incluiu_cc', null = True)
+	dt_alteracao = models.DateTimeField(null = True, auto_now = True)
+	usuario_alteracao = models.ForeignKey(User, related_name = 'alterou_cc', null = True)
+	dt_exclusao = models.DateField(null = True)
+	usuario_exclusao = models.ForeignKey(User, related_name = 'excluiu_cc', null = True)	
 
 	def adicionar(self, request, idObjeto):
 		self.status = u'Ativo'
-		self.usuarioInclusao = request.user
+		self.usuario_inclusao = request.user
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def editar(self, request, idObjeto):
 		if self.status == u'Excluido':
-			self.dtExclusao = datetime.now()
-			self.usuarioExclusao = request.user
+			self.dt_exclusao = datetime.now()
+			self.usuario_exclusao = request.user
 		if CentroCusto.objects.get(pk = idObjeto).status == u'Excluido' and self.status != u'Excluido':
-			self.usuarioExclusao = None
-			self.dtExclusao = None
-		self.usuarioAlteracao = request.user
+			self.usuario_exclusao = None
+			self.dt_exclusao = None
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def excluir(self, request, idObjeto):
-		self.dtExclusao = datetime.now()
-		self.usuarioExclusao = request.user
+		self.dt_exclusao = datetime.now()
+		self.usuario_exclusao = request.user
 		self.status = u'Excluido'
 		self.save()
 		return 'validos'
@@ -133,38 +136,39 @@ class CentroCusto(models.Model):
 
 class Fabricante(models.Model):
 	def __unicode__(self):
-		return self.nomeFabricante
+		return self.nome_fabricante
 
-	nomeFabricante = models.CharField(max_length = 50, unique = True)
+	nome_fabricante = models.CharField(max_length = 50, unique = True)
 	status = models.CharField(max_length = 50)
 
-	dtInclusao = models.DateTimeField(null = True, auto_now_add = True)
-	usuarioInclusao = models.ForeignKey(User, related_name = 'incluiu_fab', null = True)
-	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
-	usuarioAlteracao = models.ForeignKey(User, related_name = 'alterou_fab', null = True)
-	dtExclusao = models.DateField(null = True)
-	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_fab', null = True)	
+	dt_inclusao = models.DateTimeField(null = True, auto_now_add = True)
+	usuario_inclusao = models.ForeignKey(User, related_name = 'incluiu_fab', null = True)
+	dt_alteracao = models.DateTimeField(null = True, auto_now = True)
+	usuario_alteracao = models.ForeignKey(User, related_name = 'alterou_fab', null = True)
+	dt_exclusao = models.DateField(null = True)
+	usuario_exclusao = models.ForeignKey(User, related_name = 'excluiu_fab', null = True)	
 
 	def adicionar(self, request, idObjeto):
 		self.status = u'Ativo'
-		self.usuarioInclusao = request.user
+		self.usuario_inclusao = request.user
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def editar(self, request, idObjeto):
 		if self.status == u'Excluido':
-			self.dtExclusao = datetime.now()
-			self.usuarioExclusao = request.user
+			self.dt_exclusao = datetime.now()
+			self.usuario_exclusao = request.user
 		if Fabricante.objects.get(pk = idObjeto).status == u'Excluido' and self.status != u'Excluido':
-			self.usuarioExclusao = None
-			self.dtExclusao = None
-		self.usuarioAlteracao = request.user
+			self.usuario_exclusao = None
+			self.dt_exclusao = None
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def excluir(self, request, idObjeto):
-		self.dtExclusao = datetime.now()
-		self.usuarioExclusao = request.user
+		self.dt_exclusao = datetime.now()
+		self.usuario_exclusao = request.user
 		self.status = u'Excluido'
 		self.save()
 		return 'validos'
@@ -174,42 +178,43 @@ class Fabricante(models.Model):
 
 class Material(models.Model):
 	def __unicode__(self):
-		return self.nomeMaterial
+		return self.nome_material
 	
-	nomeMaterial = models.CharField(max_length = 50, unique = True)
+	nome_material = models.CharField(max_length = 50, unique = True)
 	fabricante = models.ForeignKey(Fabricante, related_name = 'fabricante_material')
-	grupoMercadoria = models.ForeignKey(GrupoMercadoria, related_name = 'gm_material')
-	unidadeMedida = models.ForeignKey(UnidadeMedida, related_name = 'un_material')
-	tpMaterial = models.CharField(max_length = 50)
+	grupo_mercadoria = models.ForeignKey(GrupoMercadoria, related_name = 'gm_material')
+	unidade_medida = models.ForeignKey(UnidadeMedida, related_name = 'un_material')
+	tp_material = models.CharField(max_length = 50)
 	status = models.CharField(max_length = 50)
 
-	dtInclusao = models.DateTimeField(null = True, auto_now_add = True)
-	usuarioInclusao = models.ForeignKey(User, related_name = 'incluiu_mat', null = True)
-	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
-	usuarioAlteracao = models.ForeignKey(User, related_name = 'alterou_mat', null = True)
-	dtExclusao = models.DateField(null = True)
-	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_mat', null = True)	
+	dt_inclusao = models.DateTimeField(null = True, auto_now_add = True)
+	usuario_inclusao = models.ForeignKey(User, related_name = 'incluiu_mat', null = True)
+	dt_alteracao = models.DateTimeField(null = True, auto_now = True)
+	usuario_alteracao = models.ForeignKey(User, related_name = 'alterou_mat', null = True)
+	dt_exclusao = models.DateField(null = True)
+	usuario_exclusao = models.ForeignKey(User, related_name = 'excluiu_mat', null = True)	
 
 	def adicionar(self, request, idObjeto):
 		self.status = u'Ativo'
-		self.usuarioInclusao = request.user
+		self.usuario_inclusao = request.user
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def editar(self, request, idObjeto):
 		if self.status == u'Excluido':
-			self.dtExclusao = datetime.now()
-			self.usuarioExclusao = request.user
+			self.dt_exclusao = datetime.now()
+			self.usuario_exclusao = request.user
 		if Material.objects.get(pk = idObjeto).status == u'Excluido' and self.status != u'Excluido':
-			self.usuarioExclusao = None
-			self.dtExclusao = None
-		self.usuarioAlteracao = request.user
+			self.usuario_exclusao = None
+			self.dt_exclusao = None
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def excluir(self, request, idObjeto):
-		self.dtExclusao = datetime.now()
-		self.usuarioExclusao = request.user
+		self.dt_exclusao = datetime.now()
+		self.usuario_exclusao = request.user
 		self.status = u'Excluido'
 		self.save()
 		return 'validos'
@@ -224,7 +229,7 @@ class Fornecedor(models.Model):
 	razao = models.CharField(max_length = 50, unique = True)
 	fantasia = models.CharField(max_length = 50, unique = True)
 	cnpj = models.CharField(max_length = 14, unique = True)
-	grupoMercadoria = models.ManyToManyField(GrupoMercadoria, related_name = 'gm_fornecedor')
+	grupo_mercadoria = models.ManyToManyField(GrupoMercadoria, related_name = 'gm_fornecedor')
 	usuario = models.OneToOneField(User)
 	tel1 = models.BigIntegerField(max_length = 10)
 	tel2 = models.BigIntegerField(max_length = 10, null = True, blank = True)
@@ -239,33 +244,34 @@ class Fornecedor(models.Model):
 	cep = models.BigIntegerField(max_length = 8)
 	status = models.CharField(max_length = 50)
 
-	dtInclusao = models.DateTimeField(null = True, auto_now_add = True)
-	usuarioInclusao = models.ForeignKey(User, related_name = 'incluiu_for', null = True)
-	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
-	usuarioAlteracao = models.ForeignKey(User, related_name = 'alterou_for', null = True)
-	dtExclusao = models.DateField(null = True)
-	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_for', null = True)	
+	dt_inclusao = models.DateTimeField(null = True, auto_now_add = True)
+	usuario_inclusao = models.ForeignKey(User, related_name = 'incluiu_for', null = True)
+	dt_alteracao = models.DateTimeField(null = True, auto_now = True)
+	usuario_alteracao = models.ForeignKey(User, related_name = 'alterou_for', null = True)
+	dt_exclusao = models.DateField(null = True)
+	usuario_exclusao = models.ForeignKey(User, related_name = 'excluiu_for', null = True)	
 
 	def adicionar(self, request, idObjeto):
 		self.status = u'Ativo'
-		self.usuarioInclusao = request.user
+		self.usuario_inclusao = request.user
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def editar(self, request, idObjeto):
 		if self.status == u'Excluido':
-			self.dtExclusao = datetime.now()
-			self.usuarioExclusao = request.user
+			self.dt_exclusao = datetime.now()
+			self.usuario_exclusao = request.user
 		if Fornecedor.objects.get(pk = idObjeto).status == u'Excluido' and self.status != u'Excluido' and self.status != u'Excluido':
-			self.usuarioExclusao = None
-			self.dtExclusao = None
-		self.usuarioAlteracao = request.user
+			self.usuario_exclusao = None
+			self.dt_exclusao = None
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def excluir(self, request, idObjeto):
-		self.dtExclusao = datetime.now()
-		self.usuarioExclusao = request.user
+		self.dt_exclusao = datetime.now()
+		self.usuario_exclusao = request.user
 		self.status = u'Excluido'
 		self.save()
 		return 'validos'	
@@ -278,26 +284,26 @@ class Requisicao(models.Model):
 	def __unicode__(self):
 		return str(self.id)
 
-	dtRequisicao = models.DateField()
-	centroCusto = models.ForeignKey(CentroCusto, related_name = 'cc_requisicao')
+	dt_requisicao = models.DateField()
+	centro_custo = models.ForeignKey(CentroCusto, related_name = 'cc_requisicao')
 	solicitante = models.ForeignKey(User)
 	status = models.CharField(max_length = 50)
-	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
-	dtExclusao = models.DateField(null = True)
-	dtDeferimento = models.DateField(null = True)
-	diasParaCotacao = models.PositiveSmallIntegerField()
+	dt_deferimento = models.DateField(null = True)
+	dias_para_cotacao = models.PositiveSmallIntegerField()
 
-	dtInclusao = models.DateTimeField(null = True, auto_now_add = True)
-	usuarioInclusao = models.ForeignKey(User, related_name = 'incluiu_req', null = True)
-	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
-	usuarioAlteracao = models.ForeignKey(User, related_name = 'alterou_req', null = True)
-	dtExclusao = models.DateField(null = True)
-	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_req', null = True)	
+	dt_inclusao = models.DateTimeField(null = True, auto_now_add = True)
+	usuario_inclusao = models.ForeignKey(User, related_name = 'incluiu_req', null = True)
+	dt_alteracao = models.DateTimeField(null = True, auto_now = True)
+	usuario_alteracao = models.ForeignKey(User, related_name = 'alterou_req', null = True)
+	dt_exclusao = models.DateField(null = True)
+	usuario_exclusao = models.ForeignKey(User, related_name = 'excluiu_req', null = True)	
 
 	def adicionar(self, request, idObjeto):
-		self.dtRequisicao = datetime.now()
+		self.dt_requisicao = datetime.now()
 		self.status = u'Aguardando Aprovação'
 		self.solicitante = request.user
+		self.usuario_inclusao = request.user
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
@@ -305,40 +311,42 @@ class Requisicao(models.Model):
 		if self.status not in [u'Excluido', u'Aguardando Aprovação']:
 			return 'Só é possível alterar situação para Excluido ou Aguardando Aprovação'
 		if self.status == u'Excluido':
-			self.dtExclusao = datetime.now()
-			self.usuarioExclusao = request.user
+			self.dt_exclusao = datetime.now()
+			self.usuario_exclusao = request.user
 		if Requisicao.objects.get(pk = idObjeto).status == u'Excluido' and self.status != u'Excluido' and self.status != u'Excluido':
-			self.usuarioExclusao = None
-			self.dtExclusao = None
-		self.usuarioAlteracao = request.user
+			self.usuario_exclusao = None
+			self.dt_exclusao = None
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
 	def excluir(self, request, idObjeto):
 		if self.status == 'Aprovada':
 			return 'Não é possível excluir requisição aprovada'
-		self.dtExclusao = datetime.now()
-		self.usuarioExclusao = request.user
+		self.dt_exclusao = datetime.now()
+		self.usuario_exclusao = request.user
 		self.status = u'Excluido'
 		self.save()
 		return 'validos'
 
-	def aprovar(self):
+	def aprovar(self, request):
 		if self.status == u'Aguardando Aprovação':
 			itens = ItemRequisicao.objects.filter(requisicao = self)
 			for item in itens:
-				if Cotacao().adicionar(item, self.diasParaCotacao) != 'Validos':
-					return Cotacao().adicionar(item, self.diasParaCotacao)
+				if Cotacao().adicionar(item, self.dias_para_cotacao) != 'Validos':
+					return Cotacao().adicionar(item, self.dias_para_cotacao)
 			self.status = 'Aprovada'
-			self.dtDeferimento = datetime.now()
+			self.dt_deferimento = datetime.now()
+			self.usuario_alteracao = request.user
 			self.save()
 			return 'Validos'
 		return 'Requisição já está aprovada'
 
-	def reprovar(self):
+	def reprovar(self, request):
 		if self.status == u'Aguardando Aprovação':
 			self.status = 'Reprovada'
-			self.dtDeferimento = datetime.now()
+			self.dt_deferimento = datetime.now()
+			self.usuario_alteracao = request.user
 			self.save()
 			return 'Validos'
 		return 'Requisição deve estar aguardando aprovação'
@@ -349,7 +357,7 @@ class Requisicao(models.Model):
 
 class ItemRequisicao(models.Model):
 	def __unicode__(self):
-		return self.material.nomeMaterial
+		return self.material.nome_material
 
 	requisicao = models.ForeignKey(Requisicao, related_name = 'requisicao_do_item')
 	material = models.ForeignKey(Material, related_name = 'material_do_item')
@@ -371,40 +379,41 @@ class ItemRequisicao(models.Model):
 
 class Cotacao(models.Model):
 	def __unicode__(self):
-		return str(self.dtLimite)
+		return str(self.dt_limite)
 
-	itemRequisicao = models.ForeignKey(ItemRequisicao, related_name = 'item_proposta')
+	item_requisicao = models.ForeignKey(ItemRequisicao, related_name = 'item_proposta')
 	fornecedor = models.ForeignKey(Fornecedor, related_name = 'fornecedor_proposta')
-	vlCotacao = models.DecimalField(max_digits = 20, decimal_places = 2, null = True)
-	dtLimite = models.DateField()
+	vl_cotacao = models.DecimalField(max_digits = 20, decimal_places = 2, null = True)
+	dt_limite = models.DateField()
 	obs = models.TextField(max_length = 100, null = True)
 
-	dtInclusao = models.DateTimeField(null = True, auto_now_add = True)
-	usuarioInclusao = models.ForeignKey(User, related_name = 'incluiu_cot', null = True)
-	dtAlteracao = models.DateTimeField(null = True, auto_now = True)
-	usuarioAlteracao = models.ForeignKey(User, related_name = 'alterou_cot', null = True)
-	dtExclusao = models.DateField(null = True)
-	usuarioExclusao = models.ForeignKey(User, related_name = 'excluiu_cot', null = True)
+	dt_inclusao = models.DateTimeField(null = True, auto_now_add = True)
+	dt_alteracao = models.DateTimeField(null = True, auto_now = True)
+	usuario_alteracao = models.ForeignKey(User, related_name = 'alterou_cot', null = True)
+	dt_exclusao = models.DateField(null = True)
+	usuario_exclusao = models.ForeignKey(User, related_name = 'excluiu_cot', null = True)
 
-	def adicionar(self, item, diasParaCotacao):
-		fornecedores = Fornecedor.objects.filter(grupoMercadoria = item.material.grupoMercadoria, status = 'Ativo')
+	def adicionar(self, item, dias_para_cotacao):
+		fornecedores = Fornecedor.objects.filter(grupo_mercadoria = item.material.grupo_mercadoria, status = 'Ativo')
 		if len(fornecedores) == 0:
 			return 'Não há fornecedores para o item: '+str(item)
 		for fornecedor in fornecedores:
-			cotacao = Cotacao(itemRequisicao = item, fornecedor = fornecedor)
-			cotacao.dtLimite = datetime.now() + timedelta(diasParaCotacao)
+			cotacao = Cotacao(item_requisicao = item, fornecedor = fornecedor)
+			cotacao.dt_limite = datetime.now() + timedelta(dias_para_cotacao)
+			if fornecedor.usuario.email:
+				send_mail('SGF - Notificação de envio de cotação',
+					  str(fornecedor)+',\n\nSua empresa recebeu uma nova cotação. \nVocês tem até o dia '+datetime.strftime(cotacao.dt_limite, "%d/%m/%Y")+' para enviar a resposta.\nSegue link de acesso à cotação:\nhttp://localhost:8000/edita/cotacao/'+str(cotacao.id)+' \nAguardamos a resposta à nossa Cotação.\n\nCordialmente, \nEmpresa XXX \n\n\n ESTA É UMA MENSAGEM ENVIADA AUTOMATICAMENTE PELO SISTEMA, FAVOR NÃO RESPONDER',
+					  'SGF - Sistema de Gestão de Fornecedores',
+					  [fornecedor.usuario.email],
+					  fail_silently = True)
 			cotacao.save()
-			send_mail('SGF - Notificação de envio de cotação',
-				  str(fornecedor)+',\n\nSua empresa recebeu uma nova cotação. \nVocês tem até o dia '+datetime.strftime(cotacao.dtLimite, "%d/%m/%Y")+' para enviar a resposta.\nSegue link de acesso à cotação:\nhttp://localhost:8000/edita/cotacao/'+str(cotacao.id)+' \nAguardamos a resposta à nossa Cotação.\n\nCordialmente, \nEmpresa XXX \n\n\n ESTA É UMA MENSAGEM ENVIADA AUTOMATICAMENTE PELO SISTEMA, FAVOR NÃO RESPONDER',
-				  'SGF - Sistema de Gestão de Fornecedores',
-				  [fornecedor.usuario.email],
-				  fail_silently = False)
-		MapaComparativo().adicionar(item, diasParaCotacao)
+		MapaComparativo().adicionar(item, dias_para_cotacao)
 		return 'Validos'
 
 	def editar(self, request, idObjeto):
-		if self.dtLimite < date.today():
-			return 'Data limite para esta cotação foi'+str(self.dtLimite)
+		if self.dt_limite < date.today():
+			return 'Data limite para esta cotação foi'+str(self.dt_limite)
+		self.usuario_alteracao = request.user
 		self.save()
 		return 'validos'
 
@@ -416,33 +425,50 @@ class MapaComparativo(models.Model):
 		return str(self.id)
 
 	cotacoes = models.ManyToManyField(Cotacao, related_name = 'cotacoes_do_mapa', null = True)
-	cotacaoVencedora = models.ForeignKey(Cotacao, related_name = 'cotacao_vencedora', null = True)
-	dtLiberacao = models.DateField()
-	centroCusto = models.ForeignKey(CentroCusto, related_name = 'cc_mapa')
+	cotacao_vencedora = models.ForeignKey(Cotacao, related_name = 'cotacao_vencedora', null = True)
+	dt_liberacao = models.DateField()
+	centro_custo = models.ForeignKey(CentroCusto, related_name = 'cc_mapa')
 	obs = models.TextField(max_length = 100, null = True)
 	status = models.CharField(max_length = 50)
 
-	def adicionar(self, item, diasParaCotacao):
-		self.dtLiberacao = datetime.now() + timedelta(diasParaCotacao)
+	dt_inclusao = models.DateTimeField(null = True, auto_now_add = True)
+	dt_alteracao = models.DateTimeField(null = True, auto_now = True)
+	usuario_alteracao = models.ForeignKey(User, related_name = 'alterou_mapa', null = True)
+	dt_exclusao = models.DateField(null = True)
+	usuario_exclusao = models.ForeignKey(User, related_name = 'excluiu_mapa', null = True)
+
+	def adicionar(self, item, dias_para_cotacao):
+		self.dt_liberacao = datetime.now() + timedelta(dias_para_cotacao)
 		self.status = 'Aberto'
-		self.centroCusto = item.requisicao.centroCusto
+		self.centro_custo = item.requisicao.centro_custo
 		self.save()
-		cotacoes = Cotacao.objects.filter(itemRequisicao = item)
+		cotacoes = Cotacao.objects.filter(item_requisicao = item)
 		for cotacao in cotacoes:
 			self.cotacoes.add(cotacao)
 
-	def finalizar(self):
-		self.cotacoes.all()[0].itemRequisicao.alterarStatus('Mapa Aguardando Aprovação')
+	def finalizar(self, request):
+		self.cotacoes.all()[0].item_requisicao.alterarStatus('Mapa Aguardando Aprovação')
 		self.status = u'Aguardando Aprovação'
+		self.usuario_alteracao = request.user
 		self.save()
 
-	def aprovar(self):
+	def aprovar(self, request):
 		if self.status == u'Aguardando Aprovação':
-			self.cotacoes.all()[0].itemRequisicao.alterarStatus('Mapa Finalizado')
+			self.cotacoes.all()[0].item_requisicao.alterarStatus('Mapa Finalizado')
 			self.status = u'Finalizado'
+			self.usuario_alteracao = request.user
 			self.save()
 			return 'Validos'
 		return 'Mapa não foi finalizado ou já está aprovado'
+
+	def reprovar(self, request):
+		if self.status == u'Aguardando Aprovação':
+			self.status = 'Reprovado'
+			self.dt_deferimento = datetime.now()
+			self.usuario_alteracao = request.user
+			self.save()
+			return 'Validos'
+		return 'Mapa Comparativo deve estar aguardando aprovação'
 
 	class Meta:
 		db_table = 'mapa'

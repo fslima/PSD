@@ -1,0 +1,38 @@
+{# inclui o template base.html #}
+{% extends "baser.html" %}
+
+{# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
+{% block titulo %}{{titulo}}{% endblock %}
+{% block menu %}<a href="/cadastro/">Cadastro    |</a>{% endblock %}
+
+{# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
+{% block conteudo %}
+<h1>{{titulo}}</h1>
+<i>{{ infoRel }}</i>
+<br><br>
+<div id="content-main">  
+  <div class="results">
+<table cellspacing="0" id="result_list">
+<thead>
+<tr>
+{% for coluna in colunas %}
+<th>
+{{ coluna }}
+</th>
+{% endfor %}
+</tr>
+</thead>
+<tbody>
+{% if tpObjeto == 'fornecedor' %}
+{%for id, razao, fantasia, cotaoes_vencidas in query %}
+<tr class="{% cycle 'row1' 'row2' %}">
+<td>{{ razao }}</td>
+<th><a href="/exibe/fornecedor/{{id}}">{{ fantasia }}</a></th><td>{{ cotaoes_vencidas }}</td></tr>
+{% endfor %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"r,es" }}</p>
+{% endif %}
+      </form>
+  </div>
+</div>     
+{% endblock %}
+

@@ -1,0 +1,31 @@
+{# inclui o template base.html #}
+{% extends "basep.html" %}
+
+{# carrega os filtros customizados para templates #}
+{% load templates %}
+
+{# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
+{% block titulo %}{{titulo}}{% endblock %}
+{% block menu %}<a href="/cadastro/">Cadastro    |</a>{% endblock %}
+
+{# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
+{% block conteudo %}
+<h1>{{titulo}}</h1>
+  <div id="content-main">  
+<div id="toolbar">
+<div><!-- DIV needed for valid HTML -->
+<form action="" method="POST" name="form"> 
+<table>
+		{{ form.as_table }}
+		<tr>
+			<td><input type="submit" value="Gerar" /></td>
+		</tr>
+	</table>
+</div>
+</form></div>
+
+  </div>     
+        <br class="clear" />
+
+{% endblock %}
+

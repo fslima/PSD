@@ -31,8 +31,8 @@
 <caption><a href="/lista/{{ tpObjeto }}" class="section">Mapas Aguardando Aprovção</a></caption>
 {%for mapa in listaMapas %}
 		<tr>
-			<td><a href="/exibe/mapa/{{ mapa.id }}"><img src="/media/img/exibir.gif/" /></a></td>
-			<td><a href="/aprova/mapa/{{ mapa.id }}"><img src="/media/img/aprovar.gif/" /></a></td>
+			<td><a href="/exibe/mapacomparativo/{{ mapa.id }}"><img src="/media/img/exibir.gif/" /></a></td>
+			<td><a href="/aprova/mapacomparativo/{{ mapa.id }}"><img src="/media/img/aprovar.gif/" /></a></td>
 			<th scope="row"> {{ mapa }}</th>
 		</tr>
 {% empty %}
