@@ -12,6 +12,7 @@
 <br><br>
 <div id="content-main">  
   <div class="results">
+<center>
 <table cellspacing="0" id="result_list">
 <thead>
 <tr>
@@ -31,6 +32,15 @@
 {% endfor %}
 </tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"r,es" }}</p>
 {% endif %}
+{% if tpObjeto == 'material' %}
+{%for id, nome, qtd in query %}
+<tr class="{% cycle 'row1' 'row2' %}">
+<th><a href="/exibe/material/{{id}}">{{ nome }}</a></th><td>{{ qtd }}</td></tr>
+{% endfor %}
+</tbody></table></div><p class="paginator">{{total}} {{ radicalObjeto }}{{ total|pluralize:"l,is" }}</p>
+{% endif %}
+
+</center>
       </form>
   </div>
 </div>     

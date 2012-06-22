@@ -31,7 +31,7 @@ urlpatterns = patterns('',
 	(r'^reprova/(?P<tpObjeto>\w+)/(?P<idObjeto>\d+)/$', reprova),
 
 	(r'^relatorios$', relatorios),
-	(r'^relatorio/(?P<tpObjeto>\w+)/(?P<tpRel>\w+)/$', fornecedor),
+	(r'^relatorio/(?P<tpObjeto>\w+)/(?P<tpRel>\w+)/$', gerar_relatorio),
 
 
 )
