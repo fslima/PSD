@@ -1,12 +1,8 @@
-{# inclui o template base.html #}
-{% extends "basep.html" %}
-
-{# carrega os filtros customizados para templates #}
+{% extends "base.html" %}
 {% load templates %}
 
-{# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
 {% block titulo %}{{titulo}}{% endblock %}
-{% block menu %}<a href="/cadastro/">Cadastro    |</a>{% endblock %}
+{% block body %}<body class="change-list">{% endblock %}
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
@@ -76,7 +72,7 @@
 {% if tpObjeto == 'mapacomparativo' %}
 {%for registro in query %}
 <tr class="{% cycle 'row1' 'row2' %}">
-<th><a href="/exibe/mapa/{{registro.id}}">{{registro}}</a></th>
+<th><a href="/exibe/mapacomparativo/{{registro.id}}">{{registro}}</a></th>
 <td>{{registro.dt_liberacao}}</td>
 <td><a href="/exibe/fornecedor/{{registro.cotacao_vencedora.fornecedor.id}}">{{registro.cotacao_vencedora.fornecedor}}</a></td> 
 <td><a href="/exibe/material/{{registro.cotacao_vencedora.item_requisicao.material.id}}">{{registro.cotacao_vencedora.item_requisicao}}</a></td><td>{{registro.cotacao_vencedora.vl_cotacao|default_if_none:""}}</td> <td>{{registro.status}}</td> </tr>

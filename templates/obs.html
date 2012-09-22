@@ -1,5 +1,18 @@
-<b>Fornecedor:</b> {{ objeto.fornecedor }}
-<br>
-<b>Obs:</b> {{ objeto.obs }}
+{% extends "baser.html" %}
+{% block titulo %}Observação do Fornecedor{% endblock %}
+{% block body %}<body class="dashboard">{% endblock %}
+{% block conteudo %}
+<div class="module">
+<table>
+<caption><a href="" class="section">Observação do Fornecedor</a></caption>
+		<tr>
+			<td><b>Fornecedor:</b> </td>
+			<th scope="row">{{ objeto.fornecedor }}</th>
+		</tr>
+		<tr>
+			<td><b>Obs</b></td>
+			<th scope="row">{{ objeto.obs }}</th>
+		</tr>
+</table>
 </div>
-</div>
+{% endblock %}

@@ -213,6 +213,7 @@ def exibe(request, tpObjeto, idObjeto):
 		titulo = 'Mapa Comparativo'
 		titulo_cotacoes = 'Cotacoes'
 		objeto = get_object_or_404(MapaComparativo, pk = idObjeto)
+		item = objeto.cotacoes.all()[0].item_requisicao
 		if objeto.dt_liberacao < date.today():
 			cotacoes = objeto.cotacoes.all()
 		form = FormExibeMapaComparativo(instance = objeto)
@@ -363,6 +364,7 @@ def aprova(request, tpObjeto, idObjeto):
 		titulo = 'Aprovar Mapa: '
 		objeto = get_object_or_404(MapaComparativo, pk = idObjeto)
 		cotacoes = objeto.cotacoes.all().order_by('vl_cotacao')
+		item = cotacoes[0].item_requisicao
 		form = FormExibeMapaComparativo(instance = objeto)
 	if request.method == 'POST':
 		if objeto.aprovar(request) != 'Validos':

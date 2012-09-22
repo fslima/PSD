@@ -3,6 +3,7 @@
 
 {# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
 {% block titulo %}{{titulo}}{% endblock %}
+{% block body %}<body class="dashboard">{% endblock %}
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
@@ -38,7 +39,7 @@
 <input type="hidden" value="{{registro.fornecedor}}" name="for" />
 <tr class="row1"><td><input type="radio" value="{{registro.id}}" name="cotacao" /></td>
 <th><a href="/exibe/fornecedor/{{registro.fornecedor.id}}">{{registro.fornecedor}}</label></a></th>
-<td>{{registro.item_requisicao.material}}</td><td>R$ {{registro.vl_cotacao}}</td><td>{{registro.obs}}</td> </tr>
+<td>{{registro.item_requisicao.material}}</td><td>{% if registro.vl_cotacao %}R${% endif %} {{registro.vl_cotacao|default_if_none:"Não Cotou"}}</td><td>{{registro.obs|default_if_none:"Não Cotou"}}</td> </tr>
 {% endfor %}
 </tbody>
 </table>

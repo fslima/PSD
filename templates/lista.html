@@ -3,12 +3,13 @@
 
 {# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
 {% block titulo %}{{ titulo }}{% endblock %}
+{% block body %}<body class="dashboard">{% endblock %}
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
 {% csrf_token %}
 <h1>{{ titulo }}</h1>
-{% if tpObjeto != 'mapa' and tpObjeto != 'cotacao' %}
+{% if tpObjeto != 'mapacomparativo' and tpObjeto != 'cotacao' %}
 <a href="/adiciona/{{ tpObjeto }}/000" class="addlink">Adicionar {{ tpObjeto|capfirst }}</a>     |
 {% endif %}
 <a href="/filtra/{{ tpObjeto }}"><img src="/media/img/exibir.gif/" />Pesquisar {{ tpObjeto|capfirst }}</a>

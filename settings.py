@@ -1,7 +1,9 @@
-# Django settings for ConsultaVip project.
+# -*- coding:utf-8 -*-
 
+# Django settings for ConsultaVip project.
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+SITE_ID = 1
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -9,6 +11,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+
+#ligação com o banco de dados
 DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 DATABASE_NAME = 'srm'             # Or path to database file if using sqlite3.
 DATABASE_USER = 'postgres'             # Not used with sqlite3.
@@ -16,69 +20,48 @@ DATABASE_PASSWORD = 'postgres'         # Not used with sqlite3.
 DATABASE_HOST = '127.0.0.1'             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = '5432'             # Set to empty string for default. Not used with sqlite3.
 
+#configuração da conta de email que dispara os emails automaticos do sistema
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
 EMAIL_HOST_USER = 'tccfabiofabiano@gmail.com'
 EMAIL_HOST_PASSWORD = 'projetofinal'
 EMAIL_USE_TLS = True
 
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
-TIME_ZONE = 'America/Sao_Paulo'
+TIME_ZONE = 'America/Sao_Paulo' #Definição de fuso-horario
 
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = 'pt-br' 	#idioma da aplicação
 
-SITE_ID = 1
+DATE_FORMAT = 'd/m/Y'		#Definição do formato de data
+DATETIME_FORMAT = 'd/m/Y H:i'	#Definição do formato de data e hora
 
-DATE_FORMAT = 'd/m/Y'
-DATETIME_FORMAT = 'd/m/Y H:i'
+USE_I18N = True			#Sistema de internacionalização ativado
 
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
-USE_I18N = True
+MEDIA_ROOT = 'media/'		#Mapeada pasta dos arquivos de media
 
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = 'media/'
+MEDIA_URL = 'PSD.media'		#Mapeada pasta dos arquivos de media
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash if there is a path component (optional in other cases).
-# Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = 'PSD.media'
+ADMIN_MEDIA_PREFIX = '/admin_media/'					#Mapeada pasta dos arquivos de media da area de administracao
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/admin_media/'
+SECRET_KEY = 'y0ucl2b@waju8-b033g23vi^ybk6y9m%s51&+ow+u-jl8=_940'	#codigo gerado pelo Django ao criar o projeto
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'y0ucl2b@waju8-b033g23vi^ybk6y9m%s51&+ow+u-jl8=_940'
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
+TEMPLATE_LOADERS = ( 							#mapeados templates utilizados na area de administracao
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
-#     'django.template.loaders.eggs.load_template_source',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = (							#ativados os middlewares para gerenciamento de autenticação dos usuários
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',	
 )
 
-ROOT_URLCONF = 'PSD.urls'
+ROOT_URLCONF = 'PSD.urls'			#mapeado arquivo das urls do projeto
 
-TEMPLATE_DIRS = (
+TEMPLATE_DIRS = (				#mapeada pasta com os templates criados para o projeto
 	'templates/',
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = (				#lista de aplicações ativas
 	'PSD.interno',
 	'PSD.relatorios',
 	'django.contrib.admin',
@@ -87,6 +70,5 @@ INSTALLED_APPS = (
 	'django.contrib.sessions',
 	'django.contrib.sites',
 )
-
-LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = '/inicio'
+LOGIN_URL = '/'					#mapeada url de login no sistema
+LOGIN_REDIRECT_URL = '/inicio'			#mapeada url de redirecionamento após o login

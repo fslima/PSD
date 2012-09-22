@@ -4,31 +4,16 @@
     <title>{% block titulo %}{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="/admin_media/css/base.css" />
     <link rel="stylesheet" type="text/css" href="/admin_media/css/changelists.css" />
- 
-<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/admin_media/css/ie.css" /><![endif]-->
-<script type="text/javascript" src="/admin/jsi18n/"></script>
-<script type="text/javascript">window.__admin_media_prefix__ = "/admin_media/";</script>
-<script type="text/javascript" src="/admin_media/js/core.js"></script>
-<script type="text/javascript" src="/admin_media/js/admin/RelatedObjectLookups.js"></script>
-<script type="text/javascript" src="/admin_media/js/jquery.min.js"></script>
-<script type="text/javascript" src="/admin_media/js/jquery.init.js"></script>
-<script type="text/javascript" src="/admin_media/js/actions.min.js"></script>
-<script type="text/javascript" src="/media/js/forms.js"></script>
-<script type="text/javascript">
-(function($) {
-    $(document).ready(function($) {
-        $("tr input.action-select").actions();
-    });
-})(django.jQuery);
-</script>
+    <link rel="stylesheet" type="text/css" href="/admin_media/css/dashboard.css" />
 
+<script type="text/javascript" src="/media/js/forms.js"></script>
 <meta name="robots" content="NONE,NOARCHIVE" />
 </head>
-<body class="change-list">
+{% block body %}{% endblock %}
 <div id="container">
  <div id="header">
         <div id="branding">
-          <h1 id="site-name">SGF - Sistema Gestão de Fornecedores |Relatórios|</h1>
+          <h1 id="site-name">SGF - Sistema Gestão de Fornecedores</h1>
         </div>
 
 	<div id="user-tools">

@@ -5,28 +5,12 @@
     <link rel="stylesheet" type="text/css" href="/admin_media/css/base.css" />
     <link rel="stylesheet" type="text/css" href="/admin_media/css/changelists.css" />
     <link rel="stylesheet" type="text/css" href="/admin_media/css/dashboard.css" />
-    <link rel="stylesheet" type="text/css" media="all" href="/media/calendario/calendar-win2k-1.css" title="win2k-1" />
- 
-<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/admin_media/css/ie.css" /><![endif]-->
-<script type="text/javascript" src="/admin/jsi18n/"></script>
-<script type="text/javascript">window.__admin_media_prefix__ = "/admin_media/";</script>
-<script type="text/javascript" src="/admin_media/js/core.js"></script>
-<script type="text/javascript" src="/admin_media/js/admin/RelatedObjectLookups.js"></script>
-<script type="text/javascript" src="/admin_media/js/jquery.min.js"></script>
-<script type="text/javascript" src="/admin_media/js/jquery.init.js"></script>
-<script type="text/javascript" src="/admin_media/js/actions.min.js"></script>
+
 <script type="text/javascript" src="/media/js/forms.js"></script>
-<script type="text/javascript">
-(function($) {
-    $(document).ready(function($) {
-        $("tr input.action-select").actions();
-    });
-})(django.jQuery);
-</script>
 
 <meta name="robots" content="NONE,NOARCHIVE" />
 </head>
-<body class="dashboard">
+{% block body %}{% endblock %}
 <div id="container">
  <div id="header">
         <div id="branding">

@@ -3,6 +3,7 @@
 
 {# carrega os filtros customizados para templates #}
 {% load templates %}
+{% block body %}<body class="dashboard">{% endblock %}
 
 {# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
 {% block titulo %}{{ titulo }}{% endblock %}
@@ -53,12 +54,12 @@
 		</tr>
 {% else %}{% if campos.name = "cotacao_vencedora" %}
 		<tr>
-			<td scope="row"><b>{{campos.label_tag}}</b></td>
-			<th scope="row">{{objeto.cotacao_vencedora.fornecedor|default:"<font color='red'>Finalizado sem vencedor</font>"}}</th>
+			<td scope="row"><b>Item Cotado</b></td>
+			<th scope="row">{{item|default_if_none:""}}</th>
 		</tr>
 		<tr>
-			<td scope="row"><b>Item Cotado</b></td>
-			<th scope="row">{{objeto.cotacao_vencedora.item_requisicao|default_if_none:""}}</th>
+			<td scope="row"><b>{{campos.label_tag}}</b></td>
+			<th scope="row">{{objeto.cotacao_vencedora.fornecedor|default:"<font color='red'>Finalizado sem vencedor</font>"}}</th>
 		</tr>
 		<tr>
 			<td scope="row"><b>Valor da Cotação</b></td>

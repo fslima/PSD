@@ -34,8 +34,9 @@ class FormExibeCentroCusto(forms.ModelForm):
 		fields = ('nome_centro_custo', 'gerente', 'status')
 
 class FormFiltraCentroCusto(forms.Form):
+	grupoGerente = Group.objects.filter(name__iexact = 'gerente')
 	nome_centro_custo = forms.CharField(label = 'Centro de Custo', required = False)
-	gerente = forms.ModelChoiceField(queryset=User.objects.filter(is_active = 't').order_by('username'), label = 'Gerente', required = False)
+	gerente = forms.ModelChoiceField(queryset=User.objects.filter(groups__in = grupoGerente, is_active = 't').order_by('username'), label = 'Gerente', required = False)
 	status = forms.ChoiceField([('',''), ('Ativo','Ativo'), ('Excluido','Excluido'),], 
 				initial = ('',''),
 				label = 'Situação', required = False)

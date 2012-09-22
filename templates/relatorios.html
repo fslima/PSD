@@ -3,6 +3,7 @@
 
 {# preenche o titulo da pagina que é passado para o template base atraves do 'block' titulo #}
 {% block titulo %}SGF - Relatórios{% endblock %}
+{% block body %}<body class="dashboard">{% endblock %}
 
 {# preenche o conteudo da pagina que é passado para o template base atraves do 'block' conteudo #}
 {% block conteudo %}
@@ -21,11 +22,19 @@
 </tr>
 <tr>
 	<td></td>
+	<th scope="row"><a href="/relatorio/fornecedor/tipomaterial">Melhores Fornecedores - Por Tipo de Material</a></th>
+</tr>
+<tr>
+	<td></td>
 	<th scope="row"><a href="/relatorio/material/geral">Materiais / Serviços Solicitados - Geral</a></th>
 </tr>
 <tr>
 	<td></td>
 	<th scope="row"><a href="/relatorio/material/grupomercadoria">Materiais / Serviços Solicitados - Por Grupo de Mercadoria</a></th>
+</tr>
+<tr>
+	<td></td>
+	<th scope="row"><a href="/relatorio/material/tipomaterial">Materiais / Serviços Solicitados - Por Tipo de Material</a></th>
 </tr>
 </table>
 </div>
