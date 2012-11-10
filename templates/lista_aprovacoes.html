@@ -11,7 +11,7 @@
 <h1>{{ titulo }}</h1>
 <div class="module">
 <table>
-<caption><a href="/lista/{{ tpObjeto }}" class="section">Requisições Aguardando Aprovção</a></caption>
+<caption><a href="/lista/{{ tpObjeto }}" class="section">Requisições Aguardando Aprovação</a></caption>
 {%for requisicao in listaRequisicoes %}
 		<tr>
 			<td><a href="/exibe/requisicao/{{ requisicao.id }}"><img src="/media/img/exibir.gif/" /></a></td>
@@ -29,7 +29,7 @@
 </div>
 <div class="module">
 <table>
-<caption><a href="/lista/{{ tpObjeto }}" class="section">Mapas Aguardando Aprovção</a></caption>
+<caption><a href="/lista/{{ tpObjeto }}" class="section">Mapas Aguardando Aprovação</a></caption>
 {%for mapa in listaMapas %}
 		<tr>
 			<td><a href="/exibe/mapacomparativo/{{ mapa.id }}"><img src="/media/img/exibir.gif/" /></a></td>
